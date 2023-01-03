@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Gambar;
+use App\Models\Kategori;
+use App\Models\KategoriGlobal;
 use App\Models\Produk;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -19,9 +21,10 @@ class ProdukController extends Controller
   public function index()
   {
     $produk = Produk::where('idToko', auth()->user()->idToko ?? '')->paginate(10)->withQueryString();
-    // return Inertia::render('ListProduk', [
-    //   'produk' => $produk,
-    // ]);
+    return Inertia::render('TokoProduk/Index', [
+      'produk' => $produk,
+      'title' => 'List Produk'
+    ]);
   }
 
   /**
@@ -31,8 +34,12 @@ class ProdukController extends Controller
    */
   public function create()
   {
-    return Inertia::render('TokoProduk/TokoProdukCreate', [
+    $kategori = Kategori::select('id', 'namaKategori')->get();
+    $kategoriGlobal = KategoriGlobal::select('id', 'namaKategoriGlobal')->get();
+    return Inertia::render('TokoProduk/Create', [
       'title' => 'Tambah Produk',
+      'kategori' => $kategori,
+      'kategoriGlobal' => $kategoriGlobal,
     ]);
   }
 
@@ -53,7 +60,9 @@ class ProdukController extends Controller
         'deskripsi' => 'required',
         'hrgBeli' => 'required',
         'hrgJual' => 'required',
-        'stok' => 'required',
+        'stokToko' => 'required',
+        'stokGudang' => 'required',
+        'stokGudang' => 'required',
         'imgName' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
       ],
       [
@@ -64,7 +73,8 @@ class ProdukController extends Controller
         'deskripsi.required' => 'Deskripsi harus diisi!',
         'hrgBeli.required' => 'Harga Beli harus diisi',
         'hrgJual.required' => 'Harga Jual harus diisi',
-        'stok.required' => 'Stok harus diisi',
+        'stokToko.required' => 'Stok Toko harus diisi',
+        'stokGudang.required' => 'Stok Gudang harus diisi',
       ]
     );
 
@@ -130,9 +140,14 @@ class ProdukController extends Controller
    */
   public function edit(Produk $produk, Request $request)
   {
+    $kategori = Kategori::select('id', 'namaKategori')->get();
+    $kategoriGlobal = KategoriGlobal::select('id', 'namaKategoriGlobal')->get();
     $produk = Produk::find($request->id);
-    return Inertia::render('TokoProduk/TokoProdukEdit', [
-      'title' => 'Edit Produk'
+    return Inertia::render('TokoProduk/Edit', [
+      'title' => 'Edit Produk',
+      'produk' => $produk,
+      'kategori' => $kategori,
+      'kategoriGlobal' => $kategoriGlobal,
     ]);
   }
 

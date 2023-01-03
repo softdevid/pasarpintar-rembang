@@ -63,13 +63,14 @@ Route::get('/toko-pesanan', [AdminTokoController::class, 'pesanan'])->name('toko
 
 
 //route toko produk/list produk
-Route::get('/toko-list', [AdminTokoController::class, 'list'])->name('toko.list');
+Route::get('/toko-list', [ProdukController::class, 'index'])->name('toko.list');
 Route::get('/toko-list/1/edit', [ProdukController::class, 'edit'])->name('produk.edit');
 Route::get('/toko-list/create', [ProdukController::class, 'create'])->name('produk.create');
+Route::post('/toko-list/store', [ProdukController::class, 'store'])->name('produk.store');
 
 //route toko kategori
 
-Route::get('/toko-kategori', [AdminTokoController::class, 'kategori'])->name('toko.kategori');
+Route::get('/toko-kategori', [KategoriController::class, 'index'])->name('kategori.index');
 Route::get('/toko-kategori/create', [KategoriController::class, 'create'])->name('kategori.create');
 Route::get('/toko-kategori/1/edit', [KategoriController::class, 'edit'])->name('kategoriToko.edit');
 

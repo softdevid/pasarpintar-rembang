@@ -17,6 +17,10 @@ class KategoriController extends Controller
   public function index()
   {
     $kategori = Kategori::latest()->paginate(10)->withQueryString();
+    return Inertia::render('KategoriToko/Index', [
+      'title' => 'Kategori',
+      'kategori' => $kategori,
+    ]);
   }
 
   /**
