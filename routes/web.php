@@ -26,7 +26,7 @@ Route::middleware('auth',)->group(function () {
   })->name('dashboard');
 
   // route admin
-  Route::get('/admin-page', [AdminController::class, 'index'])->name('admin.index');
+  // Route::get('/admin/dashboard', [AdminController::class, 'index'])->name('admin.index');
 
   // route keranjang
   Route::get('/cart', [KeranjangController::class, 'index'])->name('cart.index');
@@ -50,7 +50,7 @@ Route::middleware('auth',)->group(function () {
   })->name('profilKurir');
 });
 
-Route::get('/admin-page', [AdminController::class, 'index'])->name('admin.index');
+Route::get('/admin/dashboard', [AdminController::class, 'index'])->name('admin.index');
 Route::get('/admin-toko', [AdminController::class, 'toko'])->name('admin.toko');
 Route::get('/admin-kategori', [AdminController::class, 'kategori'])->name('admin.kategori');
 Route::get('/admin-setting', [AdminController::class, 'setting'])->name('admin.setting');

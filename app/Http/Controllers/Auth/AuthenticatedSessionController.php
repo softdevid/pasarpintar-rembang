@@ -12,57 +12,58 @@ use Inertia\Inertia;
 
 class AuthenticatedSessionController extends Controller
 {
-    /**
-     * Display the login view.
-     *
-     * @return \Inertia\Response
-     */
-    public function create()
-    {
-        return Inertia::render('Auth/Login', [
-            'canResetPassword' => Route::has('password.request'),
-            'status' => session('status'),
-        ]);
+  /**
+   * Display the login view.
+   *
+   * @return \Inertia\Response
+   */
+  public function create()
+  {
+    return Inertia::render('Auth/Login', [
+      'canResetPassword' => Route::has('password.request'),
+      'status' => session('status'),
+    ]);
+  }
+
+  /**
+   * Handle an incoming authentication request.
+   *
+   * @param  \App\Http\Requests\Auth\LoginRequest  $request
+   * @return \Illuminate\Http\RedirectResponse
+   */
+  public function store(LoginRequest $request)
+  {
+    $request->authenticate();
+
+    $request->session()->regenerate();
+
+    if (auth()->user()->level === "customer") {
+      return redirect()->intended();
+    } else if (auth()->user()->level === "toko") {
+      return redirect()->intended(RouteServiceProvider::HOMETOKO);
+    } else if (auth()->user()->level === "kurir") {
+      return redirect()->intended(RouteServiceProvider::HOMEKURIR);
+    } else if (auth()->user()->level === "admin") {
+      return redirect()->intended(RouteServiceProvider::HOMEADMIN);
     }
 
-    /**
-     * Handle an incoming authentication request.
-     *
-     * @param  \App\Http\Requests\Auth\LoginRequest  $request
-     * @return \Illuminate\Http\RedirectResponse
-     */
-    public function store(LoginRequest $request)
-    {
-        $request->authenticate();
+    return redirect()->intended();
+  }
 
-        $request->session()->regenerate();
+  /**
+   * Destroy an authenticated session.
+   *
+   * @param  \Illuminate\Http\Request  $request
+   * @return \Illuminate\Http\RedirectResponse
+   */
+  public function destroy(Request $request)
+  {
+    Auth::guard('web')->logout();
 
-        if (auth()->user()->level === "customer") {
-          return redirect()->intended();
-        } else if (auth()->user()->level === "toko") {
-          return redirect()->intended(RouteServiceProvider::HOMETOKO);
-        } else if (auth()->user()->level === "kurir") {
-          return redirect()->intended(RouteServiceProvider::HOMEKURIR);
-        }
+    $request->session()->invalidate();
 
-        return redirect()->intended();
+    $request->session()->regenerateToken();
 
-    }
-
-    /**
-     * Destroy an authenticated session.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\RedirectResponse
-     */
-    public function destroy(Request $request)
-    {
-        Auth::guard('web')->logout();
-
-        $request->session()->invalidate();
-
-        $request->session()->regenerateToken();
-
-        return redirect('/');
-    }
+    return redirect('/');
+  }
 }

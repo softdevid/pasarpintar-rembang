@@ -10,26 +10,40 @@ const TambahToko = () => {
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2">
         <div>
+          {/* <div>
+            <label>ID User</label>
+            <Input />
+          </div> */}
           <div>
             <label>Nama Toko</label>
             <Input />
           </div>
+
+          <div>
+            <label>Email</label>
+            <Input />
+          </div>
+          <div>
+            <label>No Hp</label>
+            <Input />
+          </div>
+        </div>
+        <div>
           <div>
             <label>Nama Pengelola</label>
             <Input />
           </div>
           <div>
-            <label>Nama Toko</label>
+            <label>Password</label>
             <Input />
           </div>
-        </div>
-        <div>
-          lorem2
+          <div>
+            <label>Alamat</label>
+            <textarea />
+          </div>
         </div>
       </div>
-
     </>
-
   );
 };
 
