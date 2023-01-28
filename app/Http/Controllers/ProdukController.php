@@ -251,4 +251,10 @@ class ProdukController extends Controller
     // $produk->delete();
     // return back()->with('message', 'Produk berhasil dihapus');
   }
+
+  public function deleteImage(Request $request)
+  {
+    Cloudinary::destroy($request->publicId);
+    // return back();
+  }
 }

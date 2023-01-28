@@ -81,12 +81,12 @@ const Create = (props) => {
   const deleteImage = (publicId) => {
     setImagesToRemove(publicId);
     Inertia.post('/delete-image', publicId)
-    then(() => {
-      setImagesToRemove(null);
-      setImages((prev) => prev.filter((img) => img.public_id !== publicId));
-      setImage((prev) => prev.filter((img) => img.public_id !== publicId));
-    })
-      .catch((e) => console.log(e))
+    // then(() => {
+    setImagesToRemove(null);
+    setImages((prev) => prev.filter((img) => img.public_id !== publicId));
+    setImage((prev) => prev.filter((img) => img.public_id !== publicId));
+    // })
+    //   .catch((e) => console.log(e))
   }
 
 
