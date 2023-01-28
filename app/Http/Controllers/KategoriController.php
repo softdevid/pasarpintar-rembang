@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Kategori;
+use App\Models\Toko;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -43,15 +44,16 @@ class KategoriController extends Controller
    */
   public function store(Request $request)
   {
-    $data = [
-      'namaKategori' => 'required|max:20',
-      'idToko' => 'required',
-      'slug' => 'max:20',
-    ];
-    $validatedData = $request->validate($data);
+    $request->validate(['namaKategori' => 'required|max:255']);
 
-    $data = Kategori::create($validatedData);
-    return redirect()->to('/list-produk')->with('message', 'Berhasil di tambah');
+    $toko = Toko::where('idUser', auth()->user()->id)->select('id')->first();
+    Kategori::create([
+      'namaKategori' => $request->namaKategori,
+      'slug' => Str::slug($request->namaKategori),
+      'idToko' => $toko->id,
+    ]);
+
+    return redirect()->to('/toko/kategori')->with('message', 'Berhasil di tambah');
   }
 
   /**
@@ -108,10 +110,10 @@ class KategoriController extends Controller
    * @param  \App\Models\Kategori  $kategori
    * @return \Illuminate\Http\Response
    */
-  public function destroy(Kategori $kategori, $id)
+  public function destroy(Request $request)
   {
-    $data = Kategori::find($id);
-    $data->delete();
+    // dd($request->all());
+    Kategori::where('id', $request->id)->delete();
     return back()->with('message', 'Kategori toko berhasil dihapus');
   }
 }

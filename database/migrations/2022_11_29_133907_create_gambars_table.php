@@ -6,26 +6,29 @@ use Illuminate\Support\Facades\Schema;
 
 class CreateGambarsTable extends Migration
 {
-    /**
-     * Run the migrations.
-     *
-     * @return void
-     */
-    public function up()
-    {
-        Schema::create('gambars', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
-        });
-    }
+  /**
+   * Run the migrations.
+   *
+   * @return void
+   */
+  public function up()
+  {
+    Schema::create('gambars', function (Blueprint $table) {
+      $table->id();
+      $table->foreignId('idProduk');
+      $table->text('imgName');
+      $table->text('imgUrl');
+      $table->timestamps();
+    });
+  }
 
-    /**
-     * Reverse the migrations.
-     *
-     * @return void
-     */
-    public function down()
-    {
-        Schema::dropIfExists('gambars');
-    }
+  /**
+   * Reverse the migrations.
+   *
+   * @return void
+   */
+  public function down()
+  {
+    Schema::dropIfExists('gambars');
+  }
 }

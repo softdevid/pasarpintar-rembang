@@ -27,8 +27,29 @@ class DatabaseSeeder extends Seeder
       'remember_token' => Str::random(10),
     ]);
 
-    User::factory(20)->has(Toko::factory()->count(1), 'toko')->create();
+    User::create([
+      'name' => "toko",
+      'email' => "toko@gmail.com",
+      'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
+      'no_hp' => "082222334455",
+      'alamat' => "nan jauh di sana",
+      'level' => "toko",
+      'remember_token' => Str::random(10),
+    ]);
 
-    Produk::factory(100)->create();
+    Toko::create([
+      'idUser' => 2,
+      'namaToko' => 'Softdev',
+      'slug' => 'softdev',
+      'email' => 'toko@gmail.com',
+      'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
+      'namaPengelola' => 'Ardianto',
+      'noHp' => '0888888824242',
+      'alamat' => 'rumah di pluto',
+    ]);
+
+    // User::factory(20)->has(Toko::factory()->count(1), 'toko')->create();
+
+    // Produk::factory(100)->create();
   }
 }

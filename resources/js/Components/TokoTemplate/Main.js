@@ -42,7 +42,7 @@ const Main = (props) => {
           </h1>
         </div>
         <ul className="pt-6">
-          <Link href="/toko-page">
+          <Link href="/toko/dashboard">
             <li
               className={`flex  rounded-md p-2 cursor-pointer hover:bg-light-white text-gray-300 text-sm items-center gap-x-4`}
             >
@@ -55,7 +55,7 @@ const Main = (props) => {
               </span>
             </li>
           </Link>
-          <Link href="/toko-pesanan">
+          <Link href="/toko/pesanan">
             <li
               className={`flex  rounded-md p-2 cursor-pointer hover:bg-light-white text-gray-300 text-sm items-center gap-x-4`}
             >
@@ -68,11 +68,10 @@ const Main = (props) => {
               </span>
             </li>
           </Link>
-          <Link href="/toko-kurir">
+          {/* <Link href="/toko/kurir">
             <li
               className={`flex  rounded-md p-2 cursor-pointer hover:bg-light-white text-gray-300 text-sm items-center gap-x-4`}
             >
-              {/* <ArchiveBoxArrowDownIcon className="h-6 w-6 text-white" /> */}
               <UserCircleIcon className="h-6 w-6 text-white" />
               <span
                 className={`${!open && "hidden"
@@ -81,8 +80,8 @@ const Main = (props) => {
                 Kurir
               </span>
             </li>
-          </Link>
-          <Link href="/toko-list">
+          </Link> */}
+          <Link href="/toko/produk">
             <li
               className={`flex  rounded-md p-2 cursor-pointer hover:bg-light-white text-gray-300 text-sm items-center gap-x-4`}
             >
@@ -95,7 +94,7 @@ const Main = (props) => {
               </span>
             </li>
           </Link>
-          <Link href="/toko-kategori">
+          <Link href="/toko/kategori">
             <li
               className={`flex  rounded-md p-2 cursor-pointer hover:bg-light-white text-gray-300 text-sm items-center gap-x-4`}
             >
@@ -108,7 +107,7 @@ const Main = (props) => {
               </span>
             </li>
           </Link>
-          <Link href="/toko-setting">
+          <Link href="/toko/laporan">
             <li
               className={`flex  rounded-md p-2 cursor-pointer hover:bg-light-white text-gray-300 text-sm items-center gap-x-4`}
             >
@@ -121,7 +120,7 @@ const Main = (props) => {
               </span>
             </li>
           </Link>
-          <Link href="/toko-setting">
+          {/* <Link href="/toko/setting">
             <li
               className={`flex  rounded-md p-2 cursor-pointer hover:bg-light-white text-gray-300 text-sm items-center gap-x-4`}
             >
@@ -133,7 +132,7 @@ const Main = (props) => {
                 Setting
               </span>
             </li>
-          </Link>
+          </Link> */}
           <Link href="/logout">
             <li
               className={`flex  rounded-md p-2 cursor-pointer hover:bg-light-white text-gray-300 text-sm items-center gap-x-4`}

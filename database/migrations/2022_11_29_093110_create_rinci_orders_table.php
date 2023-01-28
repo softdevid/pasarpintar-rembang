@@ -17,9 +17,11 @@ class CreateRinciOrdersTable extends Migration
       $table->id();
       $table->string('noFaktur');
       $table->foreignId('idOrder');
+      $table->foreignId('idToko');
       $table->foreignId('idUser');
       $table->bigInteger('jumlah')->default(0);
       $table->bigInteger('total')->default(0);
+      $table->date('tglOrder');
       $table->string('statusBayar')->default(0);
       $table->string('metodeBayar')->default(0);
       $table->string('statusOrder')->default(0);

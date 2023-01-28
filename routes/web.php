@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\KeranjangController;
 use App\Http\Controllers\ProdukController;
 use App\Http\Controllers\SearchController;
+use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\TokoController;
 use Inertia\Inertia;
 
@@ -57,36 +58,46 @@ Route::get('/admin-toko/create', function () {
   return Inertia::render('AdminToko/TambahToko');
 })->name('toko.create');
 
-Route::get('/toko-page', [AdminTokoController::class, 'index'])->name('toko.index');
+//toko admin
+Route::get('/toko/dashboard', [AdminTokoController::class, 'index'])->name('toko.index');
 
-Route::get('/toko-pesanan', [AdminTokoController::class, 'pesanan'])->name('toko.pesanan');
+Route::get('/toko/pesanan', [AdminTokoController::class, 'pesanan'])->name('toko.pesanan');
 
 
 //route toko produk/list produk
-Route::get('/toko-list', [ProdukController::class, 'index'])->name('toko.list');
-Route::get('/toko-list/1/edit', [ProdukController::class, 'edit'])->name('produk.edit');
-Route::get('/toko-list/create', [ProdukController::class, 'create'])->name('produk.create');
-Route::post('/toko-list/store', [ProdukController::class, 'store'])->name('produk.store');
+Route::get('/toko/produk', [ProdukController::class, 'index'])->name('toko.list');
+Route::get('/toko/produk/1/edit', [ProdukController::class, 'edit'])->name('produk.edit');
+Route::get('/toko/produk/create', [ProdukController::class, 'create'])->name('produk.create');
+Route::post('/toko/produk', [ProdukController::class, 'store'])->name('produk.store');
+Route::post('/toko/produk/delete', [ProdukController::class, 'destroy'])->name('produk.destroy');
 
 //route toko kategori
 
-Route::get('/toko-kategori', [KategoriController::class, 'index'])->name('kategori.index');
-Route::get('/toko-kategori/create', [KategoriController::class, 'create'])->name('kategori.create');
-Route::get('/toko-kategori/1/edit', [KategoriController::class, 'edit'])->name('kategoriToko.edit');
+Route::get('/toko/kategori', [KategoriController::class, 'index'])->name('kategori.index');
+Route::get('/toko/kategori/create', [KategoriController::class, 'create'])->name('kategori.create');
+Route::get('/toko/kategori/1/edit', [KategoriController::class, 'edit'])->name('kategoriToko.edit');
+Route::post('/toko/kategori', [KategoriController::class, 'store'])->name('kategoriToko.store');
+Route::post('/toko/kategori/delete', [KategoriController::class, 'destroy'])->name('kategoriToko.delete');
 
 //route order toko
-Route::get('/toko-pesanan', [AdminTokoController::class, 'pesananBaru'])->name('pesananBaru');
-Route::get('/toko-pesanan/konfirmasi-bayar', [AdminTokoController::class, 'konfirmasiBayar'])->name('konfirmasiBayar');
-Route::get('/toko-pesanan/dikemas', [AdminTokoController::class, 'dikemas'])->name('dikemas');
-Route::get('/toko-pesanan/dikirim', [AdminTokoController::class, 'dikirim'])->name('dikirim');
-Route::get('/toko-pesanan/sampai', [AdminTokoController::class, 'sampai'])->name('sampai');
+Route::get('/toko/pesanan', [AdminTokoController::class, 'pesananBaru'])->name('pesananBaru');
+Route::get('/toko/pesanan/konfirmasi-bayar', [AdminTokoController::class, 'konfirmasiBayar'])->name('konfirmasiBayar');
+Route::get('/toko/pesanan/dikemas', [AdminTokoController::class, 'dikemas'])->name('dikemas');
+Route::get('/toko/pesanan/dikirim', [AdminTokoController::class, 'dikirim'])->name('dikirim');
+Route::get('/toko/pesanan/sampai', [AdminTokoController::class, 'sampai'])->name('sampai');
 
-Route::get('/toko-kurir', [AdminTokoController::class, 'kurir'])->name('kurir');
-Route::get('/toko-kurir/create', [KurirController::class, 'create'])->name('kurir.create');
-Route::get('/toko-kurir/1/edit', [KurirController::class, 'edit'])->name('kurir.edit');
+Route::get('/toko/kurir', [AdminTokoController::class, 'kurir'])->name('kurir');
+Route::get('/toko/kurir/create', [KurirController::class, 'create'])->name('kurir.create');
+Route::get('/toko/kurir/1/edit', [KurirController::class, 'edit'])->name('kurir.edit');
+
+//route laporan
+Route::get('/toko/laporan', [LaporanController::class, 'index'])->name('laporan.index');
+Route::get('/toko/laporan/today', [LaporanController::class, 'today'])->name('laporan.today');
+Route::get('/toko/laporan/month', [LaporanController::class, 'month'])->name('toko.month');
+Route::get('/toko/laporan/year', [LaporanController::class, 'year'])->name('laporan.year');
 
 
-Route::get('/toko-setting', [AdminTokoController::class, 'setting'])->name('toko.setting');
+Route::get('/toko/setting', [AdminTokoController::class, 'setting'])->name('toko.setting');
 
 // route autentikasi
 require __DIR__ . '/auth.php';

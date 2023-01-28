@@ -20,7 +20,7 @@ class CreateProduksTable extends Migration
       $table->foreignId('idToko');
       $table->foreignId('idKategori')->nullable();
       $table->foreignId('idKategoriGlobal')->nullable();
-      $table->foreignId('idSatuan')->nullable();
+      $table->string('satuan')->nullable();
       $table->text('deskripsi')->nullable();
       $table->bigInteger('hrgBeli')->nullable();
       $table->bigInteger('hrgJual')->nullable();
