@@ -1,12 +1,12 @@
 import React from "react";
 
-const ProdukImage = () => {
+const ProdukImage = ({ image }) => {
   return (
     <div className="w-full px-4 md:w-[35%]">
       <div className="sticky top-0 z-50 overflow-hidden">
         <div className="relative mb-2 lg:mb-4 lg:h-2/4">
           <img
-            src="https://cf.shopee.co.id/file/sg-11134201-22110-5jkefrp7l8jvd7"
+            src={image.imgMain}
             className="object-cover w-full lg:h-full rounded-md"
             alt="product img main"
           />

@@ -46,6 +46,9 @@ class HomeController extends Controller
         "hrgJual" => $produk->hrgJual,
         "stok" => $produk->stokToko,
       ],
+      "image" => [
+        "imgMain" => $produk->imgUrl,
+      ],
     ]);
   }
 

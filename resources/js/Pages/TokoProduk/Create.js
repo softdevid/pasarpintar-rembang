@@ -78,13 +78,15 @@ const Create = (props) => {
 
   const [imagesToRemove, setImagesToRemove] = useState(null);
 
-  const deleteImage = (publicId) => {
+  const deleteImage = publicId => {
     setImagesToRemove(publicId);
     Inertia.post('/delete-image', publicId)
     // then(() => {
     setImagesToRemove(null);
-    setImages((prev) => prev.filter((img) => img.public_id !== publicId));
+    // setImages((prev) => prev.filter(() => img.public_id !== publicId));
+    // setImage((prev) => [...prev, ({ url: result.info.url, public_id: result.info.public_id })]);
     setImage((prev) => prev.filter((img) => img.public_id !== publicId));
+    console.log(image);
     // })
     //   .catch((e) => console.log(e))
   }
@@ -181,7 +183,7 @@ const Create = (props) => {
               return (
                 <div key={i}>
                   <img src={image.url} className="w-30 h-30" />
-                  <button onClick={() => deleteImage({ publicId: image.public_id })}>Hapus</button>
+                  {imagesToRemove !== image.public_id && <button onClick={() => deleteImage({ publicId: image.public_id })}>Hapus</button>}
                 </div>
               )
             })}

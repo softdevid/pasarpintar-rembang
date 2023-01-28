@@ -110,6 +110,6 @@ Route::get('/{toko:slug}', [HomeController::class, 'toko'])->name('toko');
 
 // route produk toko
 
-Route::get('/{toko:slug}/{produks:slug}', [HomeController::class, 'produk'])->name('toko.produk')->scopeBindings();
+// Route::get('/{toko:slug}/{produks:slug}', [HomeController::class, 'produk'])->name('toko.produk')->scopeBindings();
 
 Route::get('/{toko:slug}/{produk:slug}', [HomeController::class, 'produk'])->name('toko.produk')->scopeBindings();

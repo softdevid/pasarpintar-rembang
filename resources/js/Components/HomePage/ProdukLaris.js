@@ -2,7 +2,7 @@ import { Link } from "@inertiajs/inertia-react";
 import React from "react";
 
 const ProdukLaris = ({ produk }) => {
-  // console.log(produk);
+  console.log(produk);
   return (
     <div className="container">
       <div className="bg-sky-900 border-2 border-sky-900 rounded-lg overflow-hidden">
@@ -20,14 +20,14 @@ const ProdukLaris = ({ produk }) => {
                     <div className="relative flex flex-col overflow-visible w-full h-full max-w-[8rem] sm:w-max-[9rem] md:max-w-[10rem] lg:max-w-[11rem] max-h-max bg-white rounded-md">
                       <img
                         className="shrink-0 bg-cover bg-center w-full p-2 max-h-44"
-                        src="https://cf.shopee.co.id/file/88063c6dfd1dea9848c17b33205b71b8_tn"
+                        src={data.produkImg}
                         alt="productImage"
                       />
                       <div className="flex flex-col flex-[1_0_auto] px-2 py-2.5 overflow-hidden">
                         <div className="flex flex-col flex-[1_0_auto]">
-                        <h5 className="text-sm font-semibold tracking-tight text-slate-700 line-clamp-2">
-                          {data.namaProduk}
-                        </h5>
+                          <h5 className="text-sm font-semibold tracking-tight text-slate-700 line-clamp-2">
+                            {data.namaProduk}
+                          </h5>
                         </div>
                         <div>
                           <span className="text-lg font-bold">
