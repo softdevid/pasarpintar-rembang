@@ -10,7 +10,7 @@ use App\Http\Controllers\KeranjangController;
 use App\Http\Controllers\ProdukController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\LaporanController;
-use App\Http\Controllers\TokoController;
+use App\Http\Controllers\GrafikController;
 use Inertia\Inertia;
 
 // home route
@@ -101,6 +101,14 @@ Route::post('/delete-image', [ProdukController::class, 'deleteImage'])->name('de
 
 
 Route::get('/toko/setting', [AdminTokoController::class, 'setting'])->name('toko.setting');
+
+
+
+//route grafik 7 hari kebelakang
+Route::get('/oneWeekData', [GrafikController::class, 'index']);
+Route::get('/oneWeek', function () {
+  Inertia::render('Grafik/OneWeek');
+});
 
 // route autentikasi
 require __DIR__ . '/auth.php';
