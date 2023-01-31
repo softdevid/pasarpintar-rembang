@@ -51,12 +51,12 @@ Route::middleware('auth',)->group(function () {
 });
 
 Route::get('/admin/dashboard', [AdminController::class, 'index'])->name('admin.index');
-Route::get('/admin-toko', [AdminController::class, 'toko'])->name('admin.toko');
-Route::get('/admin-kategori', [AdminController::class, 'kategori'])->name('admin.kategori');
-Route::get('/admin-setting', [AdminController::class, 'setting'])->name('admin.setting');
-Route::get('/admin-toko/create', function () {
-  return Inertia::render('AdminToko/TambahToko');
-})->name('toko.create');
+Route::get('/admin/toko', [AdminController::class, 'toko'])->name('admin.toko');
+Route::get('/admin/kategori', [AdminController::class, 'kategori'])->name('admin.kategori');
+Route::get('/admin/setting', [AdminController::class, 'setting'])->name('admin.setting');
+Route::get('/admin/toko/create', [AdminController::class, 'create'])->name('admin.create');
+Route::post('/admin/toko', [AdminController::class, 'store'])->name('admin.store');
+
 
 //toko admin
 Route::get('/toko/dashboard', [AdminTokoController::class, 'index'])->name('toko.index');

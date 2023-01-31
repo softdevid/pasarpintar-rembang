@@ -50,7 +50,7 @@ const Main = (props) => {
               </span>
             </li>
           </Link>
-          <Link href="/admin-toko">
+          <Link href="/admin/toko">
             <li
               className={`flex  rounded-md p-2 cursor-pointer hover:bg-light-white text-gray-300 text-sm items-center gap-x-4`}
             >
@@ -60,7 +60,7 @@ const Main = (props) => {
               </span>
             </li>
           </Link>
-          <Link href="/admin-kategori">
+          <Link href="/admin/kategori">
             <li
               className={`flex  rounded-md p-2 cursor-pointer hover:bg-light-white text-gray-300 text-sm items-center gap-x-4`}
             >
@@ -70,7 +70,7 @@ const Main = (props) => {
               </span>
             </li>
           </Link>
-          <Link href="/admin-setting">
+          <Link href="/admin/setting">
             <li
               className={`flex  rounded-md p-2 cursor-pointer hover:bg-light-white text-gray-300 text-sm items-center gap-x-4`}
             >
@@ -80,7 +80,7 @@ const Main = (props) => {
               </span>
             </li>
           </Link>
-          <Link href="/admin-setting">
+          <Link href="/">
             <li
               className={`flex  rounded-md p-2 cursor-pointer hover:bg-light-white text-gray-300 text-sm items-center gap-x-4`}
             >
