@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import Main from "@/Components/AdminTemplate/Main";
 import Input from "@/Components/Input";
 import { Link } from "@inertiajs/inertia-react";
+import { Inertia } from "@inertiajs/inertia";
 
 const AdminToko = (props) => {
   const [query, setQuery] = useState("");
@@ -11,6 +12,10 @@ const AdminToko = (props) => {
     return data.filter((item) =>
       keys.some((key) => item[key].toString().toLowerCase().includes(query))
     );
+  };
+
+  const handleDelete = (id) => {
+    Inertia.delete(`/admin/toko/${id}`);
   };
 
   return (
@@ -126,7 +131,7 @@ const AdminToko = (props) => {
                     <td className="flex">
                       {/* <a href={`/toko/produk/show/${data.slug}`} className="bg-sky-400 text-white rounded-md p-2 mx-1">Detail</a> */}
                       <Link
-                        href={`/admin/toko/${data.slug}/edit`}
+                        href={`/admin/toko/${data.id}/edit`}
                         className="bg-yellow-400 text-white rounded-md p-2 mx-1"
                       >
                         Edit

@@ -3,22 +3,23 @@ import Main from "@/Components/AdminTemplate/Main";
 import { Link } from "@inertiajs/inertia-react";
 import { Inertia } from "@inertiajs/inertia";
 
-const TambahToko = (props) => {
+const UbahToko = (props) => {
   console.log(props);
 
   const handleSubmit = () => {
     // e.preventDefault();
-    Inertia.post("/admin/toko", values);
+    Inertia.patch("/admin/toko", values);
     console.log(values);
   };
 
   const [values, setValues] = useState({
-    namaToko: "",
-    email: "",
-    password: "",
-    namaPengelola: "",
-    noHp: "",
-    alamat: "",
+    namaToko: props.tokos.namaToko,
+    email: props.tokos.email,
+    password: props.tokos.password,
+    namaPengelola: props.tokos.namaPengelola,
+    noHp: props.tokos.noHp,
+    alamat: props.tokos.alamat,
+    id: props.tokos.id,
   });
 
   function handleChange(e) {
@@ -31,7 +32,7 @@ const TambahToko = (props) => {
   return (
     <>
       <div>
-        <h1 className="font-bold text-3xl mb-3">Tambah Toko</h1>
+        <h1 className="font-bold text-3xl mb-3">Ubah Toko</h1>
       </div>
       <div className="w-full max-w">
         <div className="flex flex-wrap -mx-3 mb-6">
@@ -80,7 +81,7 @@ const TambahToko = (props) => {
               className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
               htmlFor="password"
             >
-              Sandi
+              Sandi Baru
             </label>
             <input
               className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
@@ -159,7 +160,7 @@ const TambahToko = (props) => {
           onClick={() => handleSubmit()}
           className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full"
         >
-          Tambah
+          Ubah Data
         </button>
         &nbsp;
         <Link
@@ -173,6 +174,6 @@ const TambahToko = (props) => {
   );
 };
 
-TambahToko.layout = (page) => <Main children={page} />;
+UbahToko.layout = (page) => <Main children={page} />;
 
-export default TambahToko;
+export default UbahToko;

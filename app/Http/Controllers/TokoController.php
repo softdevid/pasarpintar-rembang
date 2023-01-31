@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use App\Rules\PhoneNumber;
 use Illuminate\Support\Facades\DB;
+use Inertia\Inertia;
 
 class TokoController extends Controller
 {
@@ -30,7 +31,9 @@ class TokoController extends Controller
    */
   public function create()
   {
-    //
+    return Inertia::render('AdminToko/TambahToko', [
+      "title" => "Admin Tambah Toko",
+    ]);
   }
 
   /**
@@ -50,7 +53,7 @@ class TokoController extends Controller
       'alamat' => 'required|min:10',
     ]);
 
-    DB::transaction(function (Request $request) {
+    DB::transaction(function () use ($request) {
       $idUser = DB::table('users')->insert([
         'name' => $request->namaPengelola,
         'email' => $request->email,
@@ -69,9 +72,8 @@ class TokoController extends Controller
         'noHp' => $request->noHp,
         'alamat' => $request->alamat,
       ]);
-
-      return back()->with('message', 'Berhasil menambahkan toko');
     });
+    return redirect()->to('/admin/toko')->with('message', 'Berhasil menambahkan toko');
   }
 
   /**
@@ -95,7 +97,10 @@ class TokoController extends Controller
   public function edit(Toko $toko, Request $request)
   {
     $toko = Toko::find($request->id);
-    //
+    return Inertia::render('AdminToko/UbahToko', [
+      'title' => 'Admin Ubah Toko',
+      'tokos' => $toko,
+    ]);
   }
 
   /**
@@ -107,35 +112,40 @@ class TokoController extends Controller
    */
   public function update(Request $request, Toko $toko)
   {
+    $toko = Toko::find($request->id);
+    $user = User::where('email', $toko->email)->first();
+    if ($request->email !== $toko->email && $request->email !== $user->email) {
+      $request->validate(['email' => 'required|unique:tokos,email|unique:users,email']);
+    };
     $request->validate([
       'namaToko' => 'required',
       'namaPengelola' => 'required',
-      'email' => 'required|email|unique:tokos,email',
-      'password' => 'required|min:8',
+      // 'email' => 'required|email|unique:tokos,email',
+      'password' => 'min:8',
       'noHp' => ['required', 'string', new PhoneNumber],
       'alamat' => 'required|min:10',
     ]);
+    DB::transaction(function () use ($request, $toko, $user) {
+      $toko->update([
+        'namaToko' => $request->namaToko,
+        'slug' => Str::slug($request->namaToko),
+        'namaPengelola' => $request->namaPengelola,
+        'email' => $request->email,
+        'password' => Hash::make($request->password) ?? $toko->password,
+        'noHp' => $request->noHp,
+        'alamat' => $request->alamat,
+      ]);
 
-    Toko::create([
-      'namaTOko' => $request->namaToko,
-      'slug' => Str::slug($request->namaToko),
-      'namaPengelola' => $request->namaPengelola,
-      'email' => $request->email,
-      'password' => $request->password,
-      'noHp' => $request->noHp,
-      'alamat' => $request->alamat,
-    ]);
-
-    User::create([
-      'name' => $request->namaPengelola,
-      'email' => $request->email,
-      'password' => Hash::make($request->password),
-      'no_hp' => $request->noHp,
-      'alamat' => $request->alamat,
-      'level' => 'toko',
-    ]);
-
-    return back()->with('message', 'Toko berhasil di buat');
+      $user->update([
+        'name' => $request->namaPengelola,
+        'email' => $request->email,
+        'password' => Hash::make($request->password) ?? $toko->password,
+        'no_hp' => $request->noHp,
+        'alamat' => $request->alamat,
+        'level' => 'toko',
+      ]);
+    });
+    return redirect()->to('/admin/toko')->with('message', 'Toko berhasil di ubah');
   }
 
   /**

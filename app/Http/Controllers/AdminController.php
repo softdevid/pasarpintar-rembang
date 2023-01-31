@@ -67,4 +67,40 @@ class AdminController extends Controller
     ]);
     return redirect()->to('/admin/toko')->with('message', 'Berhasil ditambah');
   }
+  public function edit(Toko $toko, Request $request)
+  {
+    // $toko = Toko::select('id', 'namaToko')->get();
+    $toko = Toko::find($request->id);
+    return Inertia::render('AdminToko/UbahToko', [
+      'title' => 'Admin Ubah Toko',
+      'tokos' => $toko,
+    ]);
+  }
+  public function update(Request $request, $id)
+  {
+    Toko::where('idUser', auth()->user()->id)->select('id')->first();
+    Toko::find($id);
+    $request->validate(
+      [
+        'namaToko' => 'required|max:225',
+        'email' => 'required|unique:users,email',
+        'password' => 'required',
+        'namaPengelola' => 'required',
+        'noHp' => 'required',
+        'alamat' => 'max:225',
+      ],
+    );
+
+    Toko::update([
+      'namaToko' => $request->namaToko,
+      'slug' => Str::slug($request->namaProduk),
+      'email' => $request->email,
+      'password' => $request->password,
+      'namaPengelola' => $request->namaPengelola,
+      'noHp' => $request->noHp,
+      'alamat' => $request->alamat,
+      'idUser' => auth()->user()->id,
+    ]);
+    return redirect()->to('/admin/toko')->with('message', 'Berhasil ditambah');
+  }
 }

@@ -11,6 +11,8 @@ use App\Http\Controllers\ProdukController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\GrafikController;
+use App\Http\Controllers\TokoAdminController;
+use App\Http\Controllers\TokoController;
 use Inertia\Inertia;
 
 // home route
@@ -54,8 +56,11 @@ Route::get('/admin/dashboard', [AdminController::class, 'index'])->name('admin.i
 Route::get('/admin/toko', [AdminController::class, 'toko'])->name('admin.toko');
 Route::get('/admin/kategori', [AdminController::class, 'kategori'])->name('admin.kategori');
 Route::get('/admin/setting', [AdminController::class, 'setting'])->name('admin.setting');
-Route::get('/admin/toko/create', [AdminController::class, 'create'])->name('admin.create');
-Route::post('/admin/toko', [AdminController::class, 'store'])->name('admin.store');
+Route::get('/admin/toko/create', [TokoController::class, 'create'])->name('toko.create');
+Route::get('/admin/toko/{id}/edit', [TokoController::class, 'edit'])->name('toko.edit');
+Route::delete('/admin/toko/{id}', [TokoController::class, 'destroy'])->name('toko.destroy');
+Route::patch('/admin/toko', [TokoController::class, 'update'])->name('toko.update');
+Route::post('/admin/toko', [TokoController::class, 'store'])->name('toko.store');
 
 
 //toko admin
