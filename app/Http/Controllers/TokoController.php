@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use App\Rules\PhoneNumber;
+use Illuminate\Support\Facades\DB;
 
 class TokoController extends Controller
 {
@@ -43,33 +44,34 @@ class TokoController extends Controller
     $request->validate([
       'namaToko' => 'required',
       'namaPengelola' => 'required',
-      'email' => 'required|email|unique:tokos,email',
+      'email' => 'required|email|unique:tokos,email|unique:users,email',
       'password' => 'required|min:8',
       'noHp' => ['required', 'string', new PhoneNumber],
       'alamat' => 'required|min:10',
     ]);
 
-    $user = User::create([
-      'name' => $request->namaPengelola,
-      'email' => $request->email,
-      'password' => Hash::make($request->password),
-      'no_hp' => $request->noHp,
-      'alamat' => $request->alamat,
-      'level' => 'toko',
-    ]);
+    DB::transaction(function (Request $request) {
+      $idUser = DB::table('users')->insert([
+        'name' => $request->namaPengelola,
+        'email' => $request->email,
+        'password' => Hash::make($request->password),
+        'no_hp' => $request->noHp,
+        'alamat' => $request->alamat,
+        'level' => 'toko',
+      ]);
+      DB::table('tokos')->insert([
+        'idUser' => $idUser,
+        'namaToko' => $request->namaToko,
+        'slug' => Str::slug($request->namaToko),
+        'email' => $request->email,
+        'password' => Hash::make($request->password),
+        'namaPengelola' => $request->namaPengelola,
+        'noHp' => $request->noHp,
+        'alamat' => $request->alamat,
+      ]);
 
-    Toko::create([
-      'idUser' => $user,
-      'namaTOko' => $request->namaToko,
-      'namaPengelola' => $request->namaPengelola,
-      'email' => $request->email,
-      'password' => $request->password,
-      'noHp' => $request->noHp,
-      'alamat' => $request->alamat,
-    ]);
-
-
-    return back()->with('message', 'Toko berhasil di buat');
+      return back()->with('message', 'Berhasil menambahkan toko');
+    });
   }
 
   /**
