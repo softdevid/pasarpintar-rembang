@@ -78,17 +78,18 @@ const Create = (props) => {
 
   const [imagesToRemove, setImagesToRemove] = useState(null);
 
+  const deleteImages = publicId => {
+    setImagesToRemove(publicId);
+    Inertia.post('/delete-image', publicId);
+    setImagesToRemove(null);
+    setImages((prev) => prev.filter((img) => img.public_id !== publicId));
+  }
+
   const deleteImage = publicId => {
     setImagesToRemove(publicId);
-    Inertia.post('/delete-image', publicId)
-    // then(() => {
+    Inertia.post('/delete-image', publicId);
     setImagesToRemove(null);
-    // setImages((prev) => prev.filter(() => img.public_id !== publicId));
-    // setImage((prev) => [...prev, ({ url: result.info.url, public_id: result.info.public_id })]);
     setImage((prev) => prev.filter((img) => img.public_id !== publicId));
-    console.log(image);
-    // })
-    //   .catch((e) => console.log(e))
   }
 
 
@@ -179,11 +180,11 @@ const Create = (props) => {
           <label>Gambar Utama</label>
           <button onClick={() => uploadImageUtama()} className="w-full bg-white p-1 border-black border rounded-md">Upload gambar</button>
           <div className="grid grid-cols-3 gap-4">
-            {image.map((image, i) => {
+            {image.map((data, i) => {
               return (
                 <div key={i}>
-                  <img src={image.url} className="w-30 h-30" />
-                  {imagesToRemove !== image.public_id && <button onClick={() => deleteImage({ publicId: image.public_id })}>Hapus</button>}
+                  <img src={data.url} className="w-30 h-30" />
+                  {imagesToRemove !== data.public_id && <button onClick={() => deleteImage({ publicId: data.public_id })}>Hapus</button>}
                 </div>
               )
             })}
@@ -197,7 +198,7 @@ const Create = (props) => {
               return (
                 <div key={i}>
                   <img src={image.url} className="w-30 h-30" />
-                  <button onClick={() => deleteImage({ publicId: image.public_id })}>Hapus</button>
+                  <button onClick={() => deleteImages({ publicId: image.public_id })}>Hapus</button>
                 </div>
               )
             })}
