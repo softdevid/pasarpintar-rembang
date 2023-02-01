@@ -58,7 +58,7 @@ Route::get('/admin/kategori', [AdminController::class, 'kategori'])->name('admin
 Route::get('/admin/setting', [AdminController::class, 'setting'])->name('admin.setting');
 Route::get('/admin/toko/create', [TokoController::class, 'create'])->name('toko.create');
 Route::get('/admin/toko/{id}/edit', [TokoController::class, 'edit'])->name('toko.edit');
-Route::delete('/admin/toko/{id}', [TokoController::class, 'destroy'])->name('toko.destroy');
+Route::post('/admin/toko/delete', [TokoController::class, 'destroy'])->name('toko.destroy');
 Route::patch('/admin/toko', [TokoController::class, 'update'])->name('toko.update');
 Route::post('/admin/toko', [TokoController::class, 'store'])->name('toko.store');
 

@@ -156,8 +156,11 @@ class TokoController extends Controller
    */
   public function destroy(Request $request)
   {
-    $toko = Toko::find($request->id);
+
+    $toko = Toko::where('id', $request->id)->first();
+    User::where('email', $toko->email)->delete();
     $toko->delete();
+
     return back()->with('message', 'Toko berhasil di hapus');
   }
 }

@@ -97,7 +97,7 @@ const Create = (props) => {
     <>
 
       <div>
-        <h1 className="font-bold text-3xl">Toko Admin List</h1>
+        <h1 className="font-bold text-3xl">{props.title}</h1>
       </div>
 
       <div className="grid md:grid-cols-3 grid-cols-1 gap-4">
