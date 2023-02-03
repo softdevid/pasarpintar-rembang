@@ -11,6 +11,7 @@ use App\Http\Controllers\ProdukController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\GrafikController;
+use App\Http\Controllers\KategoriGlobalController;
 use App\Http\Controllers\TokoAdminController;
 use App\Http\Controllers\TokoController;
 use Inertia\Inertia;
@@ -53,15 +54,23 @@ Route::middleware('auth',)->group(function () {
 });
 
 Route::get('/admin/dashboard', [AdminController::class, 'index'])->name('admin.index');
-Route::get('/admin/toko', [AdminController::class, 'toko'])->name('admin.toko');
-Route::get('/admin/kategori', [AdminController::class, 'kategori'])->name('admin.kategori');
 Route::get('/admin/setting', [AdminController::class, 'setting'])->name('admin.setting');
+
+//Toko Global
+Route::get('/admin/toko', [TokoController::class, 'index'])->name('admin.index');
 Route::get('/admin/toko/create', [TokoController::class, 'create'])->name('toko.create');
 Route::get('/admin/toko/{id}/edit', [TokoController::class, 'edit'])->name('toko.edit');
 Route::post('/admin/toko/delete', [TokoController::class, 'destroy'])->name('toko.destroy');
 Route::patch('/admin/toko', [TokoController::class, 'update'])->name('toko.update');
 Route::post('/admin/toko', [TokoController::class, 'store'])->name('toko.store');
 
+//Kategori Global
+Route::get('/admin/kategori', [KategoriGlobalController::class, 'index'])->name('kategoriglobal.kategori');
+Route::get('/admin/kategori/create', [KategoriGlobalController::class, 'create'])->name('kategoriglobal.create');
+Route::get('/admin/kategori/{id}/edit', [KategoriGlobalController::class, 'edit'])->name('kategoriglobal.edit');
+Route::patch('/admin/kategori', [KategoriGlobalController::class, 'update'])->name('kategoriglobal.update');
+Route::post('/admin/kategori', [KategoriGlobalController::class, 'store'])->name('kategoriglobal.store');
+Route::post('/admin/kategori/delete', [KategoriGlobalController::class, 'destroy'])->name('kategoriglobal.destroy');
 
 //toko admin
 Route::get('/toko/dashboard', [AdminTokoController::class, 'index'])->name('toko.index');

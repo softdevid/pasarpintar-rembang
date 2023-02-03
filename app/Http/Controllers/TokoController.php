@@ -21,7 +21,11 @@ class TokoController extends Controller
   public function index()
   {
     $toko = Toko::latest()->paginate(10)->withQueryString();
-    //
+    $toko = Toko::all();
+    return Inertia::render('AdminToko/AdminToko', [
+      "tokos" => $toko,
+      "title" => "Admin Toko",
+    ]);
   }
 
   /**

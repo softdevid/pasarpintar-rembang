@@ -7,6 +7,7 @@ use App\Models\KategoriGlobal;
 use Illuminate\Support\Str;
 
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class KategoriGlobalController extends Controller
 {
@@ -18,7 +19,11 @@ class KategoriGlobalController extends Controller
   public function index()
   {
     $kategoriGlobal = KategoriGlobal::latest()->paginate(10)->withQueryString();
-    //
+    $kategoriGlobal = KategoriGlobal::all();
+    return Inertia::render('AdminKategoriGlobal/AdminKategori', [
+      "title" => "Admin Kategori Global",
+      "kategori_globals" => $kategoriGlobal
+    ]);
   }
 
   /**
@@ -28,7 +33,9 @@ class KategoriGlobalController extends Controller
    */
   public function create()
   {
-    //
+    return Inertia::render('AdminKategoriGlobal/Tambah', [
+      "title" => "Admin Tambah Kategori Global",
+    ]);
   }
 
   /**
@@ -45,7 +52,7 @@ class KategoriGlobalController extends Controller
     $data['slug'] = Str::slug($request->namaKategoriGlobal);
 
     KategoriGlobal::create($data);
-    return back()->with('message', 'Kategori global berhasil di tambah!');
+    return redirect()->to('/admin/kategori')->with('message', 'Kategori global berhasil di tambah!');
   }
 
   /**
@@ -65,10 +72,14 @@ class KategoriGlobalController extends Controller
    * @param  \App\Models\KategoriGlobal  $kategoriGlobal
    * @return \Illuminate\Http\Response
    */
-  public function edit(KategoriGlobal $kategoriGlobal, $id)
+  public function edit(KategoriGlobal $kategoriGlobal, Request $request)
   {
-    $kategoriGlobal = KategoriGlobal::find($id);
-    //
+    // $kategoriGlobal = KategoriGlobal::find($id);
+    $kategoriGlobal = KategoriGlobal::find($request->id);
+    return Inertia::render('AdminKategoriGlobal/Ubah', [
+      'title' => 'Admin Ubah Kategori Global',
+      'kategori_globals' => $kategoriGlobal,
+    ]);
   }
 
   /**
@@ -78,23 +89,19 @@ class KategoriGlobalController extends Controller
    * @param  \App\Models\KategoriGlobal  $kategoriGlobal
    * @return \Illuminate\Http\Response
    */
-  public function update(Request $request, KategoriGlobal $kategoriGlobal, $id)
+  public function update(Request $request, KategoriGlobal $kategoriGlobal)
   {
-    $kategoriGlobal = KategoriGlobal::find($id);
+    $kategoriGlobal = KategoriGlobal::find($request->id);
 
     $request->validate([
       'namaKategoriGlobal' => 'required',
     ]);
 
-
-    $data = [
+    $kategoriGlobal->update([
       'namaKategoriGlobal' => $request->namaKategoriGlobal,
       'slug' => Str::slug($request->namaKategoriGlobal),
-      'idToko' => auth()->user()->idToko,
-    ];
-
-    $kategoriGlobal->update($data);
-    return back()->with('message', 'Kategori Global berhasil diupdate');
+    ]);
+    return redirect()->to('/admin/kategori')->with('message', 'Kategori Global berhasil diubah');
   }
 
   /**
@@ -103,10 +110,11 @@ class KategoriGlobalController extends Controller
    * @param  \App\Models\KategoriGlobal  $kategoriGlobal
    * @return \Illuminate\Http\Response
    */
-  public function destroy(KategoriGlobal $kategoriGlobal, Request $request)
+  public function destroy(Request $request)
   {
-    $kategoriGlobal = KategoriGlobal::find($request->id);
+    $kategoriGlobal = KategoriGlobal::where('id', $request->id)->first();
     $kategoriGlobal->delete();
-    return back()->with('message', 'Kategori Global berhasil dihapus');
+
+    return back()->with('message', 'Toko berhasil di hapus');
   }
 }
