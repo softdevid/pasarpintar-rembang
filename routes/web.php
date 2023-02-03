@@ -12,6 +12,7 @@ use App\Http\Controllers\SearchController;
 use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\GrafikController;
 use App\Http\Controllers\KategoriGlobalController;
+use App\Http\Controllers\SuperAdminSettingController;
 use App\Http\Controllers\TokoAdminController;
 use App\Http\Controllers\TokoController;
 use Inertia\Inertia;
@@ -53,8 +54,12 @@ Route::middleware('auth',)->group(function () {
   })->name('profilKurir');
 });
 
+//Dashboard Super Admin
 Route::get('/admin/dashboard', [AdminController::class, 'index'])->name('admin.index');
-Route::get('/admin/setting', [AdminController::class, 'setting'])->name('admin.setting');
+
+//Admin Setting
+Route::get('/admin/setting', [SuperAdminSettingController::class, 'edit'])->name('superadminsetting.edit');
+Route::patch('/admin/setting', [SuperAdminSettingController::class, 'update'])->name('superadminsetting.update');
 
 //Toko Global
 Route::get('/admin/toko', [TokoController::class, 'index'])->name('admin.index');
