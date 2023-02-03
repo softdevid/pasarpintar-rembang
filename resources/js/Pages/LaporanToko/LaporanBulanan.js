@@ -2,7 +2,12 @@ import { Link } from "@inertiajs/inertia-react";
 import React from "react";
 
 const LaporanBulanan = (props) => {
-  // console.log(props);
+
+  const formatter = new Intl.NumberFormat('id-ID', {
+    style: 'currency',
+    currency: 'IDR',
+  });
+
   return (
     <>
       <div className="m-5 my-4 grid grid-cols-2">
@@ -16,7 +21,7 @@ const LaporanBulanan = (props) => {
         </div>
         <div className="text-xl text-right">
           <p>Tanggal: {props.date}</p>
-          <p className="mb-3">Omset: Rp. {props.omset}</p>
+          <p className="mb-3">Omset: Rp. {formatter.format(props.omset)}</p>
         </div>
       </div>
       <div className="mx-5">
@@ -48,21 +53,23 @@ const LaporanBulanan = (props) => {
           </thead>
           <tbody>
             {props.laporan.map((data, i) => {
-              <tr key={i} className="text-center bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                <th scope="row" className="py-4 px-6 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                  {i + 1}
-                </th>
-                <td>{data.namaProduk}</td>
-                <td>{data.tglOrder}</td>
-                <td>{data.hrgBeli}</td>
-                <td>{data.hrgJual}</td>
-                <td>{data.jumlah}</td>
-                <td>{data.hrgJual * data.jumlah}</td>
-              </tr>
+              return (
+                <tr key={i} className="text-center bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+                  <th scope="row" className="py-4 px-6 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                    {i + 1}
+                  </th>
+                  <td>{data.namaProduk}</td>
+                  <td>{data.tglOrder}</td>
+                  <td>{formatter.format(data.hrgBeli)}</td>
+                  <td>{formatter.format(data.hrgJual)}</td>
+                  <td>{data.jumlah}</td>
+                  <td>{data.tglOrder}</td>
+                </tr>
+              )
             })}
-            <td colSpan={7} className="text-center mr-3">Omset: Rp: {props.omset}</td>
           </tbody>
         </table>
+        <p className="text-center mr-3">Omset: Rp: {props.omset}</p>
       </div>
     </>
   )
