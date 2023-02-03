@@ -23,7 +23,7 @@ class CreateTokosTable extends Migration
       $table->string('namaPengelola');
       $table->string('noHp');
       $table->text('alamat');
-      $table->string('statusToko')->nullable()->default('inactive');
+      $table->string('statusToko')->nullable()->default('free');
       $table->timestamps();
     });
   }

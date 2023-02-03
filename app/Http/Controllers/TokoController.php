@@ -167,4 +167,11 @@ class TokoController extends Controller
 
     return back()->with('message', 'Toko berhasil di hapus');
   }
+
+  //data toko json
+  public function dataToko()
+  {
+    $toko = Toko::where('idUser', auth()->user()->id)->first();
+    return response()->json($toko);
+  }
 }

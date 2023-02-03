@@ -39,8 +39,10 @@ class AuthenticatedSessionController extends Controller
 
     if (auth()->user()->level === "customer") {
       return redirect()->intended();
-    } else if (auth()->user()->level === "toko") {
+    } else if (auth()->user()->level === "toko" && auth()->user()->statusToko === "premium") {
       return redirect()->intended(RouteServiceProvider::HOMETOKO);
+    } else if (auth()->user()->level === "toko" && auth()->user()->statusToko === "free") {
+      return redirect()->intended(RouteServiceProvider::HOMETOKOFREE);
     } else if (auth()->user()->level === "kurir") {
       return redirect()->intended(RouteServiceProvider::HOMEKURIR);
     } else if (auth()->user()->level === "admin") {

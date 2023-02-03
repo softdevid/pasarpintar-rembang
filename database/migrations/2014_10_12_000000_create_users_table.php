@@ -22,6 +22,7 @@ class CreateUsersTable extends Migration
       $table->string('no_hp', 17);
       $table->string('alamat');
       $table->string('level', 8)->default('customer');
+      $table->string('statusToko')->nullable()->default('free');
       $table->rememberToken();
       $table->timestamps();
     });
