@@ -2,9 +2,12 @@ import { Link } from "@inertiajs/inertia-react";
 import React from "react";
 
 const LaporanHarian = (props) => {
-  // console.log(props);
-  const laporan = props.laporan;
-  console.log(laporan);
+
+  const formatter = new Intl.NumberFormat('id-ID', {
+    style: 'currency',
+    currency: 'IDR',
+  });
+
   return (
     <>
       <div className="m-5 my-4 grid grid-cols-2">
@@ -18,7 +21,7 @@ const LaporanHarian = (props) => {
         </div>
         <div className="text-xl text-right">
           <p>Tanggal: {props.date}</p>
-          <p className="mb-3">Omset: Rp. {props.omset}</p>
+          <p className="mb-3">Omset: Rp. {formatter.format(props.omset)}</p>
         </div>
       </div>
       <div className="mx-5">
@@ -58,11 +61,11 @@ const LaporanHarian = (props) => {
                         {i + 1}
                       </th>
                       <td>{data.namaProduk}</td>
-                      <td>{data.tglOrder}</td>
-                      <td>{data.hrgBeli}</td>
-                      <td>{data.hrgJual}</td>
+                      <td>{formatter.format(data.hrgBeli)}</td>
+                      <td>{formatter.format(data.hrgJual)}</td>
                       <td>{data.jumlah}</td>
-                      <td>{data.hrgJual * data.jumlah}</td>
+                      <td>Rp. {formatter.format(data.hrgJual * data.jumlah)}</td>
+                      <td>{data.tglOrder}</td>
                     </tr>
                   )
                 })}

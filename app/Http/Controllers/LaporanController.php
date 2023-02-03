@@ -5,56 +5,23 @@ namespace App\Http\Controllers;
 use App\Models\Order;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use App\Models\RinciOrder;
+use App\Models\Toko;
 
 class LaporanController extends Controller
 {
-  // public function today(Request $request)
-  // {
-  //   $date = date('Y-m-d', strtotime($request->date));
-  //   $data = Order::whereDay(['created_at' => $date, 'idToko' => auth()->user()->id])->get();
-
-  //   $omset = 0;
-  //   foreach ($data as $key => $value) {
-  //     $omset += $value['hrgJual'] * $value['jumlah'];
-  //   }
-
-  //   return;
-  // }
-
-  // public function month(Request $request)
-  // {
-  //   $month = date('m', strtotime($request->month));
-  //   $year = date('Y', strtotime($request->year));
-  //   $data = Order::whereMonth(['created_at' => [$month, $year]])->get();
-
-  //   $omset = 0;
-  //   foreach ($data as $key => $value) {
-  //     $omset += $value['hrgJual'] * $value['jumlah'];
-  //   }
-  //   return;
-  // }
-
-  // public function year(Request $request)
-  // {
-  //   $year = date('Y', strtotime($request->year));
-  //   $data = Order::whereYear(['created_at' => $year])->get();
-
-  //   $omset = 0;
-  //   foreach ($data as $key => $value) {
-  //     $omset += $value['hrgJual'] * $value['jumlah'];
-  //   }
-  //   return;
-  // }
-
   public function Index()
   {
+    $rinciOrder = RinciOrder::latest()->paginate(10)->withQueryString();
     return Inertia::render('LaporanToko/Index', [
       'title' => 'Laporan Keuangan',
+      'rinciOrder' => $rinciOrder,
     ]);
   }
 
   public function today(Request $request)
   {
+    $toko = Toko::where('idUser', auth()->user()->id)->select('id')->first();
     $date = date('Y-m-d', strtotime($request->date));
     $laporan = Order::whereDate('tglOrder', $date)->get();
     $omset = 0;
@@ -72,13 +39,15 @@ class LaporanController extends Controller
 
   public function month(Request $request)
   {
-    $date = $request->date;
-    $month = date('m', strtotime($request->date));
-    $year = date('Y', strtotime($request->date));
+    $date = $request->month;
+    $month = date('m', strtotime($date));
+    $year = date('Y', strtotime($date));
 
     $laporan = Order::whereMonth('tglOrder', $month)
       ->whereYear('tglOrder', $year)
       ->get();
+
+    // dd($laporan);
 
     $omset = 0;
     foreach ($laporan as $key => $value) {
@@ -96,9 +65,10 @@ class LaporanController extends Controller
   public function year(Request $request)
   {
     $date = $request->year;
-    $year = date('Y', strtotime($request->year));
+    // $year = date('Y', strtotime($date));
 
-    $laporan = Order::whereYear('tglOrder', $year)->get();
+    $laporan = Order::whereYear('tglOrder', $date)->get();
+    // dd($date, $laporan);
 
     $omset = 0;
     foreach ($laporan as $key => $value) {

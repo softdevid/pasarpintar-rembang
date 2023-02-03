@@ -50,6 +50,27 @@ class DatabaseSeeder extends Seeder
       'alamat' => 'rumah di pluto',
     ]);
 
+    User::create([
+      'name' => "toko2",
+      'email' => "toko2@gmail.com",
+      'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
+      'no_hp' => "082222334455",
+      'alamat' => "nan jauh di sana",
+      'level' => "toko",
+      'remember_token' => Str::random(10),
+    ]);
+
+    Toko::create([
+      'idUser' => 3,
+      'namaToko' => 'Softdev 2',
+      'slug' => 'softdev-2',
+      'email' => 'toko2@gmail.com',
+      'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
+      'namaPengelola' => 'Putra',
+      'noHp' => '0888888824242',
+      'alamat' => 'rumah di pluto2',
+    ]);
+
     Produk::create([
       'namaProduk' => 'Laptop',
       'slug' => 'laptop',
@@ -80,6 +101,9 @@ class DatabaseSeeder extends Seeder
     ]);
 
     RinciOrder::create([
+      'idUser' => 1,
+      'namaCustomer' => 'Ardianto',
+      'alamatPengiriman' => 'Mars sebelah bumi',
       'idToko' => 1,
       'idProduk' => 1,
       'noFaktur' => 'PS-20230202',
