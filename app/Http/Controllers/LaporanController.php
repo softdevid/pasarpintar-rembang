@@ -55,8 +55,8 @@ class LaporanController extends Controller
 
   public function today(Request $request)
   {
-    $date = $request->date;
-    $laporan = Order::whereDay('tglOrder', $date)->get();
+    $date = date('Y-m-d', strtotime($request->date));
+    $laporan = Order::whereDate('tglOrder', $date)->get();
     $omset = 0;
     foreach ($laporan as $key => $value) {
       $omset += $value['hrgJual'] * $value['jumlah'];
@@ -86,6 +86,26 @@ class LaporanController extends Controller
     }
 
     return Inertia::render('LaporanToko/LaporanBulanan', [
+      'title' => 'Laporan Harian',
+      'laporan' => $laporan,
+      'date' => $date,
+      'omset' => $omset,
+    ]);
+  }
+
+  public function year(Request $request)
+  {
+    $date = $request->year;
+    $year = date('Y', strtotime($request->year));
+
+    $laporan = Order::whereYear('tglOrder', $year)->get();
+
+    $omset = 0;
+    foreach ($laporan as $key => $value) {
+      $omset += $value['hrgJual'] * $value['jumlah'];
+    }
+
+    return Inertia::render('LaporanToko/LaporanTahunan', [
       'title' => 'Laporan Harian',
       'laporan' => $laporan,
       'date' => $date,

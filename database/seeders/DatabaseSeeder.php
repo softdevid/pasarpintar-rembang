@@ -2,7 +2,9 @@
 
 namespace Database\Seeders;
 
+use App\Models\Order;
 use App\Models\Produk;
+use App\Models\RinciOrder;
 use App\Models\Toko;
 use App\Models\User;
 use Illuminate\Database\Seeder;
@@ -46,6 +48,47 @@ class DatabaseSeeder extends Seeder
       'namaPengelola' => 'Ardianto',
       'noHp' => '0888888824242',
       'alamat' => 'rumah di pluto',
+    ]);
+
+    Produk::create([
+      'namaProduk' => 'Laptop',
+      'slug' => 'laptop',
+      'idToko' => 1,
+      'idKategori' => '1',
+      'idKategoriGlobal' => '1',
+      'satuan' => '1',
+      'deskripsi' => 'Ini laptop baru guys',
+      'hrgBeli' => 3000000,
+      'hrgJual' => 4000000,
+      'jenisHarga' => '',
+      'stokToko' => 10,
+      'stokGudang' => 10,
+      'terjual' => 1,
+      'imgName' => '-',
+      'imgUrl' => '-',
+    ]);
+
+    Order::create([
+      'noFaktur' => 'PS-20230202',
+      'idToko' => 1,
+      'idProduk' => 1,
+      'namaProduk' => 'Laptop',
+      'hrgBeli' => 3000000,
+      'hrgJual' => 4000000,
+      'jumlah' => 1,
+      'tglOrder' => '2023-02-02',
+    ]);
+
+    RinciOrder::create([
+      'idToko' => 1,
+      'idProduk' => 1,
+      'noFaktur' => 'PS-20230202',
+      'total' => 4000000,
+      'totalItem' => 1,
+      'tglOrder' => '2023-02-02',
+      'statusBayar' => 'sudah bayar',
+      'statusOrder' => 'selesai',
+      'metodeBayar' => 'cod',
     ]);
 
     // User::factory(20)->has(Toko::factory()->count(1), 'toko')->create();

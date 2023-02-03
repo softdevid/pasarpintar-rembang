@@ -1,10 +1,8 @@
 import { Link } from "@inertiajs/inertia-react";
 import React from "react";
 
-const LaporanHarian = (props) => {
-  // console.log(props);
-  const laporan = props.laporan;
-  console.log(laporan);
+const LaporanTahunan = (props) => {
+  console.log(props);
   return (
     <>
       <div className="m-5 my-4 grid grid-cols-2">
@@ -49,31 +47,21 @@ const LaporanHarian = (props) => {
             </tr>
           </thead>
           <tbody>
-            {props.laporan ? (
-              <>
-                {props.laporan.map((data, i) => {
-                  return (
-                    <tr key={i} className="text-center bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                      <th scope="row" className="py-4 px-6 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                        {i + 1}
-                      </th>
-                      <td>{data.namaProduk}</td>
-                      <td>{data.tglOrder}</td>
-                      <td>{data.hrgBeli}</td>
-                      <td>{data.hrgJual}</td>
-                      <td>{data.jumlah}</td>
-                      <td>{data.hrgJual * data.jumlah}</td>
-                    </tr>
-                  )
-                })}
-              </>
-            ) : (
-              <>
-                <td>Tidak ada laporan penjualan</td>
-              </>
-            )}
+            {props.laporan.map((data, i) => {
+              <tr key={i} className="text-center bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+                <th scope="row" className="py-4 px-6 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                  {i + 1}
+                </th>
+                <td>{data.namaProduk}</td>
+                <td>{data.tglOrder}</td>
+                <td>{data.hrgBeli}</td>
+                <td>{data.hrgJual}</td>
+                <td>{data.jumlah}</td>
+                <td>{data.hrgJual * data.jumlah}</td>
+              </tr>
+            })}
+            <td colSpan={7} className="text-center mr-3">Omset: Rp: {props.omset}</td>
           </tbody>
-          {/* <td colSpan={7} className="text-center mr-3">Omset: Rp: {props.omset}</td> */}
         </table>
       </div>
     </>
@@ -81,4 +69,4 @@ const LaporanHarian = (props) => {
 
 }
 
-export default LaporanHarian;
+export default LaporanTahunan;
