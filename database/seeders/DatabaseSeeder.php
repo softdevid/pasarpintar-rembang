@@ -26,6 +26,7 @@ class DatabaseSeeder extends Seeder
       'no_hp' => "082222334455",
       'alamat' => "nan jauh di sana",
       'level' => "admin",
+      'statusToko' => 'premium',
       'remember_token' => Str::random(10),
     ]);
 
@@ -36,6 +37,7 @@ class DatabaseSeeder extends Seeder
       'no_hp' => "082222334455",
       'alamat' => "nan jauh di sana",
       'level' => "toko",
+      'statusToko' => 'premium',
       'remember_token' => Str::random(10),
     ]);
 
@@ -48,8 +50,10 @@ class DatabaseSeeder extends Seeder
       'namaPengelola' => 'Ardianto',
       'noHp' => '0888888824242',
       'alamat' => 'rumah di pluto',
+      'statusToko' => 'premium',
     ]);
 
+    //toko 2
     User::create([
       'name' => "toko2",
       'email' => "toko2@gmail.com",
@@ -57,6 +61,7 @@ class DatabaseSeeder extends Seeder
       'no_hp' => "082222334455",
       'alamat' => "nan jauh di sana",
       'level' => "toko",
+      'statusToko' => 'free',
       'remember_token' => Str::random(10),
     ]);
 
@@ -69,6 +74,7 @@ class DatabaseSeeder extends Seeder
       'namaPengelola' => 'Putra',
       'noHp' => '0888888824242',
       'alamat' => 'rumah di pluto2',
+      'statusToko' => 'free',
     ]);
 
     Produk::create([

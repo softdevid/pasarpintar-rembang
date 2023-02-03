@@ -126,6 +126,8 @@ Route::get('/oneWeek', function () {
 
 // route autentikasi
 require __DIR__ . '/auth.php';
+require __DIR__ . '/api.php';
+
 
 // route toko
 Route::get('/{toko:slug}', [HomeController::class, 'toko'])->name('toko');

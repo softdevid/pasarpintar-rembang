@@ -5,18 +5,22 @@ import {
   ComputerDesktopIcon,
   ListBulletIcon,
 } from "@heroicons/react/20/solid";
+import { Inertia } from "@inertiajs/inertia";
 import { Link } from "@inertiajs/inertia-react";
 import React from "react";
 import { useState } from "react";
 const Main = (props) => {
   const [open, setOpen] = useState(true);
 
+  const handleLogout = () => {
+    Inertia.post('/logout');
+  }
+
   return (
     <div className="flex">
       <div
-        className={` ${
-          open ? "w-72" : "w-20 "
-        } bg-dark-purple h-screen p-5  pt-8 relative duration-300`}
+        className={` ${open ? "w-72" : "w-20 "
+          } bg-dark-purple h-screen p-5  pt-8 relative duration-300`}
       >
         <img
           src="/img/control.png"
@@ -27,14 +31,12 @@ const Main = (props) => {
         <div className="flex gap-x-4 items-center">
           <img
             src="/img/logo.png"
-            className={`cursor-pointer duration-500 ${
-              open && "rotate-[360deg]"
-            }`}
+            className={`cursor-pointer duration-500 ${open && "rotate-[360deg]"
+              }`}
           />
           <h1
-            className={`text-white origin-left font-medium text-xl duration-200 ${
-              !open && "scale-0"
-            }`}
+            className={`text-white origin-left font-medium text-xl duration-200 ${!open && "scale-0"
+              }`}
           >
             Admin PasarPintar
           </h1>
@@ -80,7 +82,7 @@ const Main = (props) => {
               </span>
             </li>
           </Link>
-          <Link href="/">
+          <button onClick={() => handleLogout()}>
             <li
               className={`flex  rounded-md p-2 cursor-pointer hover:bg-light-white text-gray-300 text-sm items-center gap-x-4`}
             >
@@ -89,7 +91,7 @@ const Main = (props) => {
                 Keluar
               </span>
             </li>
-          </Link>
+          </button>
         </ul>
       </div>
       <div className="h-screen flex-1 p-7">{props.children}</div>

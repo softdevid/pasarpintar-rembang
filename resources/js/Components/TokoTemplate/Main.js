@@ -10,11 +10,28 @@ import {
   ListBulletIcon,
   UserCircleIcon,
 } from "@heroicons/react/20/solid";
+
+import { Inertia } from "@inertiajs/inertia";
 import { Link } from "@inertiajs/inertia-react";
-import React from "react";
-import { useState } from "react";
+import React, { useState, useEffect } from "react";
+
+
 const Main = (props) => {
+  // console.log(props);
   const [open, setOpen] = useState(true);
+
+  const handleLogout = () => {
+    Inertia.post('/logout');
+  }
+
+  const [data, setData] = useState([]);
+
+  useEffect(() => {
+    fetch('/api/data-toko')
+      .then(res => res.json())
+      .then(json => setData(json))
+  }, []);
+  console.log(data.namaToko);
 
   return (
     <div className="flex">
@@ -38,37 +55,39 @@ const Main = (props) => {
             className={`text-white origin-left font-bold text-xl duration-200 ${!open && "scale-0"
               }`}
           >
-            Toko ...
+            Toko {data.namaToko} <br />
           </h1>
         </div>
         <ul className="pt-6">
-          <Link href="/toko/dashboard">
-            <li
-              className={`flex  rounded-md p-2 cursor-pointer hover:bg-light-white text-gray-300 text-sm items-center gap-x-4`}
-            >
-              <ComputerDesktopIcon className="h-6 w-6 text-white" />
-              <span
-                className={`${!open && "hidden"
-                  } origin-left text-white font-semibold duration-200`}
-              >
-                Dashboard
-              </span>
-            </li>
-          </Link>
-          <Link href="/toko/pesanan">
-            <li
-              className={`flex  rounded-md p-2 cursor-pointer hover:bg-light-white text-gray-300 text-sm items-center gap-x-4`}
-            >
-              <ClipboardDocumentListIcon className="h-6 w-6 text-white" />
-              <span
-                className={`${!open && "hidden"
-                  } origin-left text-white font-semibold duration-200`}
-              >
-                Pesanan
-              </span>
-            </li>
-          </Link>
-          {/* <Link href="/toko/kurir">
+          {props.children.props.auth.user.statusToko === 'premium' &&
+            <>
+              <Link href="/toko/dashboard">
+                <li
+                  className={`flex  rounded-md p-2 cursor-pointer hover:bg-light-white text-gray-300 text-sm items-center gap-x-4`}
+                >
+                  <ComputerDesktopIcon className="h-6 w-6 text-white" />
+                  <span
+                    className={`${!open && "hidden"
+                      } origin-left text-white font-semibold duration-200`}
+                  >
+                    Dashboard
+                  </span>
+                </li>
+              </Link>
+              <Link href="/toko/pesanan">
+                <li
+                  className={`flex  rounded-md p-2 cursor-pointer hover:bg-light-white text-gray-300 text-sm items-center gap-x-4`}
+                >
+                  <ClipboardDocumentListIcon className="h-6 w-6 text-white" />
+                  <span
+                    className={`${!open && "hidden"
+                      } origin-left text-white font-semibold duration-200`}
+                  >
+                    Pesanan
+                  </span>
+                </li>
+              </Link>
+              {/* <Link href="/toko/kurir">
             <li
               className={`flex  rounded-md p-2 cursor-pointer hover:bg-light-white text-gray-300 text-sm items-center gap-x-4`}
             >
@@ -77,10 +96,13 @@ const Main = (props) => {
                 className={`${!open && "hidden"
                   } origin-left text-white font-semibold duration-200`}
               >
-                Kurir
+              Kurir
               </span>
-            </li>
+              </li>
           </Link> */}
+            </>
+
+          }
           <Link href="/toko/produk">
             <li
               className={`flex  rounded-md p-2 cursor-pointer hover:bg-light-white text-gray-300 text-sm items-center gap-x-4`}
@@ -107,19 +129,23 @@ const Main = (props) => {
               </span>
             </li>
           </Link>
-          <Link href="/toko/laporan">
-            <li
-              className={`flex  rounded-md p-2 cursor-pointer hover:bg-light-white text-gray-300 text-sm items-center gap-x-4`}
-            >
-              <ChartBarSquareIcon className="h-6 w-6 text-white" />
-              <span
-                className={`${!open && "hidden"
-                  } origin-left text-white font-semibold duration-200`}
+
+          {props.children.props.auth.user.statusToko === 'premium' &&
+            <Link href="/toko/laporan">
+              <li
+                className={`flex  rounded-md p-2 cursor-pointer hover:bg-light-white text-gray-300 text-sm items-center gap-x-4`}
               >
-                Laporan
-              </span>
-            </li>
-          </Link>
+                <ChartBarSquareIcon className="h-6 w-6 text-white" />
+                <span
+                  className={`${!open && "hidden"
+                    } origin-left text-white font-semibold duration-200`}
+                >
+                  Laporan
+                </span>
+              </li>
+            </Link>
+          }
+
           {/* <Link href="/toko/setting">
             <li
               className={`flex  rounded-md p-2 cursor-pointer hover:bg-light-white text-gray-300 text-sm items-center gap-x-4`}
@@ -133,7 +159,7 @@ const Main = (props) => {
               </span>
             </li>
           </Link> */}
-          <Link href="/logout">
+          <button onClick={() => handleLogout()} as="button">
             <li
               className={`flex  rounded-md p-2 cursor-pointer hover:bg-light-white text-gray-300 text-sm items-center gap-x-4`}
             >
@@ -145,7 +171,7 @@ const Main = (props) => {
                 Keluar
               </span>
             </li>
-          </Link>
+          </button>
         </ul>
       </div>
       <div className="h-screen flex-1 p-7">{props.children}</div>

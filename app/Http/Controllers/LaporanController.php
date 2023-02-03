@@ -12,7 +12,9 @@ class LaporanController extends Controller
 {
   public function Index()
   {
-    $rinciOrder = RinciOrder::latest()->paginate(10)->withQueryString();
+    $toko = Toko::where('idUser', auth()->user()->id)->select('id')->first();
+
+    $rinciOrder = RinciOrder::where('idToko', $toko->id)->latest()->paginate(10)->withQueryString();
     return Inertia::render('LaporanToko/Index', [
       'title' => 'Laporan Keuangan',
       'rinciOrder' => $rinciOrder,
@@ -21,9 +23,17 @@ class LaporanController extends Controller
 
   public function today(Request $request)
   {
-    $toko = Toko::where('idUser', auth()->user()->id)->select('id')->first();
-    $date = date('Y-m-d', strtotime($request->date));
-    $laporan = Order::whereDate('tglOrder', $date)->get();
+    //validasi
+    $request->validate(['date' => 'required'], ['date.required' => 'Tanggal harus dipilih']);
+
+
+    $toko = Toko::where('idUser', auth()->user()->id)->select('id')->first(); //ambil id toko
+    $date = date('Y-m-d', strtotime($request->date)); //mengubah format tanggalnya
+
+    $laporan = Order::whereDate('tglOrder', $date) //Select dari order
+      ->where('idToko', $toko->id)
+      ->get();
+
     $omset = 0;
     foreach ($laporan as $key => $value) {
       $omset += $value['hrgJual'] * $value['jumlah'];
@@ -39,12 +49,16 @@ class LaporanController extends Controller
 
   public function month(Request $request)
   {
+    $request->validate(['month' => 'required'], ['month.required' => 'Bulan harus pilih']);
+    $toko = Toko::where('idUser', auth()->user()->id)->select('id')->first();
+
     $date = $request->month;
     $month = date('m', strtotime($date));
     $year = date('Y', strtotime($date));
 
     $laporan = Order::whereMonth('tglOrder', $month)
       ->whereYear('tglOrder', $year)
+      ->where('idToko', $toko->id)
       ->get();
 
     // dd($laporan);
@@ -64,11 +78,14 @@ class LaporanController extends Controller
 
   public function year(Request $request)
   {
-    $date = $request->year;
-    // $year = date('Y', strtotime($date));
+    $request->validate(['year' => 'required'], ['year.required' => 'Tahun harus dipilih']);
 
-    $laporan = Order::whereYear('tglOrder', $date)->get();
-    // dd($date, $laporan);
+    $toko = Toko::where('idUser', auth()->user()->id)->select('id')->first();
+
+    $date = $request->year;
+    $laporan = Order::whereYear('tglOrder', $date)
+      ->where('idToko', $toko->id)
+      ->get();
 
     $omset = 0;
     foreach ($laporan as $key => $value) {

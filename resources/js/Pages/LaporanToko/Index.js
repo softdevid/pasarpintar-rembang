@@ -27,6 +27,12 @@ const Index = (props) => {
     Inertia.get('/toko/laporan/year', data);
   }
 
+  //format rupiah
+  const formatter = new Intl.NumberFormat('id-ID', {
+    style: 'currency',
+    currency: 'IDR',
+  });
+
   return (
     <>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -60,7 +66,7 @@ const Index = (props) => {
                 </option>
               ))}
             </select>
-            {props.errors.month && <p className="text-red-600">{props.errors.month}</p>}
+            {props.errors.year && <p className="text-red-600">{props.errors.year}</p>}
           </div>
           <div>
             <button onClick={() => handleCekTahunan()} type="button" className="bg-blue-700 text-white p-2 rounded-lg">Cek Laporan</button>
@@ -69,7 +75,7 @@ const Index = (props) => {
       </div>
 
 
-      <h1 className="text-center text-2xl font-bold mt-5">History Order</h1>
+      <h1 className="text-center text-2xl font-bold mt-7">History Order</h1>
       <div className="relative overflow-x-auto shadow-md sm:rounded-lg -scroll-mt-3">
         <table className="w-full text-sm text-center text-gray-500 dark:text-gray-400">
           <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
@@ -111,7 +117,7 @@ const Index = (props) => {
                     {data.alamatPengiriman}
                   </td>
                   <td className="px-6 py-4">
-                    {data.total}
+                    {formatter.format(data.total)}
                   </td>
                   <td className="px-6 py-4">
                     {data.totalItem}

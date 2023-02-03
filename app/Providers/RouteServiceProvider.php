@@ -20,6 +20,7 @@ class RouteServiceProvider extends ServiceProvider
    */
   public const HOMEUSER = '/user/profile';
   public const HOMETOKO = '/toko/dashboard';
+  public const HOMETOKOFREE = '/toko/produk';
   public const HOMEKURIR = '/kurir/dashboard';
   public const HOMEADMIN = '/admin/dashboard';
 
