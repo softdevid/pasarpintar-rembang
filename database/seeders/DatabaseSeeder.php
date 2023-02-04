@@ -98,7 +98,7 @@ class DatabaseSeeder extends Seeder
 
     Harga::create([
       'idProduk' => 1,
-      'namaHarga' => 'Utama',
+      'namaHarga' => 'utama',
       'hrgJual' => 4000000,
       'diskon' => 0,
       'tglAwalDiskon' => null,
