@@ -27,7 +27,6 @@ class DatabaseSeeder extends Seeder
       'no_hp' => "082222334455",
       'alamat' => "nan jauh di sana",
       'level' => "admin",
-      'statusToko' => 'premium',
       'remember_token' => Str::random(10),
     ]);
 
@@ -38,7 +37,6 @@ class DatabaseSeeder extends Seeder
       'no_hp' => "082222334455",
       'alamat' => "nan jauh di sana",
       'level' => "toko",
-      'statusToko' => 'premium',
       'remember_token' => Str::random(10),
     ]);
 
@@ -62,7 +60,6 @@ class DatabaseSeeder extends Seeder
       'no_hp' => "082222334455",
       'alamat' => "nan jauh di sana",
       'level' => "toko",
-      'statusToko' => 'free',
       'remember_token' => Str::random(10),
     ]);
 
