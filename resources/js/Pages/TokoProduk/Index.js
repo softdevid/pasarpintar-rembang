@@ -5,7 +5,7 @@ import { Inertia } from "@inertiajs/inertia";
 
 const Index = (props) => {
   const [query, setQuery] = useState("");
-  const keys = ["namaProduk", "hrgBeli", "hrgJual", "stokToko", "stokGudang", "diskon"];
+  const keys = ["namaProduk", "hrgBeli", "hrgJual"];
 
   const search = (data) => {
     return data.filter((item) =>
@@ -19,9 +19,11 @@ const Index = (props) => {
 
   return (
     <>
-      <div className="flex">
-        <h1 className="font-bold text-3xl">Toko Admin List</h1>
-        <Link href={'/toko/produk/create'} className="ml-3 rounded-md bg-blue-600 text-white p-2 hover:bg-blue-700">Tambah Produk</Link>
+      <div className="grid grid-cols-2 gap-4">
+        <h1 className="font-bold text-3xl">{props.title}</h1>
+        <div className="text-right">
+          <Link href={'/toko/produk/create'} className="ml-3 rounded-md bg-blue-600 text-white p-2 hover:bg-blue-700">Tambah Produk</Link>
+        </div>
       </div>
 
       <div className="mt-1 mb-7 mx-auto max-w-xl">
