@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Harga;
 use App\Models\Order;
 use App\Models\Produk;
 use App\Models\RinciOrder;
@@ -26,7 +27,6 @@ class DatabaseSeeder extends Seeder
       'no_hp' => "082222334455",
       'alamat' => "nan jauh di sana",
       'level' => "admin",
-      'statusToko' => 'premium',
       'remember_token' => Str::random(10),
     ]);
 
@@ -37,7 +37,6 @@ class DatabaseSeeder extends Seeder
       'no_hp' => "082222334455",
       'alamat' => "nan jauh di sana",
       'level' => "toko",
-      'statusToko' => 'premium',
       'remember_token' => Str::random(10),
     ]);
 
@@ -61,7 +60,6 @@ class DatabaseSeeder extends Seeder
       'no_hp' => "082222334455",
       'alamat' => "nan jauh di sana",
       'level' => "toko",
-      'statusToko' => 'free',
       'remember_token' => Str::random(10),
     ]);
 
@@ -87,12 +85,21 @@ class DatabaseSeeder extends Seeder
       'deskripsi' => 'Ini laptop baru guys',
       'hrgBeli' => 3000000,
       'hrgJual' => 4000000,
-      'jenisHarga' => '',
+      'jenisHarga' => 'utama',
       'stokToko' => 10,
       'stokGudang' => 10,
       'terjual' => 1,
       'imgName' => '-',
       'imgUrl' => '-',
+    ]);
+
+    Harga::create([
+      'idProduk' => 1,
+      'namaHarga' => 'utama',
+      'hrgJual' => 4000000,
+      'diskon' => 0,
+      'tglAwalDiskon' => null,
+      'tglAkhirDiskon' => null,
     ]);
 
     Order::create([

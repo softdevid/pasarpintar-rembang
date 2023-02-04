@@ -31,7 +31,7 @@ const Main = (props) => {
       .then(res => res.json())
       .then(json => setData(json))
   }, []);
-  console.log(data.namaToko);
+  console.log(data);
 
   return (
     <div className="flex">
@@ -59,7 +59,7 @@ const Main = (props) => {
           </h1>
         </div>
         <ul className="pt-6">
-          {props.children.props.auth.user.statusToko === 'premium' &&
+          {data.statusToko === 'premium' &&
             <>
               <Link href="/toko/dashboard">
                 <li
@@ -130,7 +130,7 @@ const Main = (props) => {
             </li>
           </Link>
 
-          {props.children.props.auth.user.statusToko === 'premium' &&
+          {data.statusToko === 'premium' &&
             <Link href="/toko/laporan">
               <li
                 className={`flex  rounded-md p-2 cursor-pointer hover:bg-light-white text-gray-300 text-sm items-center gap-x-4`}
