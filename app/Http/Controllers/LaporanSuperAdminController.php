@@ -51,13 +51,15 @@ class LaporanSuperAdminController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id, Request $request)
+    public function show(Request $request)
     {
         $toko = Toko::where('id', $request->id)->first();
+        $order = Order::where('idToko', $request->id)->get();
 
         return Inertia::render('LaporanSuperAdmin/RincianLaporan', [
             'title' => 'Laporan Keuangan',
             'rincianToko' => $toko,
+            'orders' => $order,
         ]);
     }
 
@@ -79,7 +81,7 @@ class LaporanSuperAdminController extends Controller
             $omset += $value['hrgJual'] * $value['jumlah'];
         }
 
-        return Inertia::render('LaporanToko/LaporanHarian', [
+        return Inertia::render('LaporanSuperAdmin/LaporanHarian', [
             'title' => 'Laporan Harian',
             'laporan' => $laporan,
             'omset' => $omset,
@@ -108,7 +110,7 @@ class LaporanSuperAdminController extends Controller
             $omset += $value['hrgJual'] * $value['jumlah'];
         }
 
-        return Inertia::render('LaporanToko/LaporanBulanan', [
+        return Inertia::render('LaporanSuperAdmin/LaporanBulanan', [
             'title' => 'Laporan Harian',
             'laporan' => $laporan,
             'date' => $date,
@@ -132,7 +134,7 @@ class LaporanSuperAdminController extends Controller
             $omset += $value['hrgJual'] * $value['jumlah'];
         }
 
-        return Inertia::render('LaporanToko/LaporanTahunan', [
+        return Inertia::render('LaporanSuperAdmin/LaporanTahunan', [
             'title' => 'Laporan Harian',
             'laporan' => $laporan,
             'date' => $date,

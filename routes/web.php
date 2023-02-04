@@ -61,6 +61,9 @@ Route::get('/admin/dashboard', [AdminController::class, 'index'])->name('admin.i
 //Super Admin Laporan
 Route::get('/admin/laporan', [LaporanSuperAdminController::class, 'index'])->name('laporan.index');
 Route::get('/admin/laporan/rincian', [LaporanSuperAdminController::class, 'show'])->name('laporan.show');
+Route::get('/toko/laporan/today', [LaporanSuperAdminController::class, 'today'])->name('laporan.today');
+Route::get('/toko/laporan/month', [LaporanSuperAdminController::class, 'month'])->name('laporan.month');
+Route::get('/toko/laporan/year', [LaporanSuperAdminController::class, 'year'])->name('laporan.year');
 
 //Admin Setting
 Route::get('/admin/setting', [SuperAdminSettingController::class, 'edit'])->name('superadminsetting.edit');

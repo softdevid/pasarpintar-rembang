@@ -1,4 +1,4 @@
-import Main from "@/Components/TokoTemplate/Main";
+import Main from "@/Components/AdminTemplate/Main";
 import { Inertia } from "@inertiajs/inertia";
 import { useState } from "react";
 
@@ -9,13 +9,13 @@ const RincianLaporan = (props) => {
   const handleCekHarian = () => {
     const data = { date };
     console.log(data);
-    Inertia.get("/toko/laporan/today", data);
+    Inertia.get("/admin/laporan/today", data);
   };
 
   const [month, setMonth] = useState("");
   const handleCekBulanan = () => {
     const data = { month };
-    Inertia.get("/toko/laporan/month", data);
+    Inertia.get("/admin/laporan/month", data);
   };
 
   const [year, setYear] = useState(2023);
@@ -24,7 +24,7 @@ const RincianLaporan = (props) => {
 
   const handleCekTahunan = () => {
     const data = { year };
-    Inertia.get("/toko/laporan/year", data);
+    Inertia.get("/admin/laporan/year", data);
   };
 
   //format rupiah
@@ -35,7 +35,44 @@ const RincianLaporan = (props) => {
 
   return (
     <>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <h1 className="text-center text-2xl font-bold mt-7">Data Toko</h1>
+      <div className="relative overflow-x-auto shadow-md sm:rounded-lg -scroll-mt-3">
+        <table className="w-full text-sm text-center text-gray-500 dark:text-gray-400">
+          <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+            <tr>
+              <th scope="col" className="px-6 py-3">
+                Nama Toko
+              </th>
+              <th scope="col" className="px-6 py-3">
+                Pengelola
+              </th>
+              <th scope="col" className="px-6 py-3">
+                Email
+              </th>
+              <th scope="col" className="px-6 py-3">
+                Nomor Hp
+              </th>
+              <th scope="col" className="px-6 py-3">
+                Alamat
+              </th>
+              <th scope="col" className="px-6 py-3">
+                Status Toko
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr className="bg-white border-b dark:bg-gray-900 dark:border-gray-700">
+              <td className="px-6 py-4">{props.rincianToko.namaToko}</td>
+              <td className="px-6 py-4">{props.rincianToko.namaPengelola}</td>
+              <td className="px-6 py-4">{props.rincianToko.email}</td>
+              <td className="px-6 py-4">{props.rincianToko.noHp}</td>
+              <td className="px-6 py-4">{props.rincianToko.alamat}</td>
+              <td className="px-6 py-4">{props.rincianToko.statusToko}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-4">
         <div className="space-y-6">
           <div>
             <label
@@ -131,56 +168,6 @@ const RincianLaporan = (props) => {
             </button>
           </div>
         </div>
-      </div>
-
-      <h1 className="text-center text-2xl font-bold mt-7">History Order</h1>
-      <div className="relative overflow-x-auto shadow-md sm:rounded-lg -scroll-mt-3">
-        <table className="w-full text-sm text-center text-gray-500 dark:text-gray-400">
-          <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-            <tr>
-              <th scope="col" className="px-6 py-3">
-                #
-              </th>
-              <th scope="col" className="px-6 py-3">
-                No Faktur
-              </th>
-              <th scope="col" className="px-6 py-3">
-                Nama Customer
-              </th>
-              <th scope="col" className="px-6 py-3">
-                Alamat Pengiriman
-              </th>
-              <th scope="col" className="px-6 py-3">
-                Total Harga
-              </th>
-              <th scope="col" className="px-6 py-3">
-                Total Item
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {props.rinciOrder.data.map((data, i) => {
-              return (
-                <tr
-                  key={i}
-                  className="bg-white border-b dark:bg-gray-900 dark:border-gray-700"
-                >
-                  <th
-                    scope="row"
-                    className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
-                  >
-                    {i + 1}
-                  </th>
-                  <td className="px-6 py-4">{data.noFaktur}</td>
-                  <td className="px-6 py-4">{data.namaCustomer}</td>
-                  <td className="px-6 py-4">{data.alamatPengiriman}</td>
-                  <td className="px-6 py-4">{formatter.format(data.total)}</td>
-                  <td className="px-6 py-4">{data.totalItem}</td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
       </div>
     </>
   );
