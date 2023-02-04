@@ -86,8 +86,6 @@ class DatabaseSeeder extends Seeder
       'hrgBeli' => 3000000,
       'hrgJual' => 4000000,
       'jenisHarga' => 'utama',
-      'stokToko' => 10,
-      'stokGudang' => 10,
       'terjual' => 1,
       'imgName' => '-',
       'imgUrl' => '-',
