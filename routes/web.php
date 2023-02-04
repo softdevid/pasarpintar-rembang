@@ -12,6 +12,7 @@ use App\Http\Controllers\SearchController;
 use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\GrafikController;
 use App\Http\Controllers\KategoriGlobalController;
+use App\Http\Controllers\LaporanSuperAdminController;
 use App\Http\Controllers\SuperAdminSettingController;
 use App\Http\Controllers\TokoAdminController;
 use App\Http\Controllers\TokoController;
@@ -56,6 +57,10 @@ Route::middleware('auth',)->group(function () {
 
 //Dashboard Super Admin
 Route::get('/admin/dashboard', [AdminController::class, 'index'])->name('admin.index');
+
+//Super Admin Laporan
+Route::get('/admin/laporan', [LaporanSuperAdminController::class, 'index'])->name('laporan.index');
+Route::get('/admin/laporan/rincian', [LaporanSuperAdminController::class, 'show'])->name('laporan.show');
 
 //Admin Setting
 Route::get('/admin/setting', [SuperAdminSettingController::class, 'edit'])->name('superadminsetting.edit');
