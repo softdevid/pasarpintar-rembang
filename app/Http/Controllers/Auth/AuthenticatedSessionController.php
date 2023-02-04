@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
+use App\Models\Toko;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -37,11 +38,14 @@ class AuthenticatedSessionController extends Controller
 
     $request->session()->regenerate();
 
+    //mengecek status toko premium/free
+    $toko = Toko::where('idUser', auth()->user()->id)->select('statusToko')->first();
+
     if (auth()->user()->level === "customer") {
       return redirect()->intended();
-    } else if (auth()->user()->level === "toko" && auth()->user()->statusToko === "premium") {
+    } else if (auth()->user()->level === "toko" && $toko->statusToko == 'premium') {
       return redirect()->intended(RouteServiceProvider::HOMETOKO);
-    } else if (auth()->user()->level === "toko" && auth()->user()->statusToko === "free") {
+    } else if (auth()->user()->level === "toko" && $toko->statusToko == 'free') {
       return redirect()->intended(RouteServiceProvider::HOMETOKOFREE);
     } else if (auth()->user()->level === "kurir") {
       return redirect()->intended(RouteServiceProvider::HOMEKURIR);

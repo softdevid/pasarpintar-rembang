@@ -24,9 +24,7 @@ class CreateProduksTable extends Migration
       $table->text('deskripsi')->nullable();
       $table->integer('hrgBeli')->nullable();
       $table->integer('hrgJual')->nullable();
-      $table->string('jenisHarga')->nullable(); //Nama jenis harga jika lebih dari 1 seperti Warna, Ram dll
-      $table->bigInteger('stokToko')->nullable();
-      $table->bigInteger('stokGudang')->nullable();
+      $table->string('jenisHarga')->nullable(); //mendefinisikan nama harga, misal warna, kendaraan dll
       $table->bigInteger('terjual')->nullable();
       $table->string('imgName')->nullable();
       $table->string('imgUrl')->nullable();
