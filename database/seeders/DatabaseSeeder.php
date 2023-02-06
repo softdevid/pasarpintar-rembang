@@ -75,13 +75,14 @@ class DatabaseSeeder extends Seeder
       'statusToko' => 'free',
     ]);
 
+    //produk 1
     Produk::create([
       'namaProduk' => 'Laptop',
       'slug' => 'laptop',
       'idToko' => 1,
       'idKategori' => '1',
       'idKategoriGlobal' => '1',
-      'satuan' => '1',
+      'satuan' => 'pcs',
       'deskripsi' => 'Ini laptop baru guys',
       // 'hrgBeli' => 3000000,
       // 'hrgJual' => 4000000,
@@ -96,6 +97,42 @@ class DatabaseSeeder extends Seeder
       'namaHarga' => 'utama',
       'hrgBeli' => 3000000,
       'hrgJual' => 4000000,
+      'diskon' => 0,
+      'tglAwalDiskon' => null,
+      'tglAkhirDiskon' => null,
+    ]);
+
+    //produk 2
+    Produk::create([
+      'namaProduk' => 'Hp',
+      'slug' => 'laptop',
+      'idToko' => 1,
+      'idKategori' => '1',
+      'idKategoriGlobal' => '1',
+      'satuan' => 'pcs',
+      'deskripsi' => 'Ini hp baru guys',
+      // 'hrgBeli' => 3000000,
+      // 'hrgJual' => 4000000,
+      'jenisHarga' => 'utama',
+      'terjual' => 12,
+      'imgName' => '-',
+      'imgUrl' => '-',
+    ]);
+
+    Harga::create([
+      'idProduk' => 2,
+      'namaHarga' => 'biru',
+      'hrgBeli' => 1700000,
+      'hrgJual' => 1800000,
+      'diskon' => 0,
+      'tglAwalDiskon' => null,
+      'tglAkhirDiskon' => null,
+    ]);
+    Harga::create([
+      'idProduk' => 2,
+      'namaHarga' => 'hijau',
+      'hrgBeli' => 1700000,
+      'hrgJual' => 1900000,
       'diskon' => 0,
       'tglAwalDiskon' => null,
       'tglAkhirDiskon' => null,

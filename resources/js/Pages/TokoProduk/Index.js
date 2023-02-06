@@ -1,7 +1,9 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Main from "@/Components/TokoTemplate/Main";
 import { Link } from "@inertiajs/react";
 import { router } from "@inertiajs/react";
+// import { Inertia } from "@inertiajs/inertia";
+import axios from "axios";
 
 const Index = (props) => {
   const [query, setQuery] = useState("");
@@ -12,6 +14,26 @@ const Index = (props) => {
       keys.some((key) => item[key].toString().toLowerCase().includes(query))
     );
   }
+
+  const [produk, setProduk] = useState([]);
+  const [pageCount, setPageCount] = useState(0);
+  const [offset, setOffset] = useState(0);
+
+  useEffect(() => {
+    axios
+      .get(`/api/data-produk?page=${offset + 1}`)
+      .then(res => {
+        console.log(res);
+        setProduk(res.data);
+        setPageCount(res.data.last_page);
+      })
+      .catch(err => console.error(err));
+  }, [offset]);
+
+  const handlePageClick = data => {
+    setOffset(data.selected);
+  };
+
 
   const handleDelete = (id) => {
     router.post("/toko/produk/delete", id);
@@ -93,8 +115,8 @@ const Index = (props) => {
             </tr>
           </thead>
           <tbody>
-            {search(props.produk.data).length > 0 ? (
-              search(props.produk.data).map((data, i) => {
+            {search(produk).length > 0 ? (
+              search(produk).map((data, i) => {
                 return (
 
                   <tr key={i} className="text-center bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">

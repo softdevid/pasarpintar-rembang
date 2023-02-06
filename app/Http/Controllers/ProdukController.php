@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Gambar;
+use App\Models\Harga;
 use App\Models\Kategori;
 use App\Models\KategoriGlobal;
 use App\Models\Produk;
@@ -21,12 +22,23 @@ class ProdukController extends Controller
    */
   public function index()
   {
-    $toko = Toko::where('idUser', auth()->user()->id)->select('id')->first();
-    $produk = Produk::where('idToko', $toko->id)->paginate(10)->withQueryString();
     return Inertia::render('TokoProduk/Index', [
-      'produk' => $produk,
+      // 'produk' => $produk,
       'title' => 'List Produk'
     ]);
+  }
+
+  public function dataProduk()
+  {
+    $toko = Toko::where('idUser', auth()->user()->id)->select('id')->first();
+    // $produk = Produk::where('idToko', $toko->id)->get();
+    $produk = Produk::join('hargas', 'produks.id', '=', 'hargas.idProduk')
+      ->where('produks.idToko', '=', $toko->id)
+      ->select('produks.*', 'hargas.*')
+      ->get();
+
+    // dd($data);
+    return response()->json($produk);
   }
 
   /**

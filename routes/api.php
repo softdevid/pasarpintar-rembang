@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ProdukController;
 use App\Http\Controllers\TokoController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -19,4 +20,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
   return $request->user();
 });
 
+//mengambil data toko
 Route::get('/api/data-toko', [TokoController::class, 'dataToko']);
+
+Route::get('/api/data-produk', [ProdukController::class, 'dataProduk']);

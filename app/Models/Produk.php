@@ -25,6 +25,11 @@ class Produk extends Model
     return $this->belongsTo(KategoriGlobal::class, "idKategoriGlobal");
   }
 
+  public function harga()
+  {
+    return $this->hasMany(Harga::class, "idProduk");
+  }
+
   // public function satuan()
   // {
   //   return $this->belongsTo()
