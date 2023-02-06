@@ -83,8 +83,8 @@ class DatabaseSeeder extends Seeder
       'idKategoriGlobal' => '1',
       'satuan' => '1',
       'deskripsi' => 'Ini laptop baru guys',
-      'hrgBeli' => 3000000,
-      'hrgJual' => 4000000,
+      // 'hrgBeli' => 3000000,
+      // 'hrgJual' => 4000000,
       'jenisHarga' => 'utama',
       'terjual' => 1,
       'imgName' => '-',
@@ -94,6 +94,7 @@ class DatabaseSeeder extends Seeder
     Harga::create([
       'idProduk' => 1,
       'namaHarga' => 'utama',
+      'hrgBeli' => 3000000,
       'hrgJual' => 4000000,
       'diskon' => 0,
       'tglAwalDiskon' => null,

@@ -22,8 +22,8 @@ class CreateProduksTable extends Migration
       $table->foreignId('idKategoriGlobal')->nullable();
       $table->string('satuan')->nullable();
       $table->text('deskripsi')->nullable();
-      $table->integer('hrgBeli')->nullable();
-      $table->integer('hrgJual')->nullable();
+      // $table->integer('hrgBeli')->nullable();
+      // $table->integer('hrgJual')->nullable();
       $table->string('jenisHarga')->nullable(); //mendefinisikan nama harga, misal warna, kendaraan dll
       $table->bigInteger('terjual')->nullable();
       $table->string('imgName')->nullable();

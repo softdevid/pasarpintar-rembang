@@ -18,6 +18,7 @@ class CreateHargasTable extends Migration
       $table->foreignId('idProduk');
       $table->string('namaHarga'); //misal kalau warna merah/biru
       $table->integer('hrgJual');
+      $table->integer('hrgBeli');
       $table->integer('stokToko')->default(0);
       $table->integer('stokGudang')->default(0);
       $table->integer('diskon');
