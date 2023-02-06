@@ -16,10 +16,13 @@ use App\Http\Controllers\LaporanSuperAdminController;
 use App\Http\Controllers\SuperAdminSettingController;
 use App\Http\Controllers\TokoAdminController;
 use App\Http\Controllers\TokoController;
+use App\Models\Produk;
 use Inertia\Inertia;
 
 // home route
 Route::get('/', [HomeController::class, 'index'])->name('index');
+
+Route::get('/produk-acak', [HomeController::class, 'produkAcak'])->name('produk.acak');
 
 Route::get('/cari', [SearchController::class, 'search'])->name('pencarian');
 

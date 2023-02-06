@@ -1,7 +1,7 @@
 import React from "react";
 import Main from "@/Components/TokoTemplate/Main";
 import Input from "@/Components/Input";
-import { Link } from "@inertiajs/inertia-react";
+import { Link } from "@inertiajs/react";
 import NavTabsPesananToko from "@/Components/NavTabsPesananToko";
 
 const PesananBaru = () => {

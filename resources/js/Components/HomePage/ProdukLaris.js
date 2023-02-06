@@ -1,8 +1,10 @@
-import { Link } from "@inertiajs/inertia-react";
+import formatRibuan from "@/config/formatRibuan";
+import { FormatRupiah } from "@/config/formatRupiah";
+import { Link } from "@inertiajs/react";
 import React from "react";
 
 const ProdukLaris = ({ produk }) => {
-  console.log(produk);
+  // console.log(produk);
   return (
     <div className="container">
       <div className="bg-sky-900 border-2 border-sky-900 rounded-lg overflow-hidden">
@@ -20,8 +22,9 @@ const ProdukLaris = ({ produk }) => {
                     <div className="relative flex flex-col overflow-visible w-full h-full max-w-[8rem] sm:w-max-[9rem] md:max-w-[10rem] lg:max-w-[11rem] max-h-max bg-white rounded-md">
                       <img
                         className="shrink-0 bg-cover bg-center w-full p-2 max-h-44"
-                        src={data.produkImg}
-                        alt="productImage"
+                        // src={data.produkImg}
+                        src={`https://source.unsplash.com/600x${i}00?book`}
+                        alt={data.namaProduk}
                       />
                       <div className="flex flex-col flex-[1_0_auto] px-2 py-2.5 overflow-hidden">
                         <div className="flex flex-col flex-[1_0_auto]">
@@ -31,11 +34,11 @@ const ProdukLaris = ({ produk }) => {
                         </div>
                         <div>
                           <span className="text-lg font-bold">
-                            RP{data.hrgJual}
+                          <FormatRupiah value={data.hrgJual} />
                           </span>
                           <div className="flex items-center justify-between">
                             <span className="text-xs font-bold text-slate-900 pt-1">
-                              {`${data.terjual} terjual`}
+                            {`${formatRibuan(data.terjual)} terjual`}
                             </span>
                           </div>
                         </div>

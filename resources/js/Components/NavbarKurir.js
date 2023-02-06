@@ -1,6 +1,6 @@
 import { Menu, Transition } from "@headlessui/react";
 import { ChevronDownIcon } from "@heroicons/react/20/solid";
-import { Link, usePage } from "@inertiajs/inertia-react";
+import { Link, usePage } from "@inertiajs/react";
 // import { react } from "laravel-mix";
 import { Fragment } from "react";
 

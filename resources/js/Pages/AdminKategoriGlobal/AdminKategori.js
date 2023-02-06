@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Main from "@/Components/AdminTemplate/Main";
-import { Link } from "@inertiajs/inertia-react";
-import { Inertia } from "@inertiajs/inertia";
+import { Link } from "@inertiajs/react";
+import { router } from "@inertiajs/react";
 
 const AdminKategori = (props) => {
   console.log(props);
@@ -17,7 +17,7 @@ const AdminKategori = (props) => {
   const handleDelete = (id) => {
     const data = id;
     // console.log(data);
-    Inertia.post("/admin/kategori/delete", data);
+    router.post("/admin/kategori/delete", data);
   };
   return (
     <>

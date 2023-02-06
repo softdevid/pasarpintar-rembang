@@ -1,4 +1,4 @@
-import { Inertia } from "@inertiajs/inertia";
+import { router } from "@inertiajs/react";
 import React, { useState } from "react";
 
 const Search = () => {
@@ -10,7 +10,7 @@ const Search = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    Inertia.get(
+    router.get(
       "/cari",
       {
         query: query,

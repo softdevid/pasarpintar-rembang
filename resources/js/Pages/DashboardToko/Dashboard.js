@@ -1,6 +1,6 @@
 import React from "react";
 import Main from "@/Components/TokoTemplate/Main";
-import { Link } from "@inertiajs/inertia-react";
+import { Link } from "@inertiajs/react";
 
 const Dashboard = (props) => {
   return (

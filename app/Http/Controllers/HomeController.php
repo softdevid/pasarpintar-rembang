@@ -52,6 +52,15 @@ class HomeController extends Controller
     ]);
   }
 
+  public function produkAcak()
+  {
+    return Produk::with(['toko' => function ($q) {
+      $q->select('id', 'slug as slugToko');
+    }])->select('produks.idToko', 'produks.namaProduk as namaProduk', 'produks.slug as slugProduk', 'produks.hrgJual', 'produks.terjual as terjual', 'produks.imgUrl as produkImg')
+        ->orderBy('terjual', 'desc')
+        ->paginate(18);
+  }
+
   public function toko(Toko $toko)
   {
     return Inertia::render('Toko', [

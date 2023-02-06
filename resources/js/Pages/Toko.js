@@ -3,7 +3,7 @@ import TokoProdukSemua from "@/Components/Toko/TokoProdukSemua";
 import TokoProdukLaris from "@/Components/Toko/TokoProdukLaris";
 import TokoProdukPromo from "@/Components/Toko/TokoProdukPromo";
 import Main from "@/Layouts/Main";
-import { Head } from "@inertiajs/inertia-react";
+import { Head } from "@inertiajs/react";
 import React from "react";
 
 const Toko = ({ toko }) => {

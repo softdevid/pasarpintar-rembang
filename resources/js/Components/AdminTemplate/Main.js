@@ -6,15 +6,15 @@ import {
   ComputerDesktopIcon,
   ListBulletIcon,
 } from "@heroicons/react/20/solid";
-import { Inertia } from "@inertiajs/inertia";
-import { Link } from "@inertiajs/inertia-react";
+import { router } from "@inertiajs/react";
+import { Link } from "@inertiajs/react";
 import React from "react";
 import { useState } from "react";
 const Main = (props) => {
   const [open, setOpen] = useState(true);
 
   const handleLogout = () => {
-    Inertia.post("/logout");
+    router.post("/logout");
   };
 
   return (

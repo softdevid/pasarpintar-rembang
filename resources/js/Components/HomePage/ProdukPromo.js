@@ -1,5 +1,5 @@
 import { FireIcon } from "@heroicons/react/20/solid";
-import { Link } from "@inertiajs/inertia-react";
+import { Link } from "@inertiajs/react";
 import React from "react";
 
 const ProdukPromo = () => {

@@ -1,5 +1,5 @@
 import Main from "@/Components/TokoTemplate/Main";
-import { Inertia } from "@inertiajs/inertia";
+import { router } from "@inertiajs/react";
 import { useState } from "react";
 
 const Index = (props) => {
@@ -9,13 +9,13 @@ const Index = (props) => {
   const handleCekHarian = () => {
     const data = { date };
     console.log(data);
-    Inertia.get('/toko/laporan/today', data);
+    router.get('/toko/laporan/today', data);
   }
 
   const [month, setMonth] = useState("");
   const handleCekBulanan = () => {
     const data = { month };
-    Inertia.get('/toko/laporan/month', data);
+    router.get('/toko/laporan/month', data);
   }
 
   const [year, setYear] = useState(2023);
@@ -24,7 +24,7 @@ const Index = (props) => {
 
   const handleCekTahunan = () => {
     const data = { year };
-    Inertia.get('/toko/laporan/year', data);
+    router.get('/toko/laporan/year', data);
   }
 
   //format rupiah

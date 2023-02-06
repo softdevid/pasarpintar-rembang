@@ -1,5 +1,5 @@
 import { Menu, Transition } from "@headlessui/react";
-import { Link } from "@inertiajs/inertia-react";
+import { Link } from "@inertiajs/react";
 import { Fragment } from "react";
 import { ChevronDownIcon } from "@heroicons/react/20/solid"
 

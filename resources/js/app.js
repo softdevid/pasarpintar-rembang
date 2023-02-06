@@ -2,18 +2,18 @@ require('./bootstrap');
 
 import React from 'react';
 import { render } from 'react-dom';
-import { createInertiaApp } from '@inertiajs/inertia-react';
-import { InertiaProgress } from '@inertiajs/progress';
-
-const appName = window.document.getElementsByTagName('title')[0]?.innerText || 'Pasar Pintar';
+import { createInertiaApp } from '@inertiajs/react'
 
 createInertiaApp({
-  title: (title) => `${title} | ${appName}`,
+  title: (title) => `${title} | Pasar Pintar`,
   resolve: (name) => require(`./Pages/${name}`),
+  progress: {
+    color: '#29d',
+  },
   setup({ el, App, props }) {
     return render(<App {...props} />, el);
   },
 });
 
-// InertiaProgress.init({ color: '#4B5563' });
-InertiaProgress.init({ color: 'blue' });
+// // InertiaProgress.init({ color: '#4B5563' });
+// InertiaProgress.init({ color: 'blue' });

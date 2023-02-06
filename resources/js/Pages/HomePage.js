@@ -1,5 +1,5 @@
 import React from "react";
-import { Head } from "@inertiajs/inertia-react";
+import { Head } from "@inertiajs/react";
 import Main from "@/Layouts/Main";
 import Carousel from "@/Components/HomePage/Carousel";
 import Kategori from "@/Components/HomePage/Kategori";
@@ -15,7 +15,7 @@ const HomePage = ({ title, produk }) => {
       <Carousel />
       <Kategori />
       <ProdukLaris produk={produk.produkTerlaris} />
-      <ProdukPromo />
+      {/* <ProdukPromo /> */}
       <ProdukAcak />
     </div>
   );

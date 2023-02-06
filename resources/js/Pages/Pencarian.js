@@ -1,5 +1,5 @@
 import Main from "@/Layouts/Main";
-import { Head, Link } from "@inertiajs/inertia-react";
+import { Head, Link } from "@inertiajs/react";
 import React from "react";
 
 const Pencarian = ({ query, hasil }) => {

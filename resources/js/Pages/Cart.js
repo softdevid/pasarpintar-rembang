@@ -1,7 +1,7 @@
 import React from "react";
 import Footer from "@/Components/Footer";
 import NavBar from "@/Components/NavBar";
-import { Head, Link, usePage } from "@inertiajs/inertia-react";
+import { Head, Link, usePage } from "@inertiajs/react";
 import Input from "@/Components/Input";
 
 export default function Cart(props) {

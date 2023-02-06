@@ -1,7 +1,7 @@
 
 import Main from "@/Components/TokoTemplate/Main";
-import { Inertia } from "@inertiajs/inertia";
-import { Link } from "@inertiajs/inertia-react";
+import { router } from "@inertiajs/react";
+import { Link } from "@inertiajs/react";
 import axios from "axios";
 import React, { useState } from "react";
 
@@ -11,7 +11,7 @@ const Create = (props) => {
   console.log(props);
 
   const handleSubmit = () => {
-    Inertia.post("/toko/produk", { values, images, image });
+    router.post("/toko/produk", { values, images, image });
   }
 
   const [values, setValues] = useState({
@@ -80,14 +80,14 @@ const Create = (props) => {
 
   const deleteImages = publicId => {
     setImagesToRemove(publicId);
-    Inertia.post('/delete-image', publicId);
+    routerpost('/delete-image', publicId);
     setImagesToRemove(null);
     setImages((prev) => prev.filter((img) => img.public_id !== publicId));
   }
 
   const deleteImage = publicId => {
     setImagesToRemove(publicId);
-    Inertia.post('/delete-image', publicId);
+    routerpost('/delete-image', publicId);
     setImagesToRemove(null);
     setImage((prev) => prev.filter((img) => img.public_id !== publicId));
   }

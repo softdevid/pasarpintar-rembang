@@ -1,14 +1,14 @@
 import React, { useState } from "react";
 import Main from "@/Components/AdminTemplate/Main";
-import { Link } from "@inertiajs/inertia-react";
-import { Inertia } from "@inertiajs/inertia";
+import { Link } from "@inertiajs/react";
+import { router } from "@inertiajs/react";
 
 const UbahToko = (props) => {
   console.log(props);
 
   const handleSubmit = () => {
     // e.preventDefault();
-    Inertia.patch("/admin/toko", values);
+    router.patch("/admin/toko", values);
     console.log(values);
   };
 

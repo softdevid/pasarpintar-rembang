@@ -1,5 +1,5 @@
 import React from "react";
-import { Head, Link } from "@inertiajs/inertia-react";
+import { Head, Link } from "@inertiajs/react";
 import NavbarKurir from "@/Components/NavbarKurir";
 import Input from "@/Components/Input";
 

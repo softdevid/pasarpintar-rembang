@@ -1,14 +1,14 @@
 import React, { useState } from "react";
 import Main from "@/Components/AdminTemplate/Main";
-import { Link } from "@inertiajs/inertia-react";
-import { Inertia } from "@inertiajs/inertia";
+import { Link } from "@inertiajs/react";
+import { router } from "@inertiajs/react";
 
 const Tambah = (props) => {
   console.log(props);
 
   const handleSubmit = () => {
     // e.preventDefault();
-    Inertia.post("/admin/kategori", values);
+    router.post("/admin/kategori", values);
     console.log(values);
   };
 

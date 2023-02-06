@@ -1,5 +1,5 @@
 import Main from "@/Components/AdminTemplate/Main";
-import { Inertia } from "@inertiajs/inertia";
+import { router } from "@inertiajs/react";
 import { useState } from "react";
 
 const RincianLaporan = (props) => {
@@ -9,13 +9,13 @@ const RincianLaporan = (props) => {
   const handleCekHarian = () => {
     const data = { date };
     console.log(data);
-    Inertia.get("/admin/laporan/today", data);
+    router.get("/admin/laporan/today", data);
   };
 
   const [month, setMonth] = useState("");
   const handleCekBulanan = () => {
     const data = { month };
-    Inertia.get("/admin/laporan/month", data);
+    router.get("/admin/laporan/month", data);
   };
 
   const [year, setYear] = useState(2023);
@@ -24,7 +24,7 @@ const RincianLaporan = (props) => {
 
   const handleCekTahunan = () => {
     const data = { year };
-    Inertia.get("/admin/laporan/year", data);
+    router.get("/admin/laporan/year", data);
   };
 
   //format rupiah

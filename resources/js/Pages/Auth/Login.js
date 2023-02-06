@@ -5,7 +5,7 @@ import Guest from "@/Layouts/Guest";
 import Input from "@/Components/Input";
 import Label from "@/Components/Label";
 import ValidationErrors from "@/Components/ValidationErrors";
-import { Head, Link, useForm } from "@inertiajs/inertia-react";
+import { Head, Link, useForm } from "@inertiajs/react";
 import Main from "@/Layouts/Main";
 
 export default function Login({ status, canResetPassword }) {

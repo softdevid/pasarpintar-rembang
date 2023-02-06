@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Main from "@/Components/TokoTemplate/Main";
-import { Link } from "@inertiajs/inertia-react";
-import { Inertia } from "@inertiajs/inertia";
+import { Link } from "@inertiajs/react";
+import { router } from "@inertiajs/react";
 
 const Index = (props) => {
   const [query, setQuery] = useState("");
@@ -14,7 +14,7 @@ const Index = (props) => {
   }
 
   const handleDelete = (id) => {
-    Inertia.post("/toko/produk/delete", id);
+    router.post("/toko/produk/delete", id);
   }
 
   return (

@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import Main from "@/Components/AdminTemplate/Main";
 import Input from "@/Components/Input";
-import { Link } from "@inertiajs/inertia-react";
-import { Inertia } from "@inertiajs/inertia";
+import { Link } from "@inertiajs/react";
+import { router } from "@inertiajs/react";
 
 const Laporan = (props) => {
   console.log(props);
@@ -18,7 +18,7 @@ const Laporan = (props) => {
   const handleRincian = (id) => {
     const data = id;
     // console.log(data);
-    Inertia.get("/admin/laporan/rincian", data);
+    router.get("/admin/laporan/rincian", data);
   };
 
   return (

@@ -2,8 +2,7 @@ import {
   ArrowSmallLeftIcon,
   ShoppingCartIcon,
 } from "@heroicons/react/20/solid";
-import { Inertia } from "@inertiajs/inertia";
-import { Link } from "@inertiajs/inertia-react";
+import { Link } from "@inertiajs/react";
 import Search from "../Search";
 
 const MidNavBar = ({ appName, currentUrl, user }) => {
@@ -22,10 +21,7 @@ const MidNavBar = ({ appName, currentUrl, user }) => {
           ) : (
             <></>
           )}
-          <Link
-            href={route("index")}
-            className="items-center ml-2"
-          >
+          <Link href={route("index")} className="items-center ml-2">
             <span className="self-center text-lg sm:text-2xl font-semibold">
               <span className="mr-1.5">{appName}</span>
             </span>

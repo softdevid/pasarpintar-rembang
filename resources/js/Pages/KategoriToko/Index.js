@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Main from "@/Components/TokoTemplate/Main";
-import { Inertia } from "@inertiajs/inertia";
+import { router } from "@inertiajs/react";
 // import { Modal } from 'flowbite-modal';
 
 const Index = (props) => {
@@ -20,13 +20,13 @@ const Index = (props) => {
     const data = {
       namaKategori
     }
-    Inertia.post("/toko/kategori", data);
+    router.post("/toko/kategori", data);
     setNamaKategori("");
   }
 
   function handleDeleteKategori({ id }) {
     const data = { id }
-    Inertia.post('/toko/kategori/delete', data);
+    routerpost('/toko/kategori/delete', data);
   }
 
   // const [modalIsOpen, setModalIsOpen] = useState(false);

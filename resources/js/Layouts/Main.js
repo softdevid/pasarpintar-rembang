@@ -1,11 +1,10 @@
 import React from "react";
 import Footer from "@/Components/Footer";
 import NavBar from "@/Components/NavBar";
-import { usePage } from "@inertiajs/inertia-react";
+import { usePage } from "@inertiajs/react";
 
 export default function Main({ children }) {
   const props = usePage().props;
-
   return (
     <>
       <header>

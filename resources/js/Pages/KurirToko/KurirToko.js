@@ -1,7 +1,7 @@
 import React from "react";
 
 import Input from "@/Components/Input";
-import { Link } from "@inertiajs/inertia-react";
+import { Link } from "@inertiajs/react";
 import Main from "@/Components/TokoTemplate/Main";
 
 const KurirToko = () => {
