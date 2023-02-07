@@ -11,7 +11,7 @@ import {
   UserCircleIcon,
 } from "@heroicons/react/20/solid";
 
-import { router } from "@inertiajs/react";
+import { Head, router } from "@inertiajs/react";
 import { Link } from "@inertiajs/react";
 import React, { useState, useEffect } from "react";
 
@@ -34,60 +34,61 @@ const Main = (props) => {
   console.log(data);
 
   return (
-    <div className="flex">
-      <div
-        className={` ${open ? "w-72" : "w-20 "
-          } bg-gradient-to-t from-sky-700 via-blue-700 to-cyan-500 h-screen p-5  pt-8 relative duration-300`}
-      >
-        <img
-          src="/img/control.png"
-          className={`absolute cursor-pointer -right-3 top-9 w-7 border-dark-purple
-           border-2 rounded-full  ${!open && "rotate-180"}`}
-          onClick={() => setOpen(!open)}
-        />
-        <div className="flex gap-x-4 items-center">
+    <>
+      <div className="flex">
+        <div
+          className={` ${open ? "w-72" : "w-20 "
+            } bg-gradient-to-t from-sky-700 via-blue-700 to-cyan-500 h-screen p-5  pt-8 relative duration-300`}
+        >
           <img
-            src="/img/logo.png"
-            className={`cursor-pointer duration-500 ${open && "rotate-[360deg]"
-              }`}
+            src="/img/control.png"
+            className={`absolute cursor-pointer -right-3 top-9 w-7 border-dark-purple
+           border-2 rounded-full  ${!open && "rotate-180"}`}
+            onClick={() => setOpen(!open)}
           />
-          <h1
-            className={`text-white origin-left font-bold text-xl duration-200 ${!open && "scale-0"
-              }`}
-          >
-            Toko {data.namaToko} <br />
-          </h1>
-        </div>
-        <ul className="pt-6">
-          {data.statusToko === 'premium' &&
-            <>
-              <Link href="/toko/dashboard">
-                <li
-                  className={`flex  rounded-md p-2 cursor-pointer hover:bg-light-white text-gray-300 text-sm items-center gap-x-4`}
-                >
-                  <ComputerDesktopIcon className="h-6 w-6 text-white" />
-                  <span
-                    className={`${!open && "hidden"
-                      } origin-left text-white font-semibold duration-200`}
+          <div className="flex gap-x-4 items-center">
+            <img
+              src="/img/logo.png"
+              className={`cursor-pointer duration-500 ${open && "rotate-[360deg]"
+                }`}
+            />
+            <h1
+              className={`text-white origin-left font-bold text-xl duration-200 ${!open && "scale-0"
+                }`}
+            >
+              Toko {data.namaToko} <br />
+            </h1>
+          </div>
+          <ul className="pt-6">
+            {data.statusToko === 'premium' &&
+              <>
+                <Link href="/toko/dashboard">
+                  <li
+                    className={`flex  rounded-md p-2 cursor-pointer hover:bg-light-white text-gray-300 text-sm items-center gap-x-4`}
                   >
-                    Dashboard
-                  </span>
-                </li>
-              </Link>
-              <Link href="/toko/pesanan">
-                <li
-                  className={`flex  rounded-md p-2 cursor-pointer hover:bg-light-white text-gray-300 text-sm items-center gap-x-4`}
-                >
-                  <ClipboardDocumentListIcon className="h-6 w-6 text-white" />
-                  <span
-                    className={`${!open && "hidden"
-                      } origin-left text-white font-semibold duration-200`}
+                    <ComputerDesktopIcon className="h-6 w-6 text-white" />
+                    <span
+                      className={`${!open && "hidden"
+                        } origin-left text-white font-semibold duration-200`}
+                    >
+                      Dashboard
+                    </span>
+                  </li>
+                </Link>
+                <Link href="/toko/pesanan">
+                  <li
+                    className={`flex  rounded-md p-2 cursor-pointer hover:bg-light-white text-gray-300 text-sm items-center gap-x-4`}
                   >
-                    Pesanan
-                  </span>
-                </li>
-              </Link>
-              {/* <Link href="/toko/kurir">
+                    <ClipboardDocumentListIcon className="h-6 w-6 text-white" />
+                    <span
+                      className={`${!open && "hidden"
+                        } origin-left text-white font-semibold duration-200`}
+                    >
+                      Pesanan
+                    </span>
+                  </li>
+                </Link>
+                {/* <Link href="/toko/kurir">
             <li
               className={`flex  rounded-md p-2 cursor-pointer hover:bg-light-white text-gray-300 text-sm items-center gap-x-4`}
             >
@@ -100,53 +101,53 @@ const Main = (props) => {
               </span>
               </li>
           </Link> */}
-            </>
+              </>
 
-          }
-          <Link href="/toko/produk">
-            <li
-              className={`flex  rounded-md p-2 cursor-pointer hover:bg-light-white text-gray-300 text-sm items-center gap-x-4`}
-            >
-              <ArchiveBoxArrowDownIcon className="h-6 w-6 text-white" />
-              <span
-                className={`${!open && "hidden"
-                  } origin-left text-white font-semibold duration-200`}
-              >
-                Produk
-              </span>
-            </li>
-          </Link>
-          <Link href="/toko/kategori">
-            <li
-              className={`flex  rounded-md p-2 cursor-pointer hover:bg-light-white text-gray-300 text-sm items-center gap-x-4`}
-            >
-              <ListBulletIcon className="h-6 w-6 text-white" />
-              <span
-                className={`${!open && "hidden"
-                  } origin-left text-white font-semibold duration-200`}
-              >
-                Kategori
-              </span>
-            </li>
-          </Link>
-
-          {data.statusToko === 'premium' &&
-            <Link href="/toko/laporan">
+            }
+            <Link href="/toko/produk">
               <li
                 className={`flex  rounded-md p-2 cursor-pointer hover:bg-light-white text-gray-300 text-sm items-center gap-x-4`}
               >
-                <ChartBarSquareIcon className="h-6 w-6 text-white" />
+                <ArchiveBoxArrowDownIcon className="h-6 w-6 text-white" />
                 <span
                   className={`${!open && "hidden"
                     } origin-left text-white font-semibold duration-200`}
                 >
-                  Laporan
+                  Produk
                 </span>
               </li>
             </Link>
-          }
+            <Link href="/toko/kategori">
+              <li
+                className={`flex  rounded-md p-2 cursor-pointer hover:bg-light-white text-gray-300 text-sm items-center gap-x-4`}
+              >
+                <ListBulletIcon className="h-6 w-6 text-white" />
+                <span
+                  className={`${!open && "hidden"
+                    } origin-left text-white font-semibold duration-200`}
+                >
+                  Kategori
+                </span>
+              </li>
+            </Link>
 
-          {/* <Link href="/toko/setting">
+            {data.statusToko === 'premium' &&
+              <Link href="/toko/laporan">
+                <li
+                  className={`flex  rounded-md p-2 cursor-pointer hover:bg-light-white text-gray-300 text-sm items-center gap-x-4`}
+                >
+                  <ChartBarSquareIcon className="h-6 w-6 text-white" />
+                  <span
+                    className={`${!open && "hidden"
+                      } origin-left text-white font-semibold duration-200`}
+                  >
+                    Laporan
+                  </span>
+                </li>
+              </Link>
+            }
+
+            {/* <Link href="/toko/setting">
             <li
               className={`flex  rounded-md p-2 cursor-pointer hover:bg-light-white text-gray-300 text-sm items-center gap-x-4`}
             >
@@ -159,23 +160,26 @@ const Main = (props) => {
               </span>
             </li>
           </Link> */}
-          <button onClick={() => handleLogout()} as="button">
-            <li
-              className={`flex  rounded-md p-2 cursor-pointer hover:bg-light-white text-gray-300 text-sm items-center gap-x-4`}
-            >
-              <ArrowLeftOnRectangleIcon className="h-6 w-6 text-white" />
-              <span
-                className={`${!open && "hidden"
-                  } origin-left text-white font-semibold duration-200`}
+            <button onClick={() => handleLogout()} as="button">
+              <li
+                className={`flex  rounded-md p-2 cursor-pointer hover:bg-light-white text-gray-300 text-sm items-center gap-x-4`}
               >
-                Keluar
-              </span>
-            </li>
-          </button>
-        </ul>
+                <ArrowLeftOnRectangleIcon className="h-6 w-6 text-white" />
+                <span
+                  className={`${!open && "hidden"
+                    } origin-left text-white font-semibold duration-200`}
+                >
+                  Keluar
+                </span>
+              </li>
+            </button>
+          </ul>
+        </div>
+        <div className="h-screen flex-1 p-7">
+          {props.children}
+        </div>
       </div>
-      <div className="h-screen flex-1 p-7">{props.children}</div>
-    </div>
+    </>
   );
 };
 export default Main;

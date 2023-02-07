@@ -8,8 +8,8 @@ import {
 } from "@heroicons/react/20/solid";
 import { router } from "@inertiajs/react";
 import { Link } from "@inertiajs/react";
-import React from "react";
-import { useState } from "react";
+import React, { useState } from "react";
+
 const Main = (props) => {
   const [open, setOpen] = useState(true);
 
@@ -20,9 +20,8 @@ const Main = (props) => {
   return (
     <div className="flex">
       <div
-        className={` ${
-          open ? "w-72" : "w-20 "
-        } bg-dark-purple h-screen p-5  pt-8 relative duration-300`}
+        className={` ${open ? "w-72" : "w-20 "
+          } bg-dark-purple h-screen p-5  pt-8 relative duration-300`}
       >
         <img
           src="/img/control.png"
@@ -33,14 +32,12 @@ const Main = (props) => {
         <div className="flex gap-x-4 items-center">
           <img
             src="/img/logo.png"
-            className={`cursor-pointer duration-500 ${
-              open && "rotate-[360deg]"
-            }`}
+            className={`cursor-pointer duration-500 ${open && "rotate-[360deg]"
+              }`}
           />
           <h1
-            className={`text-white origin-left font-medium text-xl duration-200 ${
-              !open && "scale-0"
-            }`}
+            className={`text-white origin-left font-medium text-xl duration-200 ${!open && "scale-0"
+              }`}
           >
             Admin PasarPintar
           </h1>

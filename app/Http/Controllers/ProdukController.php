@@ -51,7 +51,7 @@ class ProdukController extends Controller
     $toko = Toko::where('idUser', auth()->user()->id)->select('id')->first();
     $kategori = Kategori::where('idToko', $toko->idToko)->select('id', 'namaKategori')->get();
     $kategoriGlobal = KategoriGlobal::select('id', 'namaKategoriGlobal')->get();
-    return Inertia::render('TokoProduk/Create', [
+    return Inertia::render('TokoProduk/Create2', [
       'title' => 'Tambah Produk',
       'kategori' => $kategori,
       'kategoriGlobal' => $kategoriGlobal,
@@ -66,6 +66,7 @@ class ProdukController extends Controller
    */
   public function store(Request $request)
   {
+    dd($request->all());
     $toko = Toko::where('idUser', auth()->user()->id)->select('id')->first();
     $request->validate(
       [

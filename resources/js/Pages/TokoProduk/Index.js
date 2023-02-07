@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import Main from "@/Components/TokoTemplate/Main";
+import { Head, router } from "@inertiajs/react";
 import { Link } from "@inertiajs/react";
-import { Inertia } from "@inertiajs/inertia";
+
 import axios from "axios";
 
 const Index = (props) => {
@@ -35,11 +36,12 @@ const Index = (props) => {
 
 
   const handleDelete = (id) => {
-    Inertia.post("/toko/produk/delete", id);
+    router.post("/toko/produk/delete", id);
   }
 
   return (
     <>
+      <Head title={props.title} />
       <div className="grid grid-cols-2 gap-4">
         <h1 className="font-bold text-3xl">{props.title}</h1>
         <div className="text-right">

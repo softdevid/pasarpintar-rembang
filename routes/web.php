@@ -16,6 +16,7 @@ use App\Http\Controllers\LaporanSuperAdminController;
 use App\Http\Controllers\SuperAdminSettingController;
 use App\Http\Controllers\TokoAdminController;
 use App\Http\Controllers\TokoController;
+use App\Http\Controllers\ValidateProdukController;
 use App\Models\Produk;
 use Inertia\Inertia;
 
@@ -132,6 +133,9 @@ Route::post('/delete-image', [ProdukController::class, 'deleteImage'])->name('de
 
 Route::get('/toko/setting', [AdminTokoController::class, 'setting'])->name('toko.setting');
 
+
+//validation produk step
+Route::post('/validate-step-1', [ValidateProdukController::class, 'validate1']);
 
 
 //route grafik 7 hari kebelakang
