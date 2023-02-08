@@ -68,22 +68,24 @@ const ProdukAcak = () => {
                   className="w-full bg-white border-2 border-slate-600 rounded-md overflow-hidden"
                 >
                   <Link href={`${data.toko.slugToko}/${data.slugProduk}`}>
-                    <img
-                      className="bg-cover bg-center w-full p-2"
-                      src={`https://source.unsplash.com/400x400?book`}
-                      alt={data.namaProduk}
-                    />
-                    <div className="px-2 py-2.5">
-                      <h5 className="text-sm font-semibold tracking-tight text-slate-700 line-clamp-3">
-                        {data.namaProduk}
-                      </h5>
-                      <span className="text-lg font-bold">
-                        <FormatRupiah value={data.hrgJual} />
-                      </span>
-                      <div className="flex items-center justify-between">
-                        <span className="text-xs font-bold text-slate-900 pt-1">
-                          {`${formatRibuan(data.terjual)} terjual`}
-                        </span>
+                    <div className="relative flex flex-col overflow-visible w-full h-full bg-white rounded-md">
+                      <img
+                        className="shrink-0 bg-cover bg-center w-full p-2"
+                        // src={data.produkImg}
+                        src={`https://source.unsplash.com/600x600?book`}
+                        alt={data.namaProduk}
+                      />
+                      <div className="flex flex-col flex-[1_0_auto] px-2 py-2.5 overflow-hidden">
+                        <div className="flex flex-col flex-[1_0_auto]">
+                          <h5 className="text-sm font-semibold tracking-tight text-slate-700 line-clamp-2">
+                            {data.namaProduk}
+                          </h5>
+                        </div>
+                        <div>
+                          <span className="text-lg font-bold">
+                          <FormatRupiah value={`${data.hargas[0]?.hrgJual}000`} />
+                          </span>
+                        </div>
                       </div>
                     </div>
                   </Link>

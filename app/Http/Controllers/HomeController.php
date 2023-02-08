@@ -5,18 +5,34 @@ namespace App\Http\Controllers;
 use App\Models\Produk;
 use App\Models\Toko;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 
 class HomeController extends Controller
 {
   public function index()
   {
+
+    $produkTerlaris = Produk::with(['toko' => function ($q) {
+      $q->select('id', 'slug as slugToko');
+    }, 'hargas' => function ($q) {
+      $q->select('idProduk', 'hrgJual')->orderBy('hrgJual', 'asc');
+    }])->select(
+      'produks.id',
+      'produks.idToko',
+      'produks.namaProduk',
+      'produks.slug as slugProduk',
+      'produks.terjual',
+      'produks.imgUrl',
+    )
+      ->orderBy('terjual', 'desc')
+      ->limit(10)
+      ->get();
+
     return Inertia::render('HomePage', [
       "title" => "HomePage",
       "produk" => [
-        "produkTerlaris" => Produk::with(['toko' => function ($q) {
-          $q->select('id', 'slug as slugToko');
-        }])->select('produks.idToko', 'produks.namaProduk as namaProduk', 'produks.slug as slugProduk', 'produks.hrgJual', 'produks.terjual as terjual', 'produks.imgUrl as produkImg')->orderBy('terjual', 'desc')->limit(10)->get()
+        "produkTerlaris" => $produkTerlaris
       ],
     ]);
   }
@@ -24,13 +40,13 @@ class HomeController extends Controller
   public function produk(Toko $toko, Produk $produk)
   {
     $lamaBergabung = "";
-    if ($produk->created_at->diffInYears(Carbon::now()) < 1) {
-      $lamaBergabung = $produk->created_at->format('d F');
+    if ($toko->created_at->diffInYears(Carbon::now()) < 1) {
+      $lamaBergabung = $toko->created_at->format('d F');
     } else {
-      $lamaBergabung = $produk->created_at->diffInYears(Carbon::now()) . "tahun yang lalu";
+      $lamaBergabung = $toko->created_at->diffInYears(Carbon::now()) . "tahun yang lalu";
     }
 
-    return Inertia::render('Produk', [
+    $dataProduk = [
       "toko" => [
         "namaToko" => $toko->namaToko,
         "slug" => $toko->slug,
@@ -43,22 +59,41 @@ class HomeController extends Controller
         "terjual" => $produk->terjual,
         "deskripsi" => $produk->deskripsi,
         "diskon" => $produk->diskon,
-        "hrgJual" => $produk->hrgJual,
-        "stok" => $produk->stokToko,
+        "jenisHarga" => $produk->jenisHarga,
+        "hargas" => $produk
+          ->hargas()
+          ->select('idProduk', 'namaHarga', 'hrgJual', 'stokToko', 'diskon', 'tglAwalDiskon', 'tglAkhirDiskon')
+          ->orderBy('hrgJual', 'asc')
+          ->get()
+          ->toArray()
+
       ],
-      "image" => [
-        "imgMain" => $produk->imgUrl,
-      ],
-    ]);
+      "images" => [
+        [
+          "imgName" => $produk->imgName,
+          "imgUrl" => $produk->imgUrl
+        ],
+        ...$produk->gambars()->select('imgName', 'imgUrl')->limit(3)->get()->toArray(),
+      ]
+    ];
+    return Inertia::render('Produk', $dataProduk);
   }
 
   public function produkAcak()
   {
     return Produk::with(['toko' => function ($q) {
       $q->select('id', 'slug as slugToko');
-    }])->select('produks.idToko', 'produks.namaProduk as namaProduk', 'produks.slug as slugProduk', 'produks.hrgJual', 'produks.terjual as terjual', 'produks.imgUrl as produkImg')
-        ->orderBy('terjual', 'desc')
-        ->paginate(18);
+    }, 'hargas' => function ($q) {
+      $q->select('idProduk', 'hrgJual')->orderBy('hrgJual', 'asc');
+    }])->select(
+      'produks.id',
+      'produks.idToko',
+      'produks.namaProduk',
+      'produks.slug',
+      'produks.terjual',
+      'produks.imgUrl',
+    )->orderBy('terjual', 'desc')
+      ->paginate(18);
   }
 
   public function toko(Toko $toko)

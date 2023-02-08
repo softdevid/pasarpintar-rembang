@@ -7,5 +7,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class Harga extends Model
 {
-    use HasFactory;
+  use HasFactory;
+
+  public function produk()
+  {
+    return $this->belongsTo(Produk::class, "idProduk", 'id');
+  }
 }

@@ -20,18 +20,12 @@ class ProdukFactory extends Factory
       "idToko" => Toko::pluck('id')->random(),
       "idKategori" => $this->faker->numberBetween(1, 10),
       "idKategoriGlobal" => $this->faker->numberBetween(1, 20),
-      "idSatuan" => $this->faker->numberBetween(1, 12),
+      "satuan" => $this->faker->numberBetween(1, 12),
       "deskripsi" => $this->faker->paragraphs(3, true),
-      "hrgBeli" => $this->faker->randomNumber(6, true),
-      "hrgJual" => $this->faker->randomNumber(6, true),
-      "stokToko" => $this->faker->randomNumber(3),
-      "stokGudang" => $this->faker->randomNumber(3),
+      "jenisHarga" => $this->faker->word(),
       "terjual" => $this->faker->randomNumber(4),
-      // "diskon",
-      // "tglAwalDiskon",
-      // "tglAkhirDiskon",
-      // "imgName",
-      // "imgUrl"
+      "imgName" => $this->faker->slug(4),
+      "imgUrl" => "https://source.unsplash.com/600x600?random",
     ];
   }
 }

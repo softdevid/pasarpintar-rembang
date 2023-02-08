@@ -4,7 +4,7 @@ import { Link } from "@inertiajs/react";
 import React from "react";
 
 const ProdukLaris = ({ produk }) => {
-  // console.log(produk);
+  console.log(produk);
   return (
     <div className="container">
       <div className="bg-sky-900 border-2 border-sky-900 rounded-lg overflow-hidden">
@@ -23,7 +23,7 @@ const ProdukLaris = ({ produk }) => {
                       <img
                         className="shrink-0 bg-cover bg-center w-full p-2 max-h-44"
                         // src={data.produkImg}
-                        src={`https://source.unsplash.com/600x${i}00?book`}
+                        src={data.imgUrl}
                         alt={data.namaProduk}
                       />
                       <div className="flex flex-col flex-[1_0_auto] px-2 py-2.5 overflow-hidden">
@@ -34,11 +34,11 @@ const ProdukLaris = ({ produk }) => {
                         </div>
                         <div>
                           <span className="text-lg font-bold">
-                          <FormatRupiah value={data.hrgJual} />
+                            <FormatRupiah value={`${data.hargas[0].hrgJual}000`} />
                           </span>
                           <div className="flex items-center justify-between">
                             <span className="text-xs font-bold text-slate-900 pt-1">
-                            {`${formatRibuan(data.terjual)} terjual`}
+                              {`${formatRibuan(data.terjual)} terjual`}
                             </span>
                           </div>
                         </div>

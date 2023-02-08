@@ -2,11 +2,42 @@ import formatRibuan from "@/config/formatRibuan";
 import { FormatRupiah } from "@/config/formatRupiah";
 import { BuildingStorefrontIcon } from "@heroicons/react/20/solid";
 import { Link } from "@inertiajs/react";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import QtyButton from "../QtyButton";
 
 const ProdukDetail = ({ produk, toko }) => {
-  console.log(produk, toko);
+  // console.log(produk, toko);
+
+  const [active, setActive] = useState(false);
+  const [harga, setHarga] = useState({});
+
+  useEffect(() => {
+    if (active === false) {
+      initialHarga();
+    }
+  }, [active]);
+
+  const initialHarga = () =>
+    setHarga({
+      hargaJual: 0,
+      stok: produk.hargas.reduce(
+        (total, currentValue) => (total = total + currentValue.stokToko),
+        0
+      ),
+    });
+
+  const gantiHarga = (namaHarga) => {
+    console.log(namaHarga);
+
+    const filter = produk.hargas.filter((harga) => {
+      return harga.namaHarga === namaHarga;
+    });
+    setHarga({
+      hargaJual: filter[0].hrgJual,
+      stok: filter[0].stokToko,
+    });
+  };
+
   return (
     <div className="w-full px-4 md:w-[65%]">
       <div className="md:pl-2 h-full">
@@ -23,21 +54,57 @@ const ProdukDetail = ({ produk, toko }) => {
             </div>
           </div>
           <div className="inline-block mb-2 text-2xl lg:text-3xl font-semibold text-slate-800">
-            <span className="mr-2">
-              {<FormatRupiah value={produk.hrgJual} />}
-            </span>
-            {produk.diskon && (
+            {active === false ? (
+              <span className="mr-2 flex justify-start items-center">
+                <FormatRupiah value={`${produk.hargas[0].hrgJual}000`} />
+                {" ~ "}
+                <FormatRupiah
+                  value={`${
+                    produk.hargas[produk.hargas.length - 1].hrgJual
+                  }000`}
+                />
+              </span>
+            ) : (
+              <FormatRupiah value={`${harga.hargaJual}000`} />
+            )}
+            {/* {produk.diskon && (
               <span className="text-base font-normal text-slate-600 line-through">
                 Rp{produk.diskon}
               </span>
-            )}
+            )} */}
           </div>
+
+          <div className="pb-3 pt-4">
+            <div className="flex flex-wrap">
+              {produk.hargas.map((harga, index) => (
+                <button
+                  key={index}
+                  type="button"
+                  className={`${
+                    active === index
+                      ? "text-white bg-blue-800"
+                      : "text-blue-700"
+                  } border border-blue-700 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2`}
+                  onClick={async () => {
+                    (await active) === index
+                      ? setActive(false)
+                      : setActive(index);
+
+                    gantiHarga(harga.namaHarga);
+                  }}
+                >
+                  {harga.namaHarga}
+                </button>
+              ))}
+            </div>
+          </div>
+
           <div className="flex items-center mt-4 mb-5">
             <span className="mr-5 text-lg text-slate-900">Kuantitas</span>
-            <QtyButton max={produk.stok} />
+            <QtyButton max={harga.stok} />
             <div className="ml-2">
               <span className="text-slate-900">Stok : </span>
-              <span>{produk.stok}</span>
+              <span>{harga.stok}</span>
             </div>
           </div>
           <div className="flex items-center">
@@ -49,22 +116,24 @@ const ProdukDetail = ({ produk, toko }) => {
               </button>
             </div>
           </div>
-          <div className="flex flex-col md:flex-row items-start md:items-center px-2 my-6 py-4 border-y border-slate-200">
+          <div className="flex flex-col xs:flex-row items-start md:items-center px-2 my-6 py-4 border-y border-slate-200">
             <div className="flex flex-col pr-3 overflow-hidden">
-              <span className="text-slate-800 mb-2 ml-2 basis-1/2	truncate">
+              <span className="text-lg md:text-xl text-slate-800 mb-2 basis-1/2 truncate">
                 {toko.namaToko}
               </span>
-              <Link
-                as="button"
-                href={`/${toko.slug}`}
-                className="flex basis-1/2	 items-center max-w-max text-slate-700 px-2 py-1 border border-slate-400 rounded-md hover:border-slate-900 hover:text-slate-900"
-              >
-                <BuildingStorefrontIcon className="w-4 h-5 mr-1" />
-                Kunjungi Toko
-              </Link>
+              <div className="p-1">
+                <Link
+                  as="button"
+                  href={`/${toko.slug}`}
+                  className="flex basis-1/2	items-center max-w-max text-slate-700 px-2 py-1 border border-slate-400 rounded-md hover:border-slate-900 hover:text-slate-900 hover:ring-2 hover:ring-slate-700"
+                >
+                  <BuildingStorefrontIcon className="w-4 h-5 mr-1" />
+                  Kunjungi Toko
+                </Link>
+              </div>
             </div>
-            <div className="flex pl-3">
-              <div className="flex flex-row md:flex-col text-xs space-x-2">
+            <div className="flex pt-2 md:pl-3">
+              <div className="flex flex-col text-base">
                 <div className="relative flex mb-2">
                   <label className="mr-1 text-slate-700">Produk : </label>
                   <span className="text-slate-900">{toko.jumlahProduk}</span>
