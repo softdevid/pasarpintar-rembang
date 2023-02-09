@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\Produk;
 use App\Models\Toko;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 
 class HomeController extends Controller
@@ -89,10 +88,10 @@ class HomeController extends Controller
       'produks.id',
       'produks.idToko',
       'produks.namaProduk',
-      'produks.slug',
+      'produks.slug as slugProduk',
       'produks.terjual',
       'produks.imgUrl',
-    )->orderBy('terjual', 'desc')
+    )->orderBy('terjual', 'desc')->limit(200)
       ->paginate(18);
   }
 

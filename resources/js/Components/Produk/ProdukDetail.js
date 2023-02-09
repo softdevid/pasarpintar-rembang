@@ -5,8 +5,8 @@ import { Link } from "@inertiajs/react";
 import React, { useEffect, useState } from "react";
 import QtyButton from "../QtyButton";
 
-const ProdukDetail = ({ produk, toko }) => {
-  // console.log(produk, toko);
+const ProdukDetail = ({ produk, toko, auth }) => {
+  console.log(auth);
 
   const [active, setActive] = useState(false);
   const [harga, setHarga] = useState({});
@@ -27,8 +27,6 @@ const ProdukDetail = ({ produk, toko }) => {
     });
 
   const gantiHarga = (namaHarga) => {
-    console.log(namaHarga);
-
     const filter = produk.hargas.filter((harga) => {
       return harga.namaHarga === namaHarga;
     });
@@ -98,24 +96,32 @@ const ProdukDetail = ({ produk, toko }) => {
               ))}
             </div>
           </div>
-
-          <div className="flex items-center mt-4 mb-5">
-            <span className="mr-5 text-lg text-slate-900">Kuantitas</span>
-            <QtyButton max={harga.stok} />
-            <div className="ml-2">
+          {auth.user !== null ? (
+            <>
+              <div className="flex items-center mt-4 mb-5">
+                <span className="mr-5 text-lg text-slate-900">Kuantitas</span>
+                <QtyButton max={harga.stok} />
+                <div className="ml-2">
+                  <span className="text-slate-900">Stok : </span>
+                  <span>{harga.stok}</span>
+                </div>
+              </div>
+              <div className="flex items-center">
+                <div className="w-1/2 lg:w-1/4">
+                  <button className="relative w-full inline-flex items-center justify-center p-0.5 mb-2 mr-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-teal-300 to-sky-400 group-hover:from-cyan-500 group-hover:to-blue-500 hover:text-slate-900 focus:ring-4 focus:outline-none focus:ring-cyan-200">
+                    <span className="relative w-full px-5 py-2.5 text-base font-semibold transition-all ease-in duration-75 bg-white rounded-md group-hover:bg-opacity-0">
+                      <span className="text-lg font-bold mr-1">+</span>Keranjang
+                    </span>
+                  </button>
+                </div>
+              </div>
+            </>
+          ) : (
+            <>
               <span className="text-slate-900">Stok : </span>
               <span>{harga.stok}</span>
-            </div>
-          </div>
-          <div className="flex items-center">
-            <div className="w-1/2 lg:w-1/4">
-              <button className="relative w-full inline-flex items-center justify-center p-0.5 mb-2 mr-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-teal-300 to-sky-400 group-hover:from-cyan-500 group-hover:to-blue-500 hover:text-slate-900 focus:ring-4 focus:outline-none focus:ring-cyan-200">
-                <span className="relative w-full px-5 py-2.5 text-base font-semibold transition-all ease-in duration-75 bg-white rounded-md group-hover:bg-opacity-0">
-                  <span className="text-lg font-bold mr-1">+</span>Keranjang
-                </span>
-              </button>
-            </div>
-          </div>
+            </>
+          )}
           <div className="flex flex-col xs:flex-row items-start md:items-center px-2 my-6 py-4 border-y border-slate-200">
             <div className="flex flex-col pr-3 overflow-hidden">
               <span className="text-lg md:text-xl text-slate-800 mb-2 basis-1/2 truncate">

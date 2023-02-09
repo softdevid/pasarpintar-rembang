@@ -9,7 +9,7 @@ const ProdukImage = ({ images }) => {
           <img
             src={images[0].imgUrl}
             className="object-cover w-full lg:h-full rounded-md"
-            alt={images[0].imgName}
+            alt={`Main`}
           />
         </div>
         <div className="flex ">
@@ -19,7 +19,7 @@ const ProdukImage = ({ images }) => {
                 <img
                   src={img.imgUrl}
                   className="object-cover w-full lg:h-full rounded"
-                  alt={img.imgName}
+                  alt={i + 1}
                 />
               </div>
             </div>

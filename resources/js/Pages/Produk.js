@@ -4,7 +4,7 @@ import Main from "@/Layouts/Main";
 import ProdukImage from "@/Components/Produk/ProdukImage";
 import ProdukDetail from "@/Components/Produk/ProdukDetail";
 
-const Produk = ({ produk, toko, images }) => {
+const Produk = ({ produk, toko, images, auth }) => {
   return (
     <>
       <Head title={produk.namaProduk} />
@@ -12,7 +12,7 @@ const Produk = ({ produk, toko, images }) => {
         <div className="container">
           <div className="flex flex-wrap">
             <ProdukImage images={images} />
-            <ProdukDetail produk={produk} toko={toko} />
+            <ProdukDetail produk={produk} toko={toko} auth={auth} />
           </div>
         </div>
       </section>
