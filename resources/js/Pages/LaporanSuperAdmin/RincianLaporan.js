@@ -141,7 +141,7 @@ const RincianLaporan = (props) => {
               htmlFor="year"
               className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
             >
-              Bulan
+              Tahun
             </label>
             <select
               value={year}
@@ -194,21 +194,26 @@ const RincianLaporan = (props) => {
             </tr>
           </thead>
           <tbody>
-            <tr className="bg-white border-b dark:bg-gray-900 dark:border-gray-700">
-              <th
-                scope="row"
-                className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
-              >
-                {props.orders.idToko}
-              </th>
-              <td className="px-6 py-4">{props.orders.noFaktur}</td>
-              <td className="px-6 py-4">{props.orders.namaCostumer}</td>
-              <td className="px-6 py-4">{props.orders.alamatPengiriman}</td>
-              <td className="px-6 py-4">
-                {formatter.format(props.orders.total)}
-              </td>
-              <td className="px-6 py-4">{props.orders.totalItem}</td>
-            </tr>
+            {props.rincianOrders.data.map((data, i) => {
+              return (
+                <tr
+                  key={i}
+                  className="bg-white border-b dark:bg-gray-900 dark:border-gray-700"
+                >
+                  <th
+                    scope="row"
+                    className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+                  >
+                    {i + 1}
+                  </th>
+                  <td className="px-6 py-4">{data.noFaktur}</td>
+                  <td className="px-6 py-4">{data.namaCustomer}</td>
+                  <td className="px-6 py-4">{data.alamatPengiriman}</td>
+                  <td className="px-6 py-4">{formatter.format(data.total)}</td>
+                  <td className="px-6 py-4">{data.totalItem}</td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </div>

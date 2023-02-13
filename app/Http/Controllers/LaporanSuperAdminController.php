@@ -54,12 +54,12 @@ class LaporanSuperAdminController extends Controller
     public function show(Request $request)
     {
         $toko = Toko::where('id', $request->id)->first();
-        $order = Order::where('idToko', $request->id)->get();
+        $rincianOrder = RinciOrder::where('id', $request->id)->latest()->paginate(10)->withQueryString();
 
         return Inertia::render('LaporanSuperAdmin/RincianLaporan', [
             'title' => 'Laporan Keuangan',
             'rincianToko' => $toko,
-            'orders' => $order,
+            'rincianOrders' => $rincianOrder,
         ]);
     }
 
@@ -69,10 +69,10 @@ class LaporanSuperAdminController extends Controller
         $request->validate(['date' => 'required'], ['date.required' => 'Tanggal harus dipilih']);
 
 
-        $toko = Toko::where('id', $request->id)->first();
+        $toko = Toko::where('id', $request->id)->first(); //ambil id toko
         $date = date('Y-m-d', strtotime($request->date)); //mengubah format tanggalnya
 
-        $laporan = Order::whereDate('tglOrder', $date) //Select dari order
+        $laporan = RinciOrder::whereDate('tglOrder', $date) //Select dari order
             ->where('idToko', $toko->id)
             ->get();
 
@@ -81,7 +81,7 @@ class LaporanSuperAdminController extends Controller
             $omset += $value['hrgJual'] * $value['jumlah'];
         }
 
-        return Inertia::render('LaporanSuperAdmin/LaporanHarian', [
+        return Inertia::render('LaporanToko/LaporanHarian', [
             'title' => 'Laporan Harian',
             'laporan' => $laporan,
             'omset' => $omset,
@@ -98,7 +98,7 @@ class LaporanSuperAdminController extends Controller
         $month = date('m', strtotime($date));
         $year = date('Y', strtotime($date));
 
-        $laporan = Order::whereMonth('tglOrder', $month)
+        $laporan = RinciOrder::whereMonth('tglOrder', $month)
             ->whereYear('tglOrder', $year)
             ->where('idToko', $toko->id)
             ->get();
@@ -110,7 +110,7 @@ class LaporanSuperAdminController extends Controller
             $omset += $value['hrgJual'] * $value['jumlah'];
         }
 
-        return Inertia::render('LaporanSuperAdmin/LaporanBulanan', [
+        return Inertia::render('LaporanToko/LaporanBulanan', [
             'title' => 'Laporan Harian',
             'laporan' => $laporan,
             'date' => $date,
@@ -120,21 +120,22 @@ class LaporanSuperAdminController extends Controller
 
     public function year(Request $request)
     {
+
+        dd($request->all());
         $request->validate(['year' => 'required'], ['year.required' => 'Tahun harus dipilih']);
 
         $toko = Toko::where('id', $request->id)->first();
 
         $date = $request->year;
-        $laporan = Order::whereYear('tglOrder', $date)
-            ->where('idToko', $toko->id)
+        $laporan = RinciOrder::where('idToko', $toko)
+            ->whereYear('tglOrder', $date)
             ->get();
-
         $omset = 0;
         foreach ($laporan as $key => $value) {
             $omset += $value['hrgJual'] * $value['jumlah'];
         }
 
-        return Inertia::render('LaporanSuperAdmin/LaporanTahunan', [
+        return Inertia::render('LaporanToko/LaporanTahunan', [
             'title' => 'Laporan Harian',
             'laporan' => $laporan,
             'date' => $date,
