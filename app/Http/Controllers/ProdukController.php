@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Gambar;
+use App\Models\GambarSementara;
 use App\Models\Harga;
 use App\Models\Kategori;
 use App\Models\KategoriGlobal;
@@ -51,10 +52,14 @@ class ProdukController extends Controller
     $toko = Toko::where('idUser', auth()->user()->id)->select('id')->first();
     $kategori = Kategori::where('idToko', $toko->idToko)->select('id', 'namaKategori')->get();
     $kategoriGlobal = KategoriGlobal::select('id', 'namaKategoriGlobal')->get();
+    $images = GambarSementara::where('idUser', auth()->user()->id)->where('kategoriGambar', 'lainnya')->get();
+    $image = GambarSementara::where('idUser', auth()->user()->id)->where('kategoriGambar', 'utama')->get();
     return Inertia::render('TokoProduk/Create2', [
       'title' => 'Tambah Produk',
       'kategori' => $kategori,
       'kategoriGlobal' => $kategoriGlobal,
+      'images' => $images,
+      'image' => $image
     ]);
   }
 
@@ -269,6 +274,7 @@ class ProdukController extends Controller
   {
     // dd($request->publicId);
     Cloudinary::destroy($request->publicId);
+    GambarSementara::where('public_id', $request->publicId)->delete();
     return back()->with('message', 'Berhasil dihapus');
   }
 }

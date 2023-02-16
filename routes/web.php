@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AdminTokoController;
+use App\Http\Controllers\GambarSementaraController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\KategoriController;
 use App\Http\Controllers\KurirController;
@@ -134,15 +135,15 @@ Route::post('/delete-image', [ProdukController::class, 'deleteImage'])->name('de
 Route::get('/toko/setting', [AdminTokoController::class, 'setting'])->name('toko.setting');
 
 
-//validation produk step
-Route::post('/validate-step-1', [ValidateProdukController::class, 'validate1']);
-
-
 //route grafik 7 hari kebelakang
 Route::get('/oneWeekData', [GrafikController::class, 'index']);
 Route::get('/oneWeek', function () {
   Inertia::render('Grafik/OneWeek');
 });
+
+
+Route::post('/image/session', [GambarSementaraController::class, 'insertgbrutama'])->name('gambarUtama');
+Route::post('/image-lainnya/session', [GambarSementaraController::class, 'gbrlain'])->name('gambarLainnya');
 
 // route autentikasi
 require __DIR__ . '/auth.php';

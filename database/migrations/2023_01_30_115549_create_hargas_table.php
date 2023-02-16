@@ -25,6 +25,8 @@ class CreateHargasTable extends Migration
       $table->date('tglAwalDiskon')->nullable();
       $table->date('tglAkhirDiskon')->nullable();
       $table->integer('terjual')->nullable();
+      $table->string('imgName')->nullable();
+      $table->string('imgUrl')->nullable();
       $table->timestamps();
     });
   }

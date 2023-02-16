@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ProdukController;
 use App\Http\Controllers\TokoController;
+use App\Http\Controllers\ValidateProdukController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -24,3 +25,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::get('/api/data-toko', [TokoController::class, 'dataToko']);
 
 Route::get('/api/data-produk', [ProdukController::class, 'dataProduk']);
+
+//validation produk step
+Route::post('/validate-step-1', [ValidateProdukController::class, 'validate1']);
+Route::post('/check-public-ids', [GambarSementaraController::class, 'checkPublicIds']);
