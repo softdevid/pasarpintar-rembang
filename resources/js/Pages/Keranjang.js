@@ -1,0 +1,266 @@
+import { FormatRupiah } from "@/config/formatRupiah";
+import Main from "@/Layouts/Main";
+import { Head, Link } from "@inertiajs/react";
+import React, { Fragment, useEffect, useState } from "react";
+
+const Keranjang = ({ title, keranjang }) => {
+  if (keranjang == "kosong") {
+    return (
+      <>
+        <Head title={title} />
+        <div className="container py-3 md:py-5">kosong!</div>
+      </>
+    );
+  }
+
+  const [isCheckAll, setIsCheckAll] = useState(false);
+  const [isCheck, setIsCheck] = useState([]);
+
+  const [cart, setCart] = useState(Object.entries(keranjang));
+  const decrement = (idProduk, qty) => {
+    setCart((prev) => {
+      return prev.map((data) => {
+        return [
+          data[0],
+          data[1].map((krj) => {
+            if (krj.idProduk === idProduk) {
+              return { ...krj, qty: qty > 1 ? qty - 1 : 1 };
+            } else {
+              return krj;
+            }
+          }),
+        ];
+      });
+    });
+  };
+
+  const increment = (idProduk, qty, max) => {
+    setCart((prev) => {
+      return prev.map((data) => {
+        return [
+          data[0],
+          data[1].map((krj) => {
+            if (krj.idProduk === idProduk) {
+              return { ...krj, qty: qty < max ? qty + 1 : max };
+            } else {
+              return krj;
+            }
+          }),
+        ];
+      });
+    });
+  };
+
+  const total = cart.reduce(
+    (total, item) =>
+      total +
+      item[1].reduce(
+        (subtotal, prod) => subtotal + prod.qty * prod.harga.hrgJual,
+        0
+      ),
+    0
+  );
+
+  const handleSelectAll = (e) => {
+    setIsCheckAll(!isCheckAll);
+    setIsCheck(
+      cart
+        .map(([toko, produks]) => produks.map((produk) => `${produk.id}`))
+        .flat(1)
+    );
+    if (isCheckAll) {
+      setIsCheck([]);
+    }
+  };
+
+  const handleCheck = (e) => {
+    const { id, checked } = e.target;
+    setIsCheck([...isCheck, id]);
+    if (!checked) {
+      setIsCheck(isCheck.filter((item) => item !== id));
+    }
+  };
+
+  return (
+    <>
+      <Head title={title} />
+      <div className="container py-3 md:py-5">
+        <div className="flex flex-col">
+          <div className="relative overflow-x-auto shadow-md sm:rounded-lg max-w-3xl">
+            <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+              <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                <tr>
+                  <th scope="col" className="p-4">
+                    <div className="flex items-center">
+                      <input
+                        id="selectAll"
+                        type="checkbox"
+                        className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                        onChange={handleSelectAll}
+                        checked={isCheckAll}
+                      />
+                      <label htmlFor="selectAll" className="sr-only">
+                        checkbox
+                      </label>
+                    </div>
+                  </th>
+                  <th scope="col" className="px-6 py-3">
+                    Nama Produk
+                  </th>
+                  <th scope="col" className="px-6 py-3 text-center">
+                    Qty
+                  </th>
+                  <th scope="col" className="px-6 py-3 text-center">
+                    Subtotal
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {cart.map(([toko, produks], i) => (
+                  <Fragment key={i}>
+                    <tr>
+                      <td colSpan={3}>
+                        <div
+                          className={`text-center font-medium text-lg ${
+                            i == 0 ? "mt-0" : "mt-4"
+                          }`}
+                        >
+                          {toko}
+                        </div>
+                      </td>
+                    </tr>
+                    {produks.map((krj, i) => (
+                      <tr
+                        key={i}
+                        className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
+                      >
+                        <td className="w-4 p-4">
+                          <div className="flex items-center">
+                            <input
+                              id={krj.id}
+                              name={krj.produk.namaProduk}
+                              onChange={handleCheck}
+                              checked={isCheck.includes(`${krj.id}`)}
+                              type="checkbox"
+                              className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                            />
+                            <label
+                              htmlFor="checkbox-table-search-1"
+                              className="sr-only"
+                            >
+                              checkbox
+                            </label>
+                          </div>
+                        </td>
+                        <th className="flex px-6 py-4">
+                          <div className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
+                            <img
+                              src={krj.produk.imgUrl}
+                              alt={krj.produk.imgName}
+                              className="h-full w-full object-cover object-center"
+                            />
+                          </div>
+                          <div className="ml-4">
+                            <div>
+                              <a
+                                href={`${krj.produk.slugToko}/${krj.produk.slugProduk}`}
+                                className="text-base font-medium text-left text-gray-900 line-clamp-2"
+                              >
+                                {krj.produk.namaProduk}
+                              </a>
+                              <p className="mt-1 text-sm text-gray-500">
+                                {krj.harga.namaHarga}
+                              </p>
+                              <p className="mt-1 text-sm text-gray-500">
+                                <FormatRupiah
+                                  value={`${krj.harga.hrgJual}000`}
+                                />
+                              </p>
+                            </div>
+                          </div>
+                        </th>
+                        <td className="px-6 py-4 text-center">
+                          <div
+                            className="inline-flex rounded-md shadow-sm"
+                            role="group"
+                          >
+                            <button
+                              type="button"
+                              className="px-2 w-9 align-middle text-slate-900 bg-transparent rounded-l-md border-2 border-sky-400 hover:bg-sky-300 hover:text-white focus:z-10 focus:ring-2 focus:ring-sky-700 focus:bg-sky-400 focus:text-white"
+                              onClick={() => decrement(krj.idProduk, krj.qty)}
+                            >
+                              <span className="m-auto text-2xl font-normal">
+                                -
+                              </span>
+                            </button>
+                            <input
+                              type="text"
+                              className="px-2 w-14 text-center align-middle text-slate-900 bg-transparent border-0 border-y-2 border-sky-400 hover:bg-sky-300 hover:text-white focus:z-10 focus:ring-2 focus:ring-sky-700 focus:bg-sky-400 focus:text-white"
+                              value={krj.qty}
+                              max={krj.harga.stokToko}
+                              readOnly
+                            />
+                            <button
+                              type="button"
+                              className="px-2 w-9 align-middle text-slate-900 bg-transparent rounded-r-md border-2 border-sky-400 hover:bg-sky-300 hover:text-white focus:z-10 focus:ring-2 focus:ring-sky-700 focus:bg-sky-400 focus:text-white"
+                              onClick={() =>
+                                increment(
+                                  krj.idProduk,
+                                  krj.qty,
+                                  krj.harga.stokToko
+                                )
+                              }
+                            >
+                              <span className="m-auto text-2xl font-normal">
+                                +
+                              </span>
+                            </button>
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 text-center">
+                          <FormatRupiah
+                            value={`${krj.qty * krj.harga.hrgJual}000`}
+                          />
+                        </td>
+                      </tr>
+                    ))}
+                  </Fragment>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <div className="xl:fixed xl:top-32 xl:right-10 w-full max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
+            <div className="flex flex-col items-start">
+              <h2 className="text-xl text-slate-800 font-medium">
+                {`Total : `}
+                <span className="text-3xl">
+                  <FormatRupiah value={`${total}000`} />
+                </span>
+              </h2>
+              <div className="flex justify-center items-start mt-3">
+                <Link
+                  as="button"
+                  href="/"
+                  className="text-blue-700 hover:text-white border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 dark:border-blue-500 dark:text-blue-500 dark:hover:text-white dark:hover:bg-blue-600 dark:focus:ring-blue-800"
+                >
+                  Lanjut Belanja
+                </Link>
+                <Link
+                  as="button"
+                  href="/checkout"
+                  className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
+                >
+                  Checkout
+                </Link>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </>
+  );
+};
+
+Keranjang.layout = (page) => <Main children={page} />;
+
+export default Keranjang;

@@ -12,7 +12,7 @@ const Produk = ({ produk, toko, images, auth }) => {
         <div className="container">
           <div className="flex flex-wrap">
             <ProdukImage images={images} />
-            <ProdukDetail produk={produk} toko={toko} auth={auth} />
+            <ProdukDetail produk={produk} toko={toko} user={auth.user} />
           </div>
         </div>
       </section>

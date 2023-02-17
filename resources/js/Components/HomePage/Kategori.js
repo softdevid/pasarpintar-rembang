@@ -33,7 +33,7 @@ const Kategori = () => {
       <div className="py-2">
         <div className="container">
           <div className="relative px-4 overflow-auto">
-            <div className="grid grid-rows-2 grid-flow-col-dense gap-4 overflow-x-auto scrollbar-hide">
+            <div className="grid grid-rows-2 grid-flow-col-dense gap-4 overflow-x-auto scrollbar">
               {Array.from({ length: 12 }, (_, i) => (
                 <div key={i} className="flex flex-col items-center justify-start">
                   <div className="h-20 w-20 bg-white border border-slate-500 rounded-md"></div>

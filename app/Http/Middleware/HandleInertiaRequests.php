@@ -2,6 +2,8 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\Keranjang;
+use App\Models\Order;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 use Tightenco\Ziggy\Ziggy;
@@ -34,6 +36,14 @@ class HandleInertiaRequests extends Middleware
    */
   public function share(Request $request)
   {
+
+    if ($request->user() != null) {
+      $keranjang = Keranjang::where('idUser', auth()->user()->id)->latest()->first();
+      if ($keranjang != null) {
+        $keranjang = $keranjang->produks()->count();
+      }
+    }
+
     return array_merge(parent::share($request), [
       'app' => [
         'name' => 'Pasar Pintar'
@@ -41,6 +51,7 @@ class HandleInertiaRequests extends Middleware
       ],
       'auth' => [
         'user' => $request->user(),
+        'cartCount' => ($request->user() != null) ? $keranjang : 0,
       ],
       'flash' => [
         'message' => fn () => $request->session()->get('message')

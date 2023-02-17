@@ -8,7 +8,6 @@ import ProdukPromo from "@/Components/HomePage/ProdukPromo";
 import ProdukAcak from "@/Components/HomePage/ProdukAcak";
 
 const HomePage = ({ title, produk }) => {
-  // console.log(produk);
   return (
     <div className="space-y-3">
       <Head title={title} />

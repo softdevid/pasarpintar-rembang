@@ -1,9 +1,12 @@
 import { Menu, Transition } from "@headlessui/react";
 import { Link } from "@inertiajs/react";
-import { Fragment } from "react";
-import { ChevronDownIcon } from "@heroicons/react/20/solid"
+import { Fragment, useContext } from "react";
+import { ChevronDownIcon } from "@heroicons/react/20/solid";
+import { AppContext } from "@/context/app-context";
 
-const TopNavBar = ({ user }) => {
+const TopNavBar = () => {
+  const user = useContext(AppContext).props.auth.user;
+
   return (
     <nav className="px-3.5 py-2 bg-white">
       <div className="container text-md">
@@ -73,11 +76,19 @@ const TopNavBar = ({ user }) => {
             </Menu>
           ) : (
             <div className="flex justify-end items-center">
-              <Link href={route("register")} className="text-slate-800" as="button">
+              <Link
+                href={route("register")}
+                className="text-slate-800"
+                as="button"
+              >
                 Daftar
               </Link>
               <div className="px-1">|</div>
-              <Link href={route("login")} className="text-slate-800" as="button">
+              <Link
+                href={route("login")}
+                className="text-slate-800"
+                as="button"
+              >
                 Login
               </Link>
             </div>

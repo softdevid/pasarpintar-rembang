@@ -34,7 +34,7 @@ const ProdukLaris = ({ produk }) => {
                         </div>
                         <div>
                           <span className="text-lg font-bold">
-                            <FormatRupiah value={`${data.hargas[0].hrgJual}000`} />
+                            <FormatRupiah value={`${data.hargas[0]?.hrgJual}000`} />
                           </span>
                           <div className="flex items-center justify-between">
                             <span className="text-xs font-bold text-slate-900 pt-1">

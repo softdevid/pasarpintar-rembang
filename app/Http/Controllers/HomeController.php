@@ -53,15 +53,17 @@ class HomeController extends Controller
         "lamaBergabung" => $lamaBergabung,
       ],
       "produk" => [
+        "idProduk" => $produk->id,
+        "idToko" => $produk->idToko,
         "namaProduk" => $produk->namaProduk,
         "slug" => $produk->slug,
         "terjual" => $produk->terjual,
         "deskripsi" => $produk->deskripsi,
-        "diskon" => $produk->diskon,
+        "diskon" => $produk->diskon ?? 0,
         "jenisHarga" => $produk->jenisHarga,
         "hargas" => $produk
           ->hargas()
-          ->select('idProduk', 'namaHarga', 'hrgJual', 'stokToko', 'diskon', 'tglAwalDiskon', 'tglAkhirDiskon')
+          ->select('id', 'idProduk', 'namaHarga', 'hrgJual', 'stokToko', 'diskon', 'tglAwalDiskon', 'tglAkhirDiskon')
           ->orderBy('hrgJual', 'asc')
           ->get()
           ->toArray()
@@ -72,7 +74,7 @@ class HomeController extends Controller
           "imgName" => $produk->imgName,
           "imgUrl" => $produk->imgUrl
         ],
-        ...$produk->gambars()->select('imgName', 'imgUrl')->limit(3)->get()->toArray(),
+        ...$produk->hargas()->select('imgName', 'imgUrl')->get()->toArray(),
       ]
     ];
     return Inertia::render('Produk', $dataProduk);

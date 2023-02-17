@@ -1,11 +1,16 @@
+import { AppContext } from "@/context/app-context";
 import {
   ArrowSmallLeftIcon,
   ShoppingCartIcon,
 } from "@heroicons/react/20/solid";
-import { Link } from "@inertiajs/react";
+import { Link, usePage } from "@inertiajs/react";
+import { useContext } from "react";
+import CartIcon from "../CartIcon";
 import Search from "../Search";
 
-const MidNavBar = ({ appName, currentUrl, user }) => {
+const MidNavBar = () => {
+  const context = useContext(AppContext);
+
   const back = () => {
     window.history.back();
   };
@@ -14,7 +19,7 @@ const MidNavBar = ({ appName, currentUrl, user }) => {
     <nav className="px-3.5 py-2 bg-sky-400 text-white">
       <div className="container flex flex-wrap items-center justify-between">
         <div className="flex items-center justify-center">
-          {currentUrl !== "/" ? (
+          {context.url !== "/" ? (
             <Link onClick={back} as="button">
               <ArrowSmallLeftIcon className="w-6 h-6 mr-2 cursor-pointer" />
             </Link>
@@ -23,7 +28,7 @@ const MidNavBar = ({ appName, currentUrl, user }) => {
           )}
           <Link href={route("index")} className="items-center ml-2">
             <span className="self-center text-lg sm:text-2xl font-semibold">
-              <span className="mr-1.5">{appName}</span>
+              <span className="mr-1.5">{context.props.app.name}</span>
             </span>
           </Link>
         </div>
@@ -51,27 +56,16 @@ const MidNavBar = ({ appName, currentUrl, user }) => {
             <span className="sr-only">Cari</span>
           </button>
           <div className="relative w-72 lg:w-96 hidden md:block mr-3">
-            <Search />
+            <Search id="desktop" />
           </div>
-          {user && (
-            <Link href={"/cart"}>
-              <div className="relative mr-3">
-                <div className="flex items-center justify-center p-2">
-                  <ShoppingCartIcon className="h-6 w-6" />
-                </div>
-                <span className="top-[-1px] left-[17px] absolute p-1 text-[10px] leading-none text-center align-middle bg-red-500 rounded-full">
-                  99+
-                </span>
-              </div>
-            </Link>
-          )}
+          {context.props.auth.user && <CartIcon />}
         </div>
         <div
           id="navbar-search"
           className="items-center justify-between hidden w-full md:flex md:w-auto md:order-1"
         >
           <div className="relative mt-3 md:hidden">
-            <Search />
+            <Search id="mobile" />
           </div>
         </div>
       </div>

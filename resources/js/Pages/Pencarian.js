@@ -1,3 +1,4 @@
+import { FormatRupiah } from "@/config/formatRupiah";
 import Main from "@/Layouts/Main";
 import { Head, Link } from "@inertiajs/react";
 import React from "react";
@@ -17,18 +18,19 @@ const Pencarian = ({ query, hasil }) => {
             </div>
           </div>
           <div className="relative p-2">
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2 justify-items-center overflow-y-auto scrollbar-hide">
-              {hasil.map((data, i) => (
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2 justify-items-center overflow-y-auto scrollbar-hide">
+              {hasil.map((data, index) => (
                 <div
-                  key={i}
+                  key={index}
                   className="w-full bg-white border-2 border-slate-600 rounded-md overflow-hidden"
                 >
                   <Link href={`${data.toko.slugToko}/${data.slugProduk}`}>
                     <div className="relative flex flex-col overflow-visible w-full h-full bg-white rounded-md">
                       <img
-                        className="shrink-0 bg-cover bg-center w-full p-2 max-h-44"
-                        src="https://cf.shopee.co.id/file/88063c6dfd1dea9848c17b33205b71b8_tn"
-                        alt="productImage"
+                        className="shrink-0 bg-cover bg-center w-full p-2"
+                        // src={data.produkImg}
+                        src={`https://source.unsplash.com/600x600?book`}
+                        alt={data.namaProduk}
                       />
                       <div className="flex flex-col flex-[1_0_auto] px-2 py-2.5 overflow-hidden">
                         <div className="flex flex-col flex-[1_0_auto]">
@@ -38,13 +40,8 @@ const Pencarian = ({ query, hasil }) => {
                         </div>
                         <div>
                           <span className="text-lg font-bold">
-                            RP{data.hrgJual}
+                          <FormatRupiah value={`${data.hargas[0]?.hrgJual}000`} />
                           </span>
-                          <div className="flex items-center justify-between">
-                            <span className="text-xs font-bold text-slate-900 pt-1">
-                              {`${data.terjual} terjual`}
-                            </span>
-                          </div>
                         </div>
                       </div>
                     </div>

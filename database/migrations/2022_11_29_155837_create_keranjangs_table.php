@@ -15,6 +15,7 @@ class CreateKeranjangsTable extends Migration
     {
         Schema::create('keranjangs', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('idUser');
             $table->timestamps();
         });
     }

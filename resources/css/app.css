@@ -12,23 +12,24 @@
 }
 
 @layer utilities {
+  /* custom scrollbar */
   .scrollbar::-webkit-scrollbar {
     width: 20px;
     height: 20px;
   }
 
   .scrollbar::-webkit-scrollbar-track {
-    border-radius: 100vh;
-    background: #f7f4ed;
+    background-color: transparent;
   }
 
   .scrollbar::-webkit-scrollbar-thumb {
-    background: #e0f2fe;
-    border-radius: 100vh;
-    border: 3px solid #f6f7ed;
+    background-color: #d6dee1;
+    border-radius: 20px;
+    border: 6px solid transparent;
+    background-clip: content-box;
   }
 
   .scrollbar::-webkit-scrollbar-thumb:hover {
-    background: #bae6fd;
+    background-color: #a8bbbf;
   }
 }

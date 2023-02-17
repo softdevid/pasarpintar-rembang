@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateRinciOrdersTable extends Migration
+class CreateKeranjangDetailsTable extends Migration
 {
   /**
    * Run the migrations.
@@ -13,9 +13,9 @@ class CreateRinciOrdersTable extends Migration
    */
   public function up()
   {
-    Schema::create('rinci_orders', function (Blueprint $table) {
+    Schema::create('keranjang_details', function (Blueprint $table) {
       $table->id();
-      $table->foreignId('idOrder');
+      $table->foreignId('idKeranjang');
       $table->foreignId('idProduk');
       $table->foreignId('idHarga');
       $table->foreignId('idToko');
@@ -23,8 +23,6 @@ class CreateRinciOrdersTable extends Migration
       $table->double('diskon', 12, 2)->default(0);
       $table->double('subtotal', 12, 2)->default(0);
       $table->string('status_produk')->default('keranjang');
-      $table->string('statusOrder')->default('-');
-      $table->date('tglSelesai')->nullable();
       $table->timestamps();
     });
   }
@@ -36,6 +34,6 @@ class CreateRinciOrdersTable extends Migration
    */
   public function down()
   {
-    Schema::dropIfExists('order_rincian');
+    Schema::dropIfExists('keranjang_details');
   }
 }

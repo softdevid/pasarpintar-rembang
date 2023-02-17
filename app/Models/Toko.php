@@ -22,4 +22,9 @@ class Toko extends Model
   {
     return $this->hasMany(Produk::class, "idToko");
   }
+
+  public function keranjangs()
+  {
+    return $this->hasMany(KeranjangDetail::class, "idToko");
+  }
 }

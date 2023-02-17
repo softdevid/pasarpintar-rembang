@@ -7,25 +7,21 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\KategoriController;
 use App\Http\Controllers\KurirController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\KeranjangController;
 use App\Http\Controllers\ProdukController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\GrafikController;
 use App\Http\Controllers\KategoriGlobalController;
+use App\Http\Controllers\KeranjangController;
 use App\Http\Controllers\LaporanSuperAdminController;
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\SuperAdminSettingController;
-use App\Http\Controllers\TokoAdminController;
 use App\Http\Controllers\TokoController;
-use App\Http\Controllers\ValidateProdukController;
-use App\Models\Produk;
 use Inertia\Inertia;
 
 // home route
 Route::get('/', [HomeController::class, 'index'])->name('index');
-
 Route::get('/produk-acak', [HomeController::class, 'produkAcak'])->name('produk.acak');
-
 Route::get('/cari', [SearchController::class, 'search'])->name('pencarian');
 
 Route::middleware('auth',)->group(function () {
@@ -40,6 +36,8 @@ Route::middleware('auth',)->group(function () {
 
   // route keranjang
   Route::get('/cart', [KeranjangController::class, 'index'])->name('cart.index');
+  Route::post('/cart-add', [KeranjangController::class, 'tambah'])->name('cart.add');
+  Route::get('/cart-count', [KeranjangController::class, 'cartCount'])->name('cart.count');
 
 
   //   Route::get('/checkout', [HomeController::class, 'checkout'])->name('checkout');
@@ -152,9 +150,5 @@ require __DIR__ . '/api.php';
 
 // route toko
 Route::get('/{toko:slug}', [HomeController::class, 'toko'])->name('toko');
-
 // route produk toko
-
-// Route::get('/{toko:slug}/{produks:slug}', [HomeController::class, 'produk'])->name('toko.produk')->scopeBindings();
-
 Route::get('/{toko:slug}/{produk:slug}', [HomeController::class, 'produk'])->name('toko.produk')->scopeBindings();

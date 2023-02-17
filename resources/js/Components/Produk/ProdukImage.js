@@ -1,15 +1,33 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 const ProdukImage = ({ images }) => {
+  const [img, setImg] = useState({
+    name: '',
+    imageUrl: '',
+  });
+
+  useEffect(() => {
+    setImg({
+      name: images[0].imgName,
+      imageUrl: images[0].imgUrl
+    })
+  }, []);
+
+  const gantiImg = (name, imageUrl) => {
+    setImg({
+      name,
+      imageUrl,
+    });
+  };
 
   return (
     <div className="w-full px-4 md:w-[35%]">
       <div className="sticky top-0 z-50 overflow-hidden">
         <div className="relative mb-2 lg:mb-4 lg:h-2/4">
           <img
-            src={images[0].imgUrl}
+            src={img.imageUrl}
             className="object-cover w-full lg:h-full rounded-md"
-            alt={`Main`}
+            alt={img.name}
           />
         </div>
         <div className="flex ">
@@ -19,7 +37,8 @@ const ProdukImage = ({ images }) => {
                 <img
                   src={img.imgUrl}
                   className="object-cover w-full lg:h-full rounded"
-                  alt={i + 1}
+                  alt={img.imgName}
+                  onClick={() => gantiImg(img.imgName, img.imgUrl)}
                 />
               </div>
             </div>

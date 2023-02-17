@@ -27,6 +27,8 @@ class HargaFactory extends Factory
       // "tglAwalDiskon",
       // "tglAkhirDiskon",
       "terjual" => $this->faker->randomNumber(4),
+      "imgName" => $this->faker->slug(4),
+      "imgUrl" => "https://source.unsplash.com/600x600?random",
     ];
   }
 }

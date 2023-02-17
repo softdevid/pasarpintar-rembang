@@ -13,4 +13,9 @@ class Harga extends Model
   {
     return $this->belongsTo(Produk::class, "idProduk", 'id');
   }
+
+  public function keranjang()
+  {
+    return $this->hasOne(KeranjangDetail::class, 'idHarga', 'id');
+  }
 }

@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Produk extends Model
 {
   use HasFactory;
+
   protected $guarded = ['id'];
 
   public function toko()
@@ -30,9 +31,13 @@ class Produk extends Model
     return $this->hasMany(Harga::class, "idProduk", 'id');
   }
 
-  public function gambars()
+  public function keranjangs()
   {
-    return $this->hasMany(Gambar::class, "idProduk", 'id');
+    return $this
+      ->belongsToMany(Keranjang::class, 'keranjang_details',  'idProduk', 'idKeranjang')
+      ->withPivot('id', 'idHarga', 'idToko', 'qty', 'diskon', 'subtotal', 'status_produk')
+      ->withTimestamps()
+      ->using(KeranjangDetail::class);
   }
 
   // public function satuan()

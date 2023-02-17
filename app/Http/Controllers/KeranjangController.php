@@ -3,154 +3,90 @@
 namespace App\Http\Controllers;
 
 use App\Models\Keranjang;
-use Illuminate\Support\Str;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 
 class KeranjangController extends Controller
 {
-  /**
-   * Display a listing of the resource.
-   *
-   * @return \Illuminate\Http\Response
-   */
+
   public function index()
   {
-    $keranjang = Keranjang::where('id', auth()->user()->id)->get();
-    return Inertia::render('Cart', [
-      'title' => 'Keranjang Belanja',
-      'keranjang' => $keranjang,
-    ]);
-  }
 
-  /**
-   * Show the form for creating a new resource.
-   *
-   * @return \Illuminate\Http\Response
-   */
-  public function create()
-  {
-    //
-  }
+    $keranjang = Keranjang::where('idUser', auth()->user()->id)->latest()->first();
 
-  /**
-   * Store a newly created resource in storage.
-   *
-   * @param  \Illuminate\Http\Request  $request
-   * @return \Illuminate\Http\Response
-   */
-  public function store(Request $request)
-  {
-    $request->validate([
-      'jumlah' => 'required',
-    ]);
+    if ($keranjang == null) {
+      return Inertia::render('Keranjang', [
+        'title' => 'Keranjang Belanja',
+        "keranjang" => "kosong",
+      ]);
+    }
 
-    Keranjang::create([
-      'namaProduk' => $request->namaProduk,
-      'jumlah' => $request->jumlah,
-      'hrgBeli' => $request->hrgBeli,
-      'hrgJual' => $request->hrgJual,
-      'idToko' => $request->idToko,
-      'idUser' => $request->idUser,
-    ]);
-    return back()->with('message', 'Berhasil ditambah ke keranjang!');
-  }
-
-  /**
-   * Display the specified resource.
-   *
-   * @param  \App\Models\Keranjang  $keranjang
-   * @return \Illuminate\Http\Response
-   */
-  public function show(Keranjang $keranjang)
-  {
-    $keranjang = Keranjang::where('id', auth()->user()->id)->get();
-    //
-  }
-
-  /**
-   * Show the form for editing the specified resource.
-   *
-   * @param  \App\Models\Keranjang  $keranjang
-   * @return \Illuminate\Http\Response
-   */
-  public function edit(Keranjang $keranjang)
-  {
-    $keranjang = Keranjang::where('id', auth()->user()->id);
-    //
-  }
-
-  /**
-   * Update the specified resource in storage.
-   *
-   * @param  \Illuminate\Http\Request  $request
-   * @param  \App\Models\Keranjang  $keranjang
-   * @return \Illuminate\Http\Response
-   */
-  public function update(Request $request, Keranjang $keranjang)
-  {
-    $keranjang = $request->validate([
-      'jumlah' => 'required',
-    ]);
-
-    Keranjang::where('id', auth()->user()->id)->update($keranjang);
-    return back()->with('message', 'Barang berhasil di update');
-  }
-
-  /**
-   * Remove the specified resource from storage.
-   *
-   * @param  \App\Models\Keranjang  $keranjang
-   * @return \Illuminate\Http\Response
-   */
-  public function destroy(Keranjang $keranjang, Request $request)
-  {
-    $keranjang = Keranjang::find($request->id);
-    $keranjang->delete();
-    return back()->with('message', 'Barang berhasil dihapus');
-  }
-
-  public function simpanOrder()
-  {
-    $keranjang = Keranjang::where('id', auth()->user()->id)->get();
-    $noFaktur = date('ymd') . Str::random(5);
-    $data = [];
-    foreach ($keranjang as $key => $value) {
-      $data[] = [
-        'noFaktur' => $noFaktur,
-        'idProduk' => $value->idProduk,
-        'namaProduk' => $value->namaProduk,
-        'jumlah' => $value->jumlah,
-        'hrgBeli' => $value->hrgBeli,
-        'hrgJual' => $value->hrgJual,
+    $krjPrdk = $keranjang->produks()->orderByPivot('created_at', 'desc')->get()->sortByDesc(function ($item) {
+      return $item->pivot->created_at;
+    })->mapToGroups(function ($item, $key) {
+      return [
+        $item->pivot->produk->toko->namaToko => [
+          "id" => $item->pivot->id,
+          "idProduk" => $item->pivot->idProduk,
+          "idHarga" => $item->pivot->idHarga,
+          "idToko" => $item->pivot->idToko,
+          "produk" => [
+            "namaProduk" => $item->pivot->produk->namaProduk,
+            "slugProduk" => $item->pivot->produk->slug,
+            "slugToko" => $item->pivot->produk->toko->slug,
+            "imgName" => $item->pivot->produk->imgName,
+            "imgUrl" => $item->pivot->produk->imgUrl,
+          ],
+          "qty" => $item->pivot->qty,
+          "diskon" => $item->pivot->diskon,
+          "harga" => [
+            "namaHarga" => $item->pivot->harga->namaHarga,
+            "hrgJual" => $item->pivot->harga->hrgJual,
+            "stokToko" => $item->pivot->harga->stokToko,
+          ],
+        ],
       ];
+    });
+
+    return Inertia::render('Keranjang', [
+      'title' => 'Keranjang Belanja',
+      "keranjang" => $krjPrdk,
+    ]);
+  }
+
+  public function tambah(Request $request)
+  {
+    $keranjang = Keranjang::where('idUser', auth()->user()->id)->latest()->first();
+    if ($keranjang == null) {
+      $keranjang = Keranjang::create([
+        "idUser" => auth()->user()->id
+      ]);
     }
-    $order = DB::table('orders')->insert($data);
 
-    $total = 0;
-    foreach ($keranjang as $key => $value) {
-      $total += $value['hrgJual'] * $value['jumlah'];
+    $krjPrdk = $keranjang->produks()->where('idProduk', $request->idProduk)->where('idHarga', $request->idHarga)->first();
+    if ($krjPrdk != null) {
+      $keranjang->produks()->updateExistingPivot((string) $request->idProduk, [
+        'qty' => (string) $request->qty + $krjPrdk->pivot->qty,
+        'idHarga' => (string) $request->idHarga,
+        'diskon' => (string) $request->diskon,
+        'subtotal' => (string) $request->subtotal + $krjPrdk->pivot->subtotal
+      ]);
+    } else if ($krjPrdk == null) {
+      $keranjang->produks()->attach((string) $request->idProduk, [
+        'qty' => (string) $request->qty,
+        'idHarga' => (string) $request->idHarga,
+        'idToko' => (string) $request->idToko,
+        'diskon' => (string) $request->diskon,
+        'subtotal' => (string) $request->subtotal
+      ]);
     }
 
-    $dataRinci = [
-      'noFaktur' => $noFaktur,
-      'idOrder' => $order,
-      'idUser' => auth()->user()->id,
-      'jumlah' => $keranjang->sum('jumlah'),
-      'total' => $total,
-      'statusBayar' => 'belum bayar',
-      'metodeBayar' => '',
-      'statusOrder' => 'dikemas',
-      'idKurir' => '',
-      'statusKurir' => '',
-      'buktiName' => '',
-      'buktiUrl' => '',
-      'buktiSamapaiName' => '',
-      'buktiSamapaiUrl' => '',
-    ];
+    return response()->json(["data" => "Berhasil Memasukkan Produk!"]);
+  }
 
-    $order = DB::table('rinci_orders')->insert($dataRinci);
-    return redirect()->to('/print');
+  public function cartCount()
+  {
+    $jumlahKeranjang = Keranjang::where('idUser', auth()->user()->id)->latest()->first()->produks()->count();
+    return response()->json(["cartCount" => $jumlahKeranjang]);
   }
 }

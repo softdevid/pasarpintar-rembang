@@ -1,7 +1,7 @@
 import { router } from "@inertiajs/react";
 import React, { useState } from "react";
 
-const Search = () => {
+const Search = ({ id }) => {
   const [query, setQuery] = useState("");
 
   const handleChange = (e) => {
@@ -42,7 +42,7 @@ const Search = () => {
         </div>
         <input
           type="text"
-          id="simple-search"
+          id={id}
           value={query}
           onChange={handleChange}
           className="bg-slate-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-sky-400 focus:border-sky-400 block w-full pl-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-sky-400 dark:focus:border-sky-400"
