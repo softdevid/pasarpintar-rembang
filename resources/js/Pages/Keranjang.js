@@ -17,13 +17,14 @@ const Keranjang = ({ title, keranjang }) => {
   const [isCheck, setIsCheck] = useState([]);
 
   const [cart, setCart] = useState(Object.entries(keranjang));
-  const decrement = (idProduk, qty) => {
+  console.log(cart);
+  const decrement = (idHarga, qty) => {
     setCart((prev) => {
       return prev.map((data) => {
         return [
           data[0],
           data[1].map((krj) => {
-            if (krj.idProduk === idProduk) {
+            if (krj.idHarga === idHarga) {
               return { ...krj, qty: qty > 1 ? qty - 1 : 1 };
             } else {
               return krj;
@@ -34,13 +35,13 @@ const Keranjang = ({ title, keranjang }) => {
     });
   };
 
-  const increment = (idProduk, qty, max) => {
+  const increment = (idHarga, qty, max) => {
     setCart((prev) => {
       return prev.map((data) => {
         return [
           data[0],
           data[1].map((krj) => {
-            if (krj.idProduk === idProduk) {
+            if (krj.idHarga === idHarga) {
               return { ...krj, qty: qty < max ? qty + 1 : max };
             } else {
               return krj;
@@ -187,7 +188,7 @@ const Keranjang = ({ title, keranjang }) => {
                             <button
                               type="button"
                               className="px-2 w-9 align-middle text-slate-900 bg-transparent rounded-l-md border-2 border-sky-400 hover:bg-sky-300 hover:text-white focus:z-10 focus:ring-2 focus:ring-sky-700 focus:bg-sky-400 focus:text-white"
-                              onClick={() => decrement(krj.idProduk, krj.qty)}
+                              onClick={() => decrement(krj.idHarga, krj.qty)}
                             >
                               <span className="m-auto text-2xl font-normal">
                                 -
@@ -205,7 +206,7 @@ const Keranjang = ({ title, keranjang }) => {
                               className="px-2 w-9 align-middle text-slate-900 bg-transparent rounded-r-md border-2 border-sky-400 hover:bg-sky-300 hover:text-white focus:z-10 focus:ring-2 focus:ring-sky-700 focus:bg-sky-400 focus:text-white"
                               onClick={() =>
                                 increment(
-                                  krj.idProduk,
+                                  krj.idHarga,
                                   krj.qty,
                                   krj.harga.stokToko
                                 )
