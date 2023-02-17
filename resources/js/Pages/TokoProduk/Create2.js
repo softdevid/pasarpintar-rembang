@@ -1,4 +1,5 @@
 import Main from "@/Components/TokoTemplate/Main";
+import { PlusCircleIcon, PlusIcon } from "@heroicons/react/20/solid";
 import { Head, router, usePage } from "@inertiajs/react";
 import axios from "axios";
 import { useState } from "react";
@@ -23,15 +24,36 @@ const Create2 = (props) => {
     namaHarga: "",
   })
 
+  // const [forms, setForms] = useState([
+  //   {
+  //     namaHarga: "blue",
+  //     hrgBeli: "",
+  //     hrgJual: "",
+  //     stokGudang: "",
+  //     stokToko: "",
+  //     jenisHarga: "warna",
+  //     url: "",
+  //     public_id: "",
+  //   }
+  // ]);
+
   const [forms, setForms] = useState([
     {
-      namaHarga: "blue",
-      hrgBeli: "",
-      hrgJual: "",
-      stokGudang: "",
-      stokToko: "",
-      jenisHarga: "warna",
-    }
+      name: "Warna",
+      options: [
+        { namaHarga: "Merah", hrgBeli: "", hrgJual: "", stokGudang: "", stokToko: "", image: null },
+        { namaHarga: "Biru", hrgBeli: "", hrgJual: "", stokGudang: "", stokToko: "", image: null },
+        { namaHarga: "Hijau", hrgBeli: "", hrgJual: "", stokGudang: "", stokToko: "", image: null },
+      ],
+    },
+    // {
+    //   name: "Ukuran",
+    //   options: [
+    //     { name: "S", image: null },
+    //     { name: "M", image: null },
+    //     { name: "L", image: null },
+    //   ],
+    // },
   ]);
 
   // function handleChange(e) {
@@ -49,6 +71,64 @@ const Create2 = (props) => {
   }
 
   const [currentPage, setCurrentPage] = useState(1);
+
+  const [variasiAktif, setVariasiAktif] = useState(false);
+  const handleVariasiAktif = () => {
+    setVariasiAktif(true);
+  }
+
+  const closeVariasiAktif = () => {
+    setVariasiAktif(false);
+    setForms([
+      {
+        namaHarga: "blue",
+        hrgBeli: "",
+        hrgJual: "",
+        stokGudang: "",
+        stokToko: "",
+        jenisHarga: "warna",
+        url: "",
+        public_id: "",
+      }
+    ]);
+  }
+
+  const [images, setImages] = useState([]);
+  //gambar lain
+  const uploadImages = () => {
+    var myWidget = window.cloudinary.createUploadWidget({
+      cloudName: 'dbsgoesdj',
+      uploadPreset: 'ivedm7py',
+      maxFiles: 1,
+      maxSize: 2, //2mb
+      folder: 'produk'
+    }, (error, result) => {
+      if (!error && result && result.event === "success") {
+        // console.log('Done! Here is the image info: ', result.info);
+        // const uploadedImage = result.info.files[0];
+        setImages((prev) => [...prev, ({ url: result.info.url, public_id: result.info.public_id })]);
+        setForms([
+          {
+            url: result.info.url,
+            public_id: result.info.public_id,
+          }
+        ]);
+
+        const data = {
+          url: result.info.url,
+          public_id: result.info.public_id,
+        }
+        router.post('/image-lainnya/session', data);
+      }
+    }
+    )
+    myWidget.open();
+  }
+
+
+  const deleteImage = publicId => {
+    router.post('/delete-image', publicId);
+  }
 
   return (
     <>
@@ -76,6 +156,9 @@ const Create2 = (props) => {
             forms={forms}
             setForms={setForms}
             handleChange={handleChange}
+            variasiAktif={variasiAktif}
+            handleVariasiAktif={handleVariasiAktif}
+            closeVariasiAktif={closeVariasiAktif}
           />
         ) : (
           <Page3
@@ -84,6 +167,10 @@ const Create2 = (props) => {
             setValues={setValues}
             props={props}
             handleChange={handleChange}
+            forms={forms}
+            setForms={setForms}
+            deleteImage={deleteImage}
+            uploadImages={uploadImages}
           />
         )}
 
@@ -117,32 +204,6 @@ function Page1({ setPage, values, props, handleChange }) {
     )
     myWidget.open();
   }
-
-  const [images, setImages] = useState([]);
-  //gambar lain
-  const uploadImages = () => {
-    var myWidget = window.cloudinary.createUploadWidget({
-      cloudName: 'dbsgoesdj',
-      uploadPreset: 'ivedm7py',
-      maxFiles: 1,
-      maxSize: 2, //2mb
-      folder: 'produk'
-    }, (error, result) => {
-      if (!error && result && result.event === "success") {
-        // console.log('Done! Here is the image info: ', result.info);
-        // const uploadedImage = result.info.files[0];
-        setImages((prev) => [...prev, ({ url: result.info.url, public_id: result.info.public_id })]);
-        const data = {
-          url: result.info.url,
-          public_id: result.info.public_id,
-        }
-        router.post('/image-lainnya/session', data);
-      }
-    }
-    )
-    myWidget.open();
-  }
-
 
   const deleteImage = publicId => {
     router.post('/delete-image', publicId);
@@ -224,7 +285,8 @@ function Page1({ setPage, values, props, handleChange }) {
   );
 }
 
-function Page2({ setPage, props, forms, setForms, handleChange, values }) {
+//page 2
+function Page2({ setPage, props, forms, setForms, handleChange, values, variasiAktif, closeVariasiAktif, handleVariasiAktif }) {
 
   const handleChangeOption = (event, index) => {
     const newForms = [...forms];
@@ -248,24 +310,85 @@ function Page2({ setPage, props, forms, setForms, handleChange, values }) {
     setForms(forms.filter((_, i) => i !== index));
   };
 
-  const [variasiAktif, setVariasiAktif] = useState(false);
-  const handleVariasiAktif = () => {
-    setVariasiAktif(true);
+  const [images, setImages] = useState([]);
+  //gambar lain
+  const uploadImages = (variantIndex, optionIndex, event, index) => {
+    var myWidget = window.cloudinary.createUploadWidget({
+      cloudName: 'dbsgoesdj',
+      uploadPreset: 'ivedm7py',
+      maxFiles: 1,
+      maxSize: 2, //2mb
+      folder: 'produk'
+    }, (error, result) => {
+      if (!error && result && result.event === "success") {
+        // console.log('Done! Here is the image info: ', result.info);
+        // const uploadedImage = result.info.files[0];
+        setImages((prev) => [...prev, ({ url: result.info.url, public_id: result.info.public_id })]);
+        const newVariants = [...forms];
+        newVariants[variantIndex].options[optionIndex].image = result.info.url;
+        setVariants(newVariants);
+
+
+        const data = {
+          url: result.info.url,
+          public_id: result.info.public_id,
+        }
+        router.post('/image-lainnya/session', data);
+      }
+    }
+    )
+    myWidget.open();
   }
 
-  const closeVariasiAktif = () => {
-    setVariasiAktif(false);
+
+  const deleteImage = publicId => {
+    router.post('/delete-image', publicId);
     setForms([
       {
-        namaHarga: "blue",
-        hrgBeli: "",
-        hrgJual: "",
-        stokGudang: "",
-        stokToko: "",
-        jenisHarga: "warna",
+        url: "",
+        public_id: "",
       }
-    ]);
+    ])
   }
+
+  const [variants, setVariants] = useState([
+    {
+      name: "Warna",
+      options: [
+        { name: "Merah", image: null },
+        { name: "Biru", image: null },
+        { name: "Hijau", image: null },
+      ],
+    },
+    {
+      name: "Ukuran",
+      options: [
+        { name: "S", image: null },
+        { name: "M", image: null },
+        { name: "L", image: null },
+      ],
+    },
+  ]);
+  console.log(variants);
+
+  const handleOptionFileChange = (variantIndex, optionIndex, event) => {
+    const file = event.target.files[0];
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append('upload_preset', 'unsigned_upload_preset_value');
+
+    axios.post("https://api.cloudinary.com/v1_1/dbsgoesdj/image/upload", formData)
+      .then((response) => {
+        const newVariants = [...variants];
+        newVariants[variantIndex].options[optionIndex].image = response.data.secure_url;
+        setVariants(newVariants);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+
 
   return (
     <>
@@ -287,64 +410,138 @@ function Page2({ setPage, props, forms, setForms, handleChange, values }) {
                 <button className="bg-sky-600 text-white p-2 rounded-lg my-3" onClick={addForm}>Add option</button>
               </div>
             </div>
-            {forms.map((form, index) => (
-              <div key={index}>
-                <div className="grid gap-8 grid-cols-2 md:grid-cols-5 my-5">
-                  <div>
-                    <label>Nama Varian</label>
-                    <input
-                      type="text"
-                      name="namaHarga" className="w-full rounded-md"
-                      value={form.namaHarga}
-                      onChange={(event) => handleChangeOption(event, index)} />
-                  </div>
-                  <div>
-                    <label>Harga Beli</label>
-                    <input
-                      type="number"
-                      name="hrgBeli"
-                      value={form.hrgBeli} className="w-full rounded-md"
-                      onChange={(event) => handleChangeOption(event, index)}
-                    />
-                    {rupiah(form.hrgBeli)}
-                  </div>
-                  <div>
-                    <label>Harga Jual</label>
-                    <input
-                      type="number"
-                      name="hrgJual"
-                      value={form.hrgJual} className="w-full rounded-md"
-                      onChange={(event) => handleChangeOption(event, index)}
-                    />
-                    {rupiah(form.hrgJual)}
-                  </div>
-                  <div>
-                    <label>Stok Gudang</label>
-                    <input
-                      type="number"
-                      name="stokGudang"
-                      placeholder="stok yang tidak ditampilkan olshop"
-                      value={form.stokGudang} className="w-full rounded-md"
-                      onChange={(event) => handleChangeOption(event, index)}
-                    />
-                  </div>
-                  <div>
-                    <label>Stok Toko</label>
-                    <input
-                      type="number"
-                      name="stokToko"
-                      placeholder="stok yang akan ditampilkan olshop"
-                      value={form.stokToko} className="w-full rounded-md"
-                      onChange={(event) => handleChangeOption(event, index)}
-                    />
+            <div className="grid grid-cols-3 md:grid-cols-6 gap-8">
+              {forms.map((form, index) => (
+                <div key={index}>
+                  <div className="my-5">
+                    <div>
+                      <label>Nama Varian</label><br />
+                      <input
+                        type="text"
+                        name="namaHarga" className="p-2 rounded-md"
+                        value={form.namaHarga}
+                        onChange={(event) => handleChangeOption(event, index)} />
+                    </div>
+                    <div className="mt-2">
+                      <label>Pilih gambar</label><br />
+                      {!form.url ? (
+                        <PlusIcon name="url" onClick={(event) => uploadImages(event, index)} className="w-10 h-10 cursor-pointer bg-white border-black border rounded-md" />
+                      ) : (
+                        <>
+                          <div className="grid grid-cols-3 md:grid-cols-12 gap-8">
+                            <div className="mt-2" key={i}>
+                              <p>{image.namaHarga}</p>
+                              <img src={form.url} className="max-w-[128px] max-h-32" />
+                              <button onClick={() => deleteImage({ publicId: form.public_id })}>Hapus</button>
+                            </div>
+                          </div>
+                        </>
+                      )}
+
+
+                    </div>
+
                     {index > 0 &&
                       <button onClick={() => removeForm(index)} className="bg-red-600 text-white rounded-lg p-1 mt-2">Hapus Option</button>
                     }
                   </div>
                 </div>
+              ))}
+            </div>
+          </div>
+
+          <div>
+            {forms.map((variant, variantIndex) => (
+              <div key={variantIndex}>
+                <h3>{variant.name}</h3>
+                <div>
+                  {variant.options.map((option, optionIndex) => (
+                    <div key={optionIndex}>
+                      <input type="text" value={option.name} onChange={(event) => handleOptionChange(variantIndex, optionIndex, event)} />
+                      <button onClick={(event) => uploadImages(variantIndex, optionIndex, event)}>Upload</button>
+                      <input type="file" onChange={(event) => handleOptionFileChange(variantIndex, optionIndex, event)} />
+                      {option.image && <img src={option.image} alt="Gambar opsi" />}
+                    </div>
+                  ))}
+                </div>
               </div>
             ))}
           </div>
+
+
+          {/* <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {forms.map((form, index) => (
+                <div key={index}>
+                  <div className="my-5">
+                    <div>
+                      <label>Nama Varian</label>
+                      <input
+                        type="text"
+                        name="namaHarga" className="w-full rounded-md"
+                        value={form.namaHarga}
+                        onChange={(event) => handleChangeOption(event, index)} />
+                    </div>
+                    <div>
+                      <label>Harga Beli</label>
+                      <input
+                        type="number"
+                        name="hrgBeli"
+                        value={form.hrgBeli} className="w-full rounded-md"
+                        onChange={(event) => handleChangeOption(event, index)}
+                      />
+                      {rupiah(form.hrgBeli)}
+                    </div>
+                    <div>
+                      <label>Harga Jual</label>
+                      <input
+                        type="number"
+                        name="hrgJual"
+                        value={form.hrgJual} className="w-full rounded-md"
+                        onChange={(event) => handleChangeOption(event, index)}
+                      />
+                      {rupiah(form.hrgJual)}
+                    </div>
+                    <div>
+                      <label>Stok Gudang</label>
+                      <input
+                        type="number"
+                        name="stokGudang"
+                        placeholder="stok yang tidak ditampilkan olshop"
+                        value={form.stokGudang} className="w-full rounded-md"
+                        onChange={(event) => handleChangeOption(event, index)}
+                      />
+                    </div>
+                    <div>
+                      <label>Stok Toko</label>
+                      <input
+                        type="number"
+                        name="stokToko"
+                        placeholder="stok yang akan ditampilkan olshop"
+                        value={form.stokToko} className="w-full rounded-md"
+                        onChange={(event) => handleChangeOption(event, index)}
+                      />
+                    </div>
+                    <div>
+                      <label>Pilih gambar</label>
+                      {props.images.length <= 2 ? (
+                        <button onClick={() => uploadImages()} className="w-full bg-white p-1 border-black border rounded-md">Upload</button>
+                      ) : (
+                        <>
+                          <p className="text-red-600 my-3">Gambar penuh</p>
+                        </>
+                      )
+                      }
+                      {index > 0 &&
+                        <button onClick={() => removeForm(index)} className="bg-red-600 text-white rounded-lg p-1 mt-2">Hapus Option</button>
+                      }
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div> */}
+
         </>
       ) : (
         <>
@@ -413,10 +610,19 @@ function Page2({ setPage, props, forms, setForms, handleChange, values }) {
   );
 }
 
-function Page3({ setPage, values }) {
+function Page3({ setPage, forms, setForms, deleteImage, uploadImages }) {
   return (
     <>
-      <textarea type="text" className="w-full rounded-md">{values.deskripsi}</textarea>
+      {/* <textarea type="text" className="w-full rounded-md">{values.deskripsi}</textarea> */}
+
+      {forms.map((form, index) => (
+        <div key={index}>
+          <p>{form.namaHarga}</p>
+          <button onClick={() => uploadImages()} className="w-full bg-white p-1 border-black border rounded-md">Upload</button>
+          <img src={form.url} />
+        </div>
+      ))}
+
       <button onClick={() => setPage(2)} className="bg-gray-500 text-white rounded-lg p-2 mt-5">Sebelumnya</button>
     </>
   )

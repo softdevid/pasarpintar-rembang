@@ -16,6 +16,7 @@ class CreateGambarSementarasTable extends Migration
     Schema::create('gambar_sementaras', function (Blueprint $table) {
       $table->id();
       $table->foreignId('idUser');
+      $table->text('index');
       $table->text('public_id');
       $table->text('url');
       $table->text('kategoriGambar'); //utama / lainnya
