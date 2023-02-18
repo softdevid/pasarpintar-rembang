@@ -1,6 +1,6 @@
 import { FormatRupiah } from "@/config/formatRupiah";
 import Main from "@/Layouts/Main";
-import { Head, Link } from "@inertiajs/react";
+import { Head, Link, router } from "@inertiajs/react";
 import React, { Fragment, useEffect, useState } from "react";
 
 const Keranjang = ({ title, keranjang }) => {
@@ -17,7 +17,9 @@ const Keranjang = ({ title, keranjang }) => {
   const [isCheck, setIsCheck] = useState([]);
 
   const [cart, setCart] = useState(Object.entries(keranjang));
-  console.log(cart);
+
+  const [isClicked, setIsClicked] = useState(false);
+
   const decrement = (idHarga, qty) => {
     setCart((prev) => {
       return prev.map((data) => {
@@ -52,15 +54,10 @@ const Keranjang = ({ title, keranjang }) => {
     });
   };
 
-  const total = cart.reduce(
-    (total, item) =>
-      total +
-      item[1].reduce(
-        (subtotal, prod) => subtotal + prod.qty * prod.harga.hrgJual,
-        0
-      ),
-    0
-  );
+  const total = cart
+    .flatMap(([_, items]) => items)
+    .filter((item) => isCheck.includes(`${item.id}`))
+    .reduce((subtotal, prod) => subtotal + prod.qty * prod.harga.hrgJual, 0);
 
   const handleSelectAll = (e) => {
     setIsCheckAll(!isCheckAll);
@@ -79,6 +76,15 @@ const Keranjang = ({ title, keranjang }) => {
     setIsCheck([...isCheck, id]);
     if (!checked) {
       setIsCheck(isCheck.filter((item) => item !== id));
+    }
+  };
+
+  const toCheckout = () => {
+    setIsClicked(true);
+    if (isCheck.length != 0) {
+      router.get("/checkout", {
+        idPivot: isCheck.join(","),
+      });
     }
   };
 
@@ -238,6 +244,31 @@ const Keranjang = ({ title, keranjang }) => {
                   <FormatRupiah value={`${total}000`} />
                 </span>
               </h2>
+              {isCheck.length == 0 && isClicked && (
+                <div
+                  id="checkOut"
+                  className="flex p-4 my-3 text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
+                  role="alert"
+                >
+                  <svg
+                    aria-hidden="true"
+                    className="flex-shrink-0 w-5 h-5"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                      clipRule="evenodd"
+                    ></path>
+                  </svg>
+                  <span className="sr-only">Info</span>
+                  <div className="ml-3 text-sm font-medium">
+                    Pilih produk terlebih dahulu
+                  </div>
+                </div>
+              )}
               <div className="flex justify-center items-start mt-3">
                 <Link
                   as="button"
@@ -246,13 +277,20 @@ const Keranjang = ({ title, keranjang }) => {
                 >
                   Lanjut Belanja
                 </Link>
-                <Link
-                  as="button"
-                  href="/checkout"
+                <button
+                  onClick={toCheckout}
                   className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
                 >
                   Checkout
-                </Link>
+                </button>
+                {/* <Link
+                  as="button"
+                  // href="/checkout"
+                  onClick={toCheckout}
+                  className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
+                >
+                  Checkout
+                </Link> */}
               </div>
             </div>
           </div>

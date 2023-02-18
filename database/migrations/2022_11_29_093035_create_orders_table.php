@@ -15,16 +15,14 @@ class CreateOrdersTable extends Migration
   {
     Schema::create('orders', function (Blueprint $table) {
       $table->id();
-      $table->string('noInvoice', 20)->default('-');
-      $table->foreignId('idUser');
-      $table->double('subtotal', 12, 2)->default(0);
-      $table->double('diskon', 12, 2)->default(0);
-      $table->double('total', 12, 2)->default(0);
-      $table->date('tglOrder')->nullable();
-      $table->string('namaCustomer')->default('-');
-      $table->text('alamatPengiriman')->default('-');
-      $table->string('statusBayar')->default('-');
-      $table->string('metodeBayar')->default('-');
+      $table->string('noFaktur', 20);
+      $table->foreignId('idToko');
+      $table->foreignId('idProduk');
+      $table->string('namaProduk');
+      $table->bigInteger('hrgBeli');
+      $table->bigInteger('hrgJual');
+      $table->bigInteger('jumlah');
+      $table->date('tglOrder');
       $table->timestamps();
     });
   }

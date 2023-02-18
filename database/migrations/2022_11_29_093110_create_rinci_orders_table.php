@@ -15,16 +15,18 @@ class CreateRinciOrdersTable extends Migration
   {
     Schema::create('rinci_orders', function (Blueprint $table) {
       $table->id();
-      $table->foreignId('idOrder');
-      $table->foreignId('idProduk');
-      $table->foreignId('idHarga');
+      $table->foreignId('idUser');
+      $table->string('namaCustomer');
+      $table->text('alamatPengiriman');
       $table->foreignId('idToko');
-      $table->integer('qty');
-      $table->double('diskon', 12, 2)->default(0);
-      $table->double('subtotal', 12, 2)->default(0);
-      $table->string('status_produk')->default('keranjang');
-      $table->string('statusOrder')->default('-');
-      $table->date('tglSelesai')->nullable();
+      $table->foreignId('idProduk');
+      $table->string('noFaktur', 20);
+      $table->bigInteger('total');
+      $table->bigInteger('totalItem');
+      $table->date('tglOrder');
+      $table->string('statusBayar');
+      $table->string('statusOrder');
+      $table->string('metodeBayar');
       $table->timestamps();
     });
   }

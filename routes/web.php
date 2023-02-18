@@ -39,11 +39,6 @@ Route::middleware('auth',)->group(function () {
   Route::post('/cart-add', [KeranjangController::class, 'tambah'])->name('cart.add');
   Route::get('/cart-count', [KeranjangController::class, 'cartCount'])->name('cart.count');
 
-
-  //   Route::get('/checkout', [HomeController::class, 'checkout'])->name('checkout');
-  // });
-
-
   // route checkout
   Route::get('/checkout', [HomeController::class, 'checkout'])->name('checkout');
 
