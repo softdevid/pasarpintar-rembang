@@ -17,10 +17,12 @@ class CreateRinciOrdersTable extends Migration
       $table->id();
       $table->foreignId('idUser');
       $table->string('namaCustomer');
+      $table->string('email');
+      $table->string('noHp');
       $table->text('alamatPengiriman');
       $table->foreignId('idToko');
       $table->foreignId('idProduk');
-      $table->string('noFaktur', 20);
+      $table->string('noFaktur');
       $table->bigInteger('total');
       $table->bigInteger('totalItem');
       $table->date('tglOrder');

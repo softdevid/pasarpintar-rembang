@@ -42,6 +42,8 @@ Route::middleware('auth',)->group(function () {
   // route checkout
   Route::get('/checkout', [HomeController::class, 'checkout'])->name('checkout');
 
+  // route order
+  Route::post('/order', [HomeController::class, 'order'])->name('order');
 
   // route kurir
   Route::get('/kurir', function () {

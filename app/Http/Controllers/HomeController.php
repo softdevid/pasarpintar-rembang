@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Keranjang;
+use App\Models\Order;
 use App\Models\Produk;
+use App\Models\RinciOrder;
 use App\Models\Toko;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -144,15 +146,63 @@ class HomeController extends Controller
           "harga" => [
             "namaHarga" => $item->pivot->harga->namaHarga,
             "hrgJual" => $item->pivot->harga->hrgJual,
+            "hrgBeli" => $item->pivot->harga->hrgBeli,
             "stokToko" => $item->pivot->harga->stokToko,
           ],
         ],
       ];
     });
 
+    $authUser = auth()->user();
+
     return Inertia::render('Checkout', [
       'title' => 'Checkout',
-      'filteredProduk' => $krjPrdk
+      'filteredProduk' => $krjPrdk,
+      'user' => [
+        'email' => $authUser->email,
+        'name' => $authUser->name,
+        'noHp' => $authUser->no_hp,
+        'alamat' => $authUser->alamat,
+      ],
     ]);
+  }
+
+  public function order(Request $request)
+  {
+    $authUser = auth()->user()->id;
+
+    foreach ($request->produk as $produk) {
+      $order = new Order;
+      $order->noFaktur = Carbon::now()->getPreciseTimestamp(3);
+      $order->idToko = $produk['idToko'];
+      $order->idProduk = $produk['idProduk'];
+      $order->namaProduk = $produk['namaProduk'];
+      $order->hrgBeli = $produk['hrgBeli'];
+      $order->hrgJual = $produk['hrgJual'];
+      $order->jumlah = $produk['qty'];
+      $order->tglOrder = date("Y-m-d H:i:s");
+      $order->save();
+
+      $rinciOrder = new RinciOrder;
+      $rinciOrder->idUser = $authUser;
+      $rinciOrder->namaCustomer = $request->recipient['nama'];
+      $rinciOrder->email = $request->recipient['email'];
+      $rinciOrder->noHp = $request->recipient['noHp'];
+      $rinciOrder->alamatPengiriman = $request->recipient['alamat'];
+      $rinciOrder->idToko = $produk['idToko'];
+      $rinciOrder->idProduk = $produk['idProduk'];
+      $rinciOrder->noFaktur = Carbon::now()->getPreciseTimestamp(3);
+      $rinciOrder->total = $request->total;
+      $rinciOrder->totalItem = $produk['qty'];
+      $rinciOrder->tglOrder = date("Y-m-d H:i:s");
+      $rinciOrder->statusBayar = "Belum dibayar";
+      $rinciOrder->statusOrder = "Diproses";
+      $rinciOrder->metodeBayar = $request->payment;
+      $rinciOrder->save();
+    }
+
+
+
+    return response()->json(["data" => "Pesanan sedang diproses!"]);
   }
 }
