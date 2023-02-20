@@ -18,6 +18,7 @@ class CreateOrdersTable extends Migration
       $table->string('noFaktur');
       $table->foreignId('idToko');
       $table->foreignId('idProduk');
+      $table->foreignId('idHarga');
       $table->string('namaProduk');
       $table->bigInteger('hrgBeli');
       $table->bigInteger('hrgJual');
