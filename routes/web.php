@@ -139,6 +139,7 @@ Route::get('/oneWeek', function () {
 
 Route::post('/image/session', [GambarSementaraController::class, 'insertgbrutama'])->name('gambarUtama');
 Route::post('/image-lainnya/session', [GambarSementaraController::class, 'gbrlain'])->name('gambarLainnya');
+Route::post('/delete-image-variasi-inaktive', [ProdukController::class, 'deleteImageVarian'])->name('deleteImageAllVariant');
 
 // route autentikasi
 require __DIR__ . '/auth.php';

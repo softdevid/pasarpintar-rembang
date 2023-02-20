@@ -17,6 +17,7 @@ class GambarSementaraController extends Controller
       'public_id' => $request->public_id,
       'url' => $request->url,
       'kategoriGambar' => 'utama',
+      'index' => $request->index ?? '0'
     ]);
     return back()->with('message', 'Berhasil menambah gambar utama');
   }
@@ -28,7 +29,7 @@ class GambarSementaraController extends Controller
       'public_id' => $request->public_id,
       'url' => $request->url,
       'kategoriGambar' => 'lainnya',
-      'index' => $request->index
+      'index' => $request->index ?? '0'
     ]);
     return back()->with('message', 'Berhasil menambah gambar utama');
   }

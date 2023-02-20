@@ -7,7 +7,7 @@ import axios from "axios";
 
 const Index = (props) => {
   const [query, setQuery] = useState("");
-  const keys = ["namaProduk", "hrgBeli", "hrgJual"];
+  const keys = ["namaProduk"];
 
   const search = (data) => {
     return data.filter((item) =>
@@ -15,25 +15,41 @@ const Index = (props) => {
     );
   }
 
-  const [produk, setProduk] = useState([]);
-  const [pageCount, setPageCount] = useState(0);
-  const [offset, setOffset] = useState(0);
+  const [produk, setProducts] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(0);
+  console.log(produk);
 
   useEffect(() => {
-    axios
-      .get(`/api/data-produk?page=${offset + 1}`)
-      .then(res => {
-        console.log(res);
-        setProduk(res.data);
-        setPageCount(res.data.last_page);
-      })
-      .catch(err => console.error(err));
-  }, [offset]);
+    axios.get(`/api/data-produk?page=${currentPage}`).then((response) => {
+      setProducts(response.data.data);
+      setTotalPages(response.data.last_page);
+    });
+  }, [currentPage]);
 
-  const handlePageClick = data => {
-    setOffset(data.selected);
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
   };
 
+  let totalStokToko = 0;
+  for (let i = 0; i < produk.length; i++) {
+    const item = produk[i];
+    const hargas = item.hargas;
+    for (let j = 0; j < hargas.length; j++) {
+      const stokToko = hargas[j].stokToko;
+      totalStokToko += stokToko;
+    }
+  }
+
+  let totalStokGudang = 0;
+  for (let i = 0; i < produk.length; i++) {
+    const item = produk[i];
+    const hargas = item.hargas;
+    for (let j = 0; j < hargas.length; j++) {
+      const stokGudang = hargas[j].stokGudang;
+      totalStokGudang += stokGudang;
+    }
+  }
 
   const handleDelete = (id) => {
     router.post("/toko/produk/delete", id);
@@ -98,18 +114,12 @@ const Index = (props) => {
               <th scope="col" className="py-3 px-6">
                 Harga Jual
               </th>
-              <th scope="col" className="py-3 px-6">
+              {/* <th scope="col" className="py-3 px-6">
                 Stok Gudang
               </th>
               <th scope="col" className="py-3 px-6">
                 Stok Toko
-              </th>
-              <th scope="col" className="py-3 px-6">
-                Satuan
-              </th>
-              <th scope="col" className="py-3 px-6">
-                Diskon
-              </th>
+              </th> */}
               <th scope="col" className="py-3 px-6">
                 Aksi
               </th>
@@ -125,12 +135,8 @@ const Index = (props) => {
                       {i + 1}
                     </th>
                     <td>{data.namaProduk}</td>
-                    <td>{data.hrgBeli}</td>
-                    <td>{data.hrgJual}</td>
-                    <td>{data.stokGudang}</td>
-                    <td>{data.stokToko}</td>
-                    <td>{data.satuan}</td>
-                    <td>Rp. {data.diskon}</td>
+                    <td>{data.hargas.length} item</td>
+                    <td>{data.hargas.length} item</td>
                     <td className="flex">
                       {/* <a href={`/toko/produk/show/${data.slug}`} className="bg-sky-400 text-white rounded-md p-2 mx-1">Detail</a> */}
                       <Link href={`/toko/produk/${data.slug}/edit`} className="bg-yellow-400 text-white rounded-md p-2 mx-1">Edit</Link>
@@ -151,11 +157,46 @@ const Index = (props) => {
             )}
           </tbody>
         </table>
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={handlePageChange}
+        />
       </div>
 
     </>
   );
 };
+
+function Pagination({ currentPage, totalPages, onPageChange }) {
+  const pageNumbers = [];
+
+  for (let i = 1; i <= totalPages; i++) {
+    pageNumbers.push(i);
+  }
+
+  return (
+    <div className="text-center bg-white border-2">
+      {pageNumbers.map((pageNumber) => (
+        <button className="p-2"
+          key={pageNumber}
+          onClick={() => onPageChange(pageNumber)}
+          disabled={pageNumber === currentPage}
+        >
+          {pageNumber === currentPage ? (
+            <>
+              <b className="text-blue-600">{pageNumber}</b>
+            </>
+          ) : (
+            <>
+              <b className="text-black">{pageNumber}</b>
+            </>
+          )}
+        </button>
+      ))}
+    </div>
+  );
+}
 
 Index.layout = (page) => <Main children={page} />;
 

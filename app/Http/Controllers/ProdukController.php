@@ -23,21 +23,36 @@ class ProdukController extends Controller
    */
   public function index()
   {
+    // $produk = Produk::latest()->paginate(10)->get();
     return Inertia::render('TokoProduk/Index', [
       // 'produk' => $produk,
-      'title' => 'List Produk'
+      'title' => 'List Produk',
+      // 'produk' => $produk,
     ]);
   }
 
   public function dataProduk()
   {
     $toko = Toko::where('idUser', auth()->user()->id)->select('id')->first();
-    // $produk = Produk::where('idToko', $toko->id)->get();
-    $produk = Produk::join('hargas', 'produks.id', '=', 'hargas.idProduk')
-      ->where('produks.idToko', '=', $toko->id)
-      ->select('produks.*', 'hargas.*')
-      ->get();
-
+    // $produk = Produk::where('idToko', $toko->id)->paginate(5);
+    // $produk = Produk::join('hargas', 'produks.id', '=', 'hargas.idProduk')
+    //   ->where('produks.idToko', '=', $toko->id)
+    //   ->select('produks.namaProduk as namaProduk', 'produks.kategori as kategori', 'produks.kategoriGlobal as kategoriGlobal', 'produks.imgUrl as imgUrl')
+    //   ->get();
+    $produk = Produk::with(['toko' => function ($q) {
+      $q->select('id', 'slug as slugToko');
+    }, 'hargas' => function ($q) {
+      $q->select('idProduk', 'hrgJual', 'hrgBeli', 'stokGudang', 'stokToko')->orderBy('hrgJual', 'asc');
+    }])->select(
+      'produks.id',
+      'produks.idToko',
+      'produks.namaProduk',
+      'produks.slug as slugProduk',
+      'produks.terjual',
+      'produks.imgUrl',
+    )->orderBy('terjual', 'desc')->limit(100)
+      ->where('idToko', $toko->id)
+      ->paginate(5);
     // dd($data);
     return response()->json($produk);
   }
@@ -71,68 +86,70 @@ class ProdukController extends Controller
    */
   public function store(Request $request)
   {
-    dd($request->all());
+    // dd($request->all());
     $toko = Toko::where('idUser', auth()->user()->id)->select('id')->first();
-    $request->validate(
-      [
-        'values.namaProduk' => 'required|max:225',
-        'values.idKategori' => 'required',
-        'values.idKategoriGlobal' => 'required',
-        'values.satuan' => 'required',
-        'values.deskripsi' => 'max:225',
-        'values.hrgBeli' => 'required',
-        'values.hrgJual' => 'required',
-        'values.stokToko' => 'required',
-        'values.stokGudang' => 'required',
-        'values.stokGudang' => 'required',
-        // 'image.url' => 'required|max:2048',
-      ],
-      [
-        'values.namaProduk.required' => 'Nama produk harus diisi!',
-        'values.idKategori.required' => 'Kategori Toko harus dipilih!',
-        'values.idKategoriGlobal.required' => 'Kategori Global harus dipilih!',
-        'values.satuan.required' => 'Satuan harus dipilih!',
-        'values.deskripsi.required' => 'Deskripsi harus diisi!',
-        'values.hrgBeli.required' => 'Harga Beli harus diisi',
-        'values.hrgJual.required' => 'Harga Jual harus diisi',
-        'values.stokToko.required' => 'Stok Toko harus diisi',
-        'values.stokGudang.required' => 'Stok Gudang harus diisi',
-        // 'image.url.required' => 'Gambar utama harus ada harus diisi',
-      ]
-    );
 
+    // $messages = [];
+    // foreach ($request->input('forms') as $key => $value) {
+    //   $messages["forms.$key.namaHarga.required"] = 'Nama harga harus diisi.';
+    //   $messages["forms.$key.hrgBeli.required"] = 'Harga beli harus diisi.';
+    //   $messages["forms.$key.hrgBeli.numeric"] = 'Harga beli harus berupa angka.';
+    //   $messages["forms.$key.hrgJual.required"] = 'Harga jual harus diisi.';
+    //   $messages["forms.$key.hrgJual.numeric"] = 'Harga jual harus berupa angka.';
+    //   $messages["forms.$key.stokGudang.required"] = 'Stok gudang harus diisi.';
+    //   $messages["forms.$key.stokGudang.numeric"] = 'Stok gudang harus berupa angka.';
+    //   $messages["forms.$key.stokToko.required"] = 'Stok toko harus diisi.';
+    //   $messages["forms.$key.stokToko.numeric"] = 'Stok toko harus berupa angka.';
+    //   $messages["forms.$key.jenisHarga.required"] = 'Jenis harga harus diisi.';
+    // }
+    // $request->validate($messages);
+
+    // $request->validate([
+    //   'values.namaProduk' => 'required|max:255',
+    //   'values.idKategori' => 'required',
+    //   'values.idKategoriGlobal' => 'required',
+    //   'forms.*.namaHarga' => 'required|max:255',
+    //   'forms.*.hrgBeli' => 'required|numeric|min:0',
+    //   'forms.*.hrgJual' => 'required|numeric|min:0',
+    //   'forms.*.stokGudang' => 'required|numeric|min:0',
+    //   'forms.*.stokToko' => 'required|numeric|min:0',
+    // ]);
+
+    // dd($request->all());
+    $image = GambarSementara::where(['idUser' => auth()->user()->id, 'kategoriGambar' => 'utama'])->first();
     $id = Produk::create([
       'namaProduk' => $request->input('values.namaProduk'),
       'slug' => Str::slug($request->input('values.namaProduk')),
       'idKategori' => $request->input('values.idKategori'),
       'idKategoriGlobal' => $request->input('values.idKategoriGlobal'),
-      'satuan' => $request->input('values.satuan'),
       'deskripsi' => $request->input('values.satuan'),
-      'hrgBeli' => $request->input('values.hrgBeli'),
-      'hrgJual' => $request->input('values.hrgJual'),
-      'stokToko' => $request->input('values.stokToko'),
-      'stokGudang' => $request->input('values.stokGudang'),
       'terjual' => 0,
-      'diskon' => $request->input('values.diskon') ?? 0,
-      'tglAwalDiskon' => $request->input('values.tglAwalDiskon') ?? null,
-      'tglAkhirDiskon' => $request->input('values.tglAkhirDiskon') ?? null,
-      'imgName' => $request->input('image.public_id') ?? null,
-      'imgUrl' => $request->input('image.url') ?? null,
+      'imgName' => $image->public_id,
+      'imgUrl' => $image->url,
       'idToko' => $toko->id,
     ]);
 
-    if ($request->images) {
-      $images = $request->input('images');
-      foreach ($images as $key => $file) {
-        Gambar::create([
-          'img' => $request->input('images.public_id') ?? null,
-          'url' => $request->input('images.url') ?? null,
-          'idProduk' => $id,
+    if ($request->input('forms')) {
+      $forms = $request->input('forms');
+      foreach ($forms as $key => $value) {
+        Harga::create([
+          'idProduk' => 1,
+          'namaHarga' => $value['namaHarga'] ?? '',
+          'hrgJual' => $value['hrgJual'],
+          'hrgBeli' => $value['hrgBeli'],
+          'stokToko' => $value['stokToko'],
+          'stokGudang' => $value['stokGudang'],
+          'diskon' => $value['diskon'] ?? '0',
+          'tglAwalDiskon' => $value['tglAwalDiskon'] ?? null,
+          'tglAkhirDiskon' => $value['tglAkhirDiskon'] ?? null,
+          'imgName' => $value['public_id'] ?? null,
+          'imgUrl' => $value['url'] ?? null,
         ]);
       }
     }
 
     return redirect()->to('/toko/produk')->with('message', 'Berhasil ditambah');
+    // return back()->with('message', 'Berhasil di tambah');
   }
 
   /**
@@ -233,17 +250,17 @@ class ProdukController extends Controller
       ]);
     }
 
-    if ($request->hasFile('images')) {
-      $file = $request->file('images');
-      $image = Cloudinary::upload($file->getRealPath(), ['folder' => 'products']);
-      $public_id = $image->getPublicId();
-      $url = $image->getSecurePath();
-      Gambar::create([
-        'imgName' => $public_id,
-        'imgUrl' => $url,
-        'idToko' => auth()->user()->idToko,
-      ]);
-    }
+    // if ($request->hasFile('images')) {
+    //   $file = $request->file('images');
+    //   $image = Cloudinary::upload($file->getRealPath(), ['folder' => 'products']);
+    //   $public_id = $image->getPublicId();
+    //   $url = $image->getSecurePath();
+    //   Gambar::create([
+    //     'imgName' => $public_id,
+    //     'imgUrl' => $url,
+    //     'idToko' => auth()->user()->idToko,
+    //   ]);
+    // }
 
     return redirect()->to('/list-produk')->with('message', 'Berhasil ditambah');
   }
@@ -272,9 +289,29 @@ class ProdukController extends Controller
 
   public function deleteImage(Request $request)
   {
-    // dd($request->publicId);
-    Cloudinary::destroy($request->publicId);
-    GambarSementara::where('public_id', $request->publicId)->delete();
-    return back()->with('message', 'Berhasil dihapus');
+    if ($request->publicId) {
+      Cloudinary::destroy($request->publicId);
+      GambarSementara::where('public_id', $request->publicId)->delete();
+      return back()->with('message', 'Berhasil dihapus');
+    } else {
+      return back()->with('message', 'Berhasil dihapus');
+    }
+  }
+
+  public function deleteImageVarian(Request $request)
+  {
+    $forms = $request->input('forms');
+    // dd($forms);
+    foreach ($forms as $form) {
+      $publicId = $form['public_id'];
+
+      if ($publicId) {
+        Cloudinary::destroy($publicId);
+        GambarSementara::where('public_id', $publicId)->first();
+        return back()->with('message', 'Berhasil dihapus');
+      } else {
+        return back()->with('message', 'Berhasil dihapus');
+      }
+    }
   }
 }

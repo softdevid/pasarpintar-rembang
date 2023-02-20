@@ -22,10 +22,10 @@ class CreateProduksTable extends Migration
       $table->foreignId('idKategoriGlobal')->nullable();
       $table->string('satuan')->nullable();
       $table->text('deskripsi')->nullable();
-      // $table->integer('hrgBeli')->nullable();
-      // $table->integer('hrgJual')->nullable();
+      $table->integer('totalStokGudang')->nullable()->default(0);
+      $table->integer('totalStokToko')->nullable()->default(0);
       $table->string('jenisHarga')->nullable(); //mendefinisikan nama harga, misal warna, kendaraan dll
-      $table->bigInteger('terjual')->nullable();
+      $table->bigInteger('terjual')->nullable()->default(0);
       $table->string('imgName')->nullable();
       $table->string('imgUrl')->nullable();
       $table->timestamps();

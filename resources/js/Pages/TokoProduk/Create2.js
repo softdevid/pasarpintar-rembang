@@ -7,61 +7,29 @@ import { Route, Router } from "react-router-dom";
 // import DOMPurify from 'dompurify';
 
 const Create2 = (props) => {
-
+  console.log(values, props);
   const [values, setValues] = useState({
     namaProduk: "",
     idKategori: "",
     idKategoriGlobal: "",
-    stokToko: "",
-    stokGudang: "",
-    // hrgJual: [],
-    // hrgBeli: [],
-    diskon: "",
-    tglAwalDiskon: "",
-    tglAkhirDiskon: "",
     deskripsi: "",
-    jenisHarga: "warna",
-    namaHarga: "",
+    jenisHarga: "",
+    url: "",
+    public_id: ""
   })
-
-  // const [forms, setForms] = useState([
-  //   {
-  //     namaHarga: "blue",
-  //     hrgBeli: "",
-  //     hrgJual: "",
-  //     stokGudang: "",
-  //     stokToko: "",
-  //     jenisHarga: "warna",
-  //     url: "",
-  //     public_id: "",
-  //   }
-  // ]);
 
   const [forms, setForms] = useState([
     {
-      name: "Warna",
-      options: [
-        { namaHarga: "Merah", hrgBeli: "", hrgJual: "", stokGudang: "", stokToko: "", image: null },
-        { namaHarga: "Biru", hrgBeli: "", hrgJual: "", stokGudang: "", stokToko: "", image: null },
-        { namaHarga: "Hijau", hrgBeli: "", hrgJual: "", stokGudang: "", stokToko: "", image: null },
-      ],
-    },
-    // {
-    //   name: "Ukuran",
-    //   options: [
-    //     { name: "S", image: null },
-    //     { name: "M", image: null },
-    //     { name: "L", image: null },
-    //   ],
-    // },
+      namaHarga: "",
+      hrgBeli: "",
+      hrgJual: "",
+      stokGudang: "",
+      stokToko: "",
+      jenisHarga: "",
+      url: "",
+      public_id: "",
+    }
   ]);
-
-  // function handleChange(e) {
-  //   setHargas(values => ({
-  //     ...values,
-  //     [e.target.id]: e.target.value,
-  //   }))
-  // }
 
   function handleChange(e) {
     setValues(values => ({
@@ -77,57 +45,32 @@ const Create2 = (props) => {
     setVariasiAktif(true);
   }
 
-  const closeVariasiAktif = () => {
-    setVariasiAktif(false);
+  const closeVariasiAktif = (publicId) => {
+    router.post("/delete-image-variasi-inaktive", { forms });
     setForms([
       {
-        namaHarga: "blue",
+        namaHarga: "",
         hrgBeli: "",
         hrgJual: "",
         stokGudang: "",
         stokToko: "",
-        jenisHarga: "warna",
+        jenisHarga: "",
         url: "",
         public_id: "",
       }
     ]);
+    setVariasiAktif(false);
   }
-
-  const [images, setImages] = useState([]);
-  //gambar lain
-  const uploadImages = () => {
-    var myWidget = window.cloudinary.createUploadWidget({
-      cloudName: 'dbsgoesdj',
-      uploadPreset: 'ivedm7py',
-      maxFiles: 1,
-      maxSize: 2, //2mb
-      folder: 'produk'
-    }, (error, result) => {
-      if (!error && result && result.event === "success") {
-        // console.log('Done! Here is the image info: ', result.info);
-        // const uploadedImage = result.info.files[0];
-        setImages((prev) => [...prev, ({ url: result.info.url, public_id: result.info.public_id })]);
-        setForms([
-          {
-            url: result.info.url,
-            public_id: result.info.public_id,
-          }
-        ]);
-
-        const data = {
-          url: result.info.url,
-          public_id: result.info.public_id,
-        }
-        router.post('/image-lainnya/session', data);
-      }
-    }
-    )
-    myWidget.open();
-  }
-
 
   const deleteImage = publicId => {
     router.post('/delete-image', publicId);
+  }
+
+  const rupiah = (number) => {
+    return new Intl.NumberFormat("id-ID", {
+      style: "currency",
+      currency: "IDR"
+    }).format(number);
   }
 
   return (
@@ -146,6 +89,7 @@ const Create2 = (props) => {
             setValues={setValues}
             props={props}
             handleChange={handleChange}
+            setForms={setForms}
           />
         ) : currentPage === 2 ? (
           <Page2
@@ -159,6 +103,7 @@ const Create2 = (props) => {
             variasiAktif={variasiAktif}
             handleVariasiAktif={handleVariasiAktif}
             closeVariasiAktif={closeVariasiAktif}
+            rupiah={rupiah}
           />
         ) : (
           <Page3
@@ -169,8 +114,7 @@ const Create2 = (props) => {
             handleChange={handleChange}
             forms={forms}
             setForms={setForms}
-            deleteImage={deleteImage}
-            uploadImages={uploadImages}
+            rupiah={rupiah}
           />
         )}
 
@@ -179,7 +123,7 @@ const Create2 = (props) => {
   )
 }
 
-function Page1({ setPage, values, props, handleChange }) {
+function Page1({ setPage, values, props, handleChange, setValues }) {
 
   //gambar utama
   const [image, setImage] = useState([]);
@@ -197,6 +141,7 @@ function Page1({ setPage, values, props, handleChange }) {
         const data = {
           url: result.info.url,
           public_id: result.info.public_id,
+          index: 0
         }
         router.post('/image/session', data);
       }
@@ -206,13 +151,37 @@ function Page1({ setPage, values, props, handleChange }) {
   }
 
   const deleteImage = publicId => {
+    // setValues()
     router.post('/delete-image', publicId);
   }
 
   return (
     <div>
-      <h1 className="text-xl font-bold my-4">Halaman 1</h1>
-
+      {props.errors && props.errors.forms && (
+        <div className="alert alert-danger">
+          {props.errors.forms.hrgBeli && (
+            <p>{props.errors.forms.hrgBeli}</p>
+          )}
+          {props.errors.forms.hrgJual && (
+            <p>{props.errors.forms.hrgJual}</p>
+          )}
+          {props.errors.forms.stokGudang && (
+            <p>{props.errors.forms.stokGudang}</p>
+          )}
+          {props.errors.forms.stokToko && (
+            <p>{props.errors.forms.stokToko}</p>
+          )}
+          {props.errors.values && props.errors.values.idKategori && (
+            <p>{props.errors.values.idKategori}</p>
+          )}
+          {props.errors.values && props.errors.values.idKategoriGlobal && (
+            <p>{props.errors.values.idKategoriGlobal}</p>
+          )}
+          {props.errors.values && props.errors.values.namaProduk && (
+            <p>{props.errors.values.namaProduk}</p>
+          )}
+        </div>
+      )}
 
       <div className="mb-3">
         <label>Nama Produk</label>
@@ -242,7 +211,7 @@ function Page1({ setPage, values, props, handleChange }) {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
-          <label>Gambar Utama</label>
+          <label>Thumbnail Produk (wajib)</label>
           {props.image < 1 &&
             <button onClick={() => uploadImageUtama()} className="w-full bg-white p-1 border-black border rounded-md">Upload gambar</button>
           }
@@ -257,27 +226,6 @@ function Page1({ setPage, values, props, handleChange }) {
             })}
           </div>
         </div>
-        <div>
-          <label>Gambar Lain</label>
-          {props.images.length <= 2 ? (
-            <button onClick={() => uploadImages()} className="w-full bg-white p-1 border-black border rounded-md">Upload gambar</button>
-          ) : (
-            <>
-              <p className="text-red-600 my-3">Gambar penuh</p>
-            </>
-          )
-          }
-          <div className="grid grid-cols-3 gap-4">
-            {props.images.map((image, i) => {
-              return (
-                <div key={i} className="mt-2">
-                  <img src={image.url} className="max-w-md max-h-32" />
-                  <button onClick={() => deleteImage({ publicId: image.public_id })}>Hapus</button>
-                </div>
-              )
-            })}
-          </div>
-        </div>
       </div>
 
       <button onClick={() => setPage(2)} className="bg-sky-400 text-white rounded-lg p-2 mt-5">Selanjutnya</button>
@@ -285,8 +233,10 @@ function Page1({ setPage, values, props, handleChange }) {
   );
 }
 
-//page 2
-function Page2({ setPage, props, forms, setForms, handleChange, values, variasiAktif, closeVariasiAktif, handleVariasiAktif }) {
+function Page2({ setPage, props, forms, setForms, handleChange, values, variasiAktif, closeVariasiAktif, handleVariasiAktif, rupiah }) {
+  const handleSubmit = () => {
+    router.post("/toko/produk", { values, forms })
+  }
 
   const handleChangeOption = (event, index) => {
     const newForms = [...forms];
@@ -295,24 +245,17 @@ function Page2({ setPage, props, forms, setForms, handleChange, values, variasiA
     // setHargas(newForms);
   };
 
-  const rupiah = (number) => {
-    return new Intl.NumberFormat("id-ID", {
-      style: "currency",
-      currency: "IDR"
-    }).format(number);
-  }
-
   const addForm = () => {
     setForms([...forms, { namaHarga: "", hrgBeli: "", hrgJual: "", stokGudang: "", stokToko: "" }]);
   };
 
-  const removeForm = (index) => {
+  const removeForm = (index, publicId) => {
+    router.post('/delete-image', publicId);
     setForms(forms.filter((_, i) => i !== index));
   };
 
-  const [images, setImages] = useState([]);
   //gambar lain
-  const uploadImages = (variantIndex, optionIndex, event, index) => {
+  const uploadImages = (event, index) => {
     var myWidget = window.cloudinary.createUploadWidget({
       cloudName: 'dbsgoesdj',
       uploadPreset: 'ivedm7py',
@@ -323,15 +266,16 @@ function Page2({ setPage, props, forms, setForms, handleChange, values, variasiA
       if (!error && result && result.event === "success") {
         // console.log('Done! Here is the image info: ', result.info);
         // const uploadedImage = result.info.files[0];
-        setImages((prev) => [...prev, ({ url: result.info.url, public_id: result.info.public_id })]);
-        const newVariants = [...forms];
-        newVariants[variantIndex].options[optionIndex].image = result.info.url;
-        setVariants(newVariants);
-
+        // setImages((prev) => [...prev, ({ url: result.info.url, public_id: result.info.public_id })]);
+        const newOptions = [...forms];
+        newOptions[index].url = result.info.url;
+        newOptions[index].public_id = result.info.public_id;
+        setForms(newOptions);
 
         const data = {
           url: result.info.url,
           public_id: result.info.public_id,
+          index: index
         }
         router.post('/image-lainnya/session', data);
       }
@@ -340,55 +284,16 @@ function Page2({ setPage, props, forms, setForms, handleChange, values, variasiA
     myWidget.open();
   }
 
-
-  const deleteImage = publicId => {
+  const deleteImage = (publicId, index) => {
     router.post('/delete-image', publicId);
-    setForms([
-      {
-        url: "",
-        public_id: "",
-      }
-    ])
+    const newOptions = [...forms];
+    newOptions[index].url = "";
+    newOptions[index].public_id = "";
+    setForms(newOptions);
   }
 
-  const [variants, setVariants] = useState([
-    {
-      name: "Warna",
-      options: [
-        { name: "Merah", image: null },
-        { name: "Biru", image: null },
-        { name: "Hijau", image: null },
-      ],
-    },
-    {
-      name: "Ukuran",
-      options: [
-        { name: "S", image: null },
-        { name: "M", image: null },
-        { name: "L", image: null },
-      ],
-    },
-  ]);
-  console.log(variants);
-
-  const handleOptionFileChange = (variantIndex, optionIndex, event) => {
-    const file = event.target.files[0];
-    const formData = new FormData();
-    formData.append("file", file);
-    formData.append('upload_preset', 'unsigned_upload_preset_value');
-
-    axios.post("https://api.cloudinary.com/v1_1/dbsgoesdj/image/upload", formData)
-      .then((response) => {
-        const newVariants = [...variants];
-        newVariants[variantIndex].options[optionIndex].image = response.data.secure_url;
-        setVariants(newVariants);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
-
-
+  const errors = props.errors;
+  // console.log(errors);
 
   return (
     <>
@@ -400,6 +305,7 @@ function Page2({ setPage, props, forms, setForms, handleChange, values, variasiA
 
       {variasiAktif ? (
         <>
+
           <div>
             <div className="flex my-3">
               <div className="">
@@ -410,17 +316,27 @@ function Page2({ setPage, props, forms, setForms, handleChange, values, variasiA
                 <button className="bg-sky-600 text-white p-2 rounded-lg my-3" onClick={addForm}>Add option</button>
               </div>
             </div>
-            <div className="grid grid-cols-3 md:grid-cols-6 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-5 gap-8">
               {forms.map((form, index) => (
                 <div key={index}>
-                  <div className="my-5">
+                  <div className="my-5 mx-2">
                     <div>
                       <label>Nama Varian</label><br />
-                      <input
-                        type="text"
-                        name="namaHarga" className="p-2 rounded-md"
-                        value={form.namaHarga}
-                        onChange={(event) => handleChangeOption(event, index)} />
+                      <div className="flex items-center">
+                        <div className="relative w-full">
+                          <input
+                            type="text"
+                            name="namaHarga" className="p-2 rounded-md block w-full pl-10"
+                            value={form.namaHarga}
+                            onChange={(event) => handleChangeOption(event, index)} />
+                          {/* <input type="text" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Search" required></input> */}
+                        </div>
+                        {index > 0 &&
+                          <button onClick={() => removeForm(index, { publicId: form.public_id })} className="p-2 text-sm font-medium text-white bg-red-500 rounded-lg">
+                            Hapus</button>
+                        }
+                      </div>
+                      {/* {errors.forms[0].hrgBeli} */}
                     </div>
                     <div className="mt-2">
                       <label>Pilih gambar</label><br />
@@ -429,119 +345,20 @@ function Page2({ setPage, props, forms, setForms, handleChange, values, variasiA
                       ) : (
                         <>
                           <div className="grid grid-cols-3 md:grid-cols-12 gap-8">
-                            <div className="mt-2" key={i}>
-                              <p>{image.namaHarga}</p>
+                            <div className="mt-2">
                               <img src={form.url} className="max-w-[128px] max-h-32" />
-                              <button onClick={() => deleteImage({ publicId: form.public_id })}>Hapus</button>
+                              <button onClick={() => deleteImage({ publicId: form.public_id }, index)}>Hapus</button>
                             </div>
                           </div>
                         </>
-                      )}
-
-
-                    </div>
-
-                    {index > 0 &&
-                      <button onClick={() => removeForm(index)} className="bg-red-600 text-white rounded-lg p-1 mt-2">Hapus Option</button>
-                    }
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div>
-            {forms.map((variant, variantIndex) => (
-              <div key={variantIndex}>
-                <h3>{variant.name}</h3>
-                <div>
-                  {variant.options.map((option, optionIndex) => (
-                    <div key={optionIndex}>
-                      <input type="text" value={option.name} onChange={(event) => handleOptionChange(variantIndex, optionIndex, event)} />
-                      <button onClick={(event) => uploadImages(variantIndex, optionIndex, event)}>Upload</button>
-                      <input type="file" onChange={(event) => handleOptionFileChange(variantIndex, optionIndex, event)} />
-                      {option.image && <img src={option.image} alt="Gambar opsi" />}
-                    </div>
-                  ))}
-                </div>
-              </div>
-            ))}
-          </div>
-
-
-          {/* <div class="container mx-auto px-4">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-              {forms.map((form, index) => (
-                <div key={index}>
-                  <div className="my-5">
-                    <div>
-                      <label>Nama Varian</label>
-                      <input
-                        type="text"
-                        name="namaHarga" className="w-full rounded-md"
-                        value={form.namaHarga}
-                        onChange={(event) => handleChangeOption(event, index)} />
-                    </div>
-                    <div>
-                      <label>Harga Beli</label>
-                      <input
-                        type="number"
-                        name="hrgBeli"
-                        value={form.hrgBeli} className="w-full rounded-md"
-                        onChange={(event) => handleChangeOption(event, index)}
-                      />
-                      {rupiah(form.hrgBeli)}
-                    </div>
-                    <div>
-                      <label>Harga Jual</label>
-                      <input
-                        type="number"
-                        name="hrgJual"
-                        value={form.hrgJual} className="w-full rounded-md"
-                        onChange={(event) => handleChangeOption(event, index)}
-                      />
-                      {rupiah(form.hrgJual)}
-                    </div>
-                    <div>
-                      <label>Stok Gudang</label>
-                      <input
-                        type="number"
-                        name="stokGudang"
-                        placeholder="stok yang tidak ditampilkan olshop"
-                        value={form.stokGudang} className="w-full rounded-md"
-                        onChange={(event) => handleChangeOption(event, index)}
-                      />
-                    </div>
-                    <div>
-                      <label>Stok Toko</label>
-                      <input
-                        type="number"
-                        name="stokToko"
-                        placeholder="stok yang akan ditampilkan olshop"
-                        value={form.stokToko} className="w-full rounded-md"
-                        onChange={(event) => handleChangeOption(event, index)}
-                      />
-                    </div>
-                    <div>
-                      <label>Pilih gambar</label>
-                      {props.images.length <= 2 ? (
-                        <button onClick={() => uploadImages()} className="w-full bg-white p-1 border-black border rounded-md">Upload</button>
-                      ) : (
-                        <>
-                          <p className="text-red-600 my-3">Gambar penuh</p>
-                        </>
                       )
                       }
-                      {index > 0 &&
-                        <button onClick={() => removeForm(index)} className="bg-red-600 text-white rounded-lg p-1 mt-2">Hapus Option</button>
-                      }
                     </div>
                   </div>
                 </div>
               ))}
             </div>
-          </div> */}
-
+          </div>
         </>
       ) : (
         <>
@@ -565,6 +382,128 @@ function Page2({ setPage, props, forms, setForms, handleChange, values, variasiA
                     onChange={(event) => handleChangeOption(event, index)}
                   />
                   {rupiah(form.hrgBeli)}
+                </div>
+                <div>
+                  <label>Harga Jual</label>
+                  <input
+                    type="number"
+                    name="hrgJual"
+                    value={form.hrgJual} className="w-full rounded-md"
+                    onChange={(event) => handleChangeOption(event, index)}
+                  />
+                  {rupiah(form.hrgJual)}
+                  {props.errors.forms && props.errors.forms.index && props.errors.forms.index.hrgJual && (
+                    <p className="text-red-500">{props.errors.forms[index].hrgJual}</p>
+                  )}
+                </div>
+                <div>
+                  <label>Stok Gudang</label>
+                  <input
+                    type="number"
+                    name="stokGudang"
+                    placeholder="stok yang tidak ditampilkan olshop"
+                    value={form.stokGudang} className="w-full rounded-md"
+                    onChange={(event) => handleChangeOption(event, index)}
+                  />
+                  {props.errors.forms && props.errors.forms[index] && props.errors.forms[index].stokGudang && (
+                    <p className="text-red-500">{props.errors.forms[index].stokGudang}</p>
+                  )}
+                </div>
+                <div>
+                  <label>Stok Toko</label>
+                  <input
+                    type="number"
+                    name="stokToko"
+                    placeholder="stok yang akan ditampilkan olshop"
+                    value={form.stokToko} className="w-full rounded-md"
+                    onChange={(event) => handleChangeOption(event, index)}
+                  />
+                  {props.errors.forms && props.errors.forms[index].stokToko && (
+                    <p className="text-red-500">{props.errors.forms[index].stokToko}</p>
+                  )}
+                </div>
+                <div>
+                  <label>Pilih gambar (tidak wajib)</label><br />
+                  {!form.url ? (
+                    <PlusIcon name="url" onClick={(event) => uploadImages(event, index)} className="w-10 h-10 cursor-pointer bg-white border-black border rounded-md" />
+                  ) : (
+                    <>
+                      <div className="grid grid-cols-3 md:grid-cols-12 gap-8">
+                        <div className="mt-2">
+                          <img src={form.url} className="max-w-[128px] max-h-32" />
+                          <button onClick={() => deleteImage({ publicId: form.public_id }, index)}>Hapus</button>
+                        </div>
+                      </div>
+                    </>
+                  )
+                  }
+
+
+                </div>
+              </div>
+            </div>
+          ))}
+        </>
+      )}
+
+      {/* <p dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(props.auth.user.name) }} /> */}
+
+      <button onClick={() => setPage(1)} className="bg-gray-500 text-white rounded-lg p-2 mt-5">Sebelumnya</button>
+      {variasiAktif ? (
+        <button onClick={() => setPage(3)} className="bg-sky-400 text-white rounded-lg p-2 mt-5 ml-3">Selanjutnya</button>
+      ) : (
+        <button onClick={() => handleSubmit()} className="p-2 bg-blue-500 text-white rounded-lg ml-3">Simpan</button>
+      )
+      }
+    </>
+  );
+}
+
+function Page3({ setPage, forms, setForms, values, rupiah, props }) {
+  const handleChangeOption = (event, index) => {
+    const newForms = [...forms];
+    newForms[index][event.target.name] = event.target.value;
+    setForms(newForms);
+  };
+
+  const handleSubmit = () => {
+    router.post("/toko/produk", { values, forms })
+  }
+
+  // const errors = props.errors;
+  // console.log(Object.entries(props.errors));
+
+  const { hrgBeli, hrgJual, namaHarga, stokGudang, stokToko } = props.errors;
+
+  return (
+    <>
+      {/* <textarea type="text" className="w-full rounded-md">{values.deskripsi}</textarea> */}
+
+      <div className="container mx-auto px-4">
+        <div className="grid grid-cols-1 gap-8">
+          {forms.map((form, index) => (
+            <div key={index}>
+              <div className="my-5 grid grid-cols-2 md:grid-cols-5 gap-8">
+                <div>
+                  <label>Nama Varian</label>
+                  <input
+                    type="text"
+                    name="namaHarga" className="w-full rounded-md"
+                    value={form.namaHarga}
+                    onChange={(event) => handleChangeOption(event, index)} />
+                  {/* {errors.forms.index.hrgBeli} */}
+                  {/* {console.log(index)} */}
+                </div>
+                <div>
+                  <label>Harga Beli</label>
+                  <input
+                    type="number"
+                    name="hrgBeli"
+                    value={form.hrgBeli} className="w-full rounded-md"
+                    onChange={(event) => handleChangeOption(event, index)}
+                  />
+                  {rupiah(form.hrgBeli)}
+                  {hrgBeli && { hrgBeli }}
                 </div>
                 <div>
                   <label>Harga Jual</label>
@@ -599,31 +538,13 @@ function Page2({ setPage, props, forms, setForms, handleChange, values, variasiA
               </div>
             </div>
           ))}
-        </>
-      )}
-
-      {/* <p dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(props.auth.user.name) }} /> */}
-
-      <button onClick={() => setPage(1)} className="bg-gray-500 text-white rounded-lg p-2 mt-5">Sebelumnya</button>
-      <button onClick={() => setPage(3)} className="bg-sky-400 text-white rounded-lg p-2 mt-5 ml-3">Selanjutnya</button>
-    </>
-  );
-}
-
-function Page3({ setPage, forms, setForms, deleteImage, uploadImages }) {
-  return (
-    <>
-      {/* <textarea type="text" className="w-full rounded-md">{values.deskripsi}</textarea> */}
-
-      {forms.map((form, index) => (
-        <div key={index}>
-          <p>{form.namaHarga}</p>
-          <button onClick={() => uploadImages()} className="w-full bg-white p-1 border-black border rounded-md">Upload</button>
-          <img src={form.url} />
         </div>
-      ))}
+      </div>
 
-      <button onClick={() => setPage(2)} className="bg-gray-500 text-white rounded-lg p-2 mt-5">Sebelumnya</button>
+      <div className=" mt-5">
+        <button onClick={() => setPage(2)} className="bg-gray-500 text-white rounded-lg p-2">Sebelumnya</button>
+        <button onClick={() => handleSubmit()} className="bg-blue-600 text-white p-2 ml-3">Simpan</button>
+      </div>
     </>
   )
 
