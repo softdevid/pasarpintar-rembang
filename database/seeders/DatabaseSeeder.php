@@ -18,15 +18,15 @@ class DatabaseSeeder extends Seeder
    */
   public function run()
   {
-    // User::create([
-    //   'name' => "admin",
-    //   'email' => "admin@gmail.com",
-    //   'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
-    //   'no_hp' => "082222334455",
-    //   'alamat' => "nan jauh di sana",
-    //   'level' => "admin",
-    //   'remember_token' => Str::random(10),
-    // ]);
+    User::create([
+      'name' => "admin",
+      'email' => "admin@gmail.com",
+      'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
+      'no_hp' => "082222334455",
+      'alamat' => "nan jauh di sana",
+      'level' => "admin",
+      'remember_token' => Str::random(10),
+    ]);
 
 
     // User::create([
@@ -38,12 +38,6 @@ class DatabaseSeeder extends Seeder
     //   'level' => "customer",
     //   'remember_token' => Str::random(10),
     // ]);
-
-<<<<<<< HEAD
-    User::factory(20)->has(Toko::factory()->count(1), 'toko')->create();
-    Produk::factory(100)->create();
-    Harga::factory(200)->create();
-=======
 
     User::create([
       'name' => "toko",
@@ -93,7 +87,6 @@ class DatabaseSeeder extends Seeder
     User::factory(20)->has(Toko::factory()->count(1), 'toko')->create();
 
     Produk::factory(100)->create();
-    // Gambar::factory(400)->create();
     Harga::factory(200)->create();
 
 
@@ -122,6 +115,6 @@ class DatabaseSeeder extends Seeder
     //   'statusOrder' => 'selesai',
     //   'metodeBayar' => 'cod',
     // ]);
->>>>>>> 066bca5 (create produk dll)
+
   }
 }
