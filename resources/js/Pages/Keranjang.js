@@ -1,7 +1,10 @@
 import { FormatRupiah } from "@/config/formatRupiah";
+import { AppContext } from "@/context/app-context";
 import Main from "@/Layouts/Main";
 import { Head, Link, router } from "@inertiajs/react";
-import React, { Fragment, useEffect, useState } from "react";
+import axios from "axios";
+import React, { Fragment, useContext, useEffect, useState } from "react";
+import { toast, ToastContainer } from "react-toastify";
 
 const Keranjang = ({ title, keranjang }) => {
   if (keranjang == "kosong") {
@@ -12,47 +15,75 @@ const Keranjang = ({ title, keranjang }) => {
       </>
     );
   }
+  const context = useContext(AppContext);
+
+  const [cart, setCart] = useState(Object.entries(keranjang));
+  const [timeoutId, setTimeoutId] = useState(null);
+
+  const [rowId, setRowId] = useState(null);
+  const [updatedCart, setUpdatedCart] = useState({});
 
   const [isCheckAll, setIsCheckAll] = useState(false);
   const [isCheck, setIsCheck] = useState([]);
-
-  const [cart, setCart] = useState(Object.entries(keranjang));
-
   const [isClicked, setIsClicked] = useState(false);
 
-  const decrement = (idHarga, qty) => {
+  const handleQtyChange = (
+    operasi,
+    idProduk,
+    idHarga,
+    hargaJual,
+    qty,
+    stok
+  ) => {
+    setRowId(idHarga);
     setCart((prev) => {
       return prev.map((data) => {
         return [
           data[0],
-          data[1].map((krj) => {
-            if (krj.idHarga === idHarga) {
-              return { ...krj, qty: qty > 1 ? qty - 1 : 1 };
+          data[1].map((produk) => {
+            if (produk.idHarga === idHarga) {
+              return {
+                ...produk,
+                // prettier-ignore
+                qty: operasi === "subtract" ? (
+                    qty > 1 ? qty - 1 : 1
+                  ) : (
+                    qty < stok ? qty + 1 : stok
+                  ),
+              };
             } else {
-              return krj;
+              return produk;
             }
           }),
         ];
       });
     });
+
+    if (timeoutId) {
+      clearTimeout(timeoutId);
+    }
+    const newTimeoutId = setTimeout(() => {
+      setUpdatedCart({
+        idProduk,
+        idHarga,
+        hargaJual,
+        // prettier-ignore
+        qty: operasi === "subtract" ? (
+          qty > 1 ? qty - 1 : 1
+        ) : (
+          qty < stok ? qty + 1 : stok
+        ),
+      });
+      setRowId(null);
+    }, 2000);
+    setTimeoutId(newTimeoutId);
   };
 
-  const increment = (idHarga, qty, max) => {
-    setCart((prev) => {
-      return prev.map((data) => {
-        return [
-          data[0],
-          data[1].map((krj) => {
-            if (krj.idHarga === idHarga) {
-              return { ...krj, qty: qty < max ? qty + 1 : max };
-            } else {
-              return krj;
-            }
-          }),
-        ];
-      });
-    });
-  };
+  useEffect(() => {
+    if (Object.keys(updatedCart).length != 0) {
+      console.log(updatedCart);
+    }
+  }, [updatedCart]);
 
   const total = cart
     .flatMap(([_, items]) => items)
@@ -86,6 +117,25 @@ const Keranjang = ({ title, keranjang }) => {
         idPivot: isCheck.join(","),
       });
     }
+  };
+
+  const notify = (message) => {
+    toast.info(message, {
+      position: "bottom-right",
+      autoClose: 4000,
+      hideProgressBar: true,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "colored",
+    });
+  };
+
+  const updateJumlahKeranjang = () => {
+    axios.get("/cart-count").then((res) => {
+      context.setCartCount(res.data.cartCount);
+    });
   };
 
   return (
@@ -180,7 +230,7 @@ const Keranjang = ({ title, keranjang }) => {
                               </p>
                               <p className="mt-1 text-sm text-gray-500">
                                 <FormatRupiah
-                                  value={`${krj.harga.hrgJual}000`}
+                                  value={krj.harga.hrgJual * 1000}
                                 />
                               </p>
                             </div>
@@ -194,7 +244,16 @@ const Keranjang = ({ title, keranjang }) => {
                             <button
                               type="button"
                               className="px-2 w-9 align-middle text-slate-900 bg-transparent rounded-l-md border-2 border-sky-400 hover:bg-sky-300 hover:text-white focus:z-10 focus:ring-2 focus:ring-sky-700 focus:bg-sky-400 focus:text-white"
-                              onClick={() => decrement(krj.idHarga, krj.qty)}
+                              onClick={() =>
+                                handleQtyChange(
+                                  "subtract",
+                                  krj.idProduk,
+                                  krj.idHarga,
+                                  krj.harga.hrgJual,
+                                  krj.qty
+                                )
+                              }
+                              disabled={rowId !== null && rowId !== krj.idHarga}
                             >
                               <span className="m-auto text-2xl font-normal">
                                 -
@@ -211,12 +270,16 @@ const Keranjang = ({ title, keranjang }) => {
                               type="button"
                               className="px-2 w-9 align-middle text-slate-900 bg-transparent rounded-r-md border-2 border-sky-400 hover:bg-sky-300 hover:text-white focus:z-10 focus:ring-2 focus:ring-sky-700 focus:bg-sky-400 focus:text-white"
                               onClick={() =>
-                                increment(
+                                handleQtyChange(
+                                  "add",
+                                  krj.idProduk,
                                   krj.idHarga,
+                                  krj.harga.hrgJual,
                                   krj.qty,
                                   krj.harga.stokToko
                                 )
                               }
+                              disabled={rowId !== null && rowId !== krj.idHarga}
                             >
                               <span className="m-auto text-2xl font-normal">
                                 +
@@ -226,7 +289,7 @@ const Keranjang = ({ title, keranjang }) => {
                         </td>
                         <td className="px-6 py-4 text-center">
                           <FormatRupiah
-                            value={`${krj.qty * krj.harga.hrgJual}000`}
+                            value={krj.qty * krj.harga.hrgJual * 1000}
                           />
                         </td>
                       </tr>
@@ -241,7 +304,7 @@ const Keranjang = ({ title, keranjang }) => {
               <h2 className="text-xl text-slate-800 font-medium">
                 {`Total : `}
                 <span className="text-3xl">
-                  <FormatRupiah value={`${total}000`} />
+                  <FormatRupiah value={total * 1000} />
                 </span>
               </h2>
               {isCheck.length == 0 && isClicked && (
@@ -296,6 +359,18 @@ const Keranjang = ({ title, keranjang }) => {
           </div>
         </div>
       </div>
+      <ToastContainer
+        position="bottom-right"
+        autoClose={4000}
+        hideProgressBar
+        newestOnTop
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="colored"
+      />
     </>
   );
 };

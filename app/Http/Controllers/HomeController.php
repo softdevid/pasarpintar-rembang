@@ -201,8 +201,6 @@ class HomeController extends Controller
       $rinciOrder->save();
     }
 
-
-
-    return response()->json(["data" => "Pesanan sedang diproses!"]);
+    return response()->json(["data" => "Pesanan telah dibuat!"]);
   }
 }

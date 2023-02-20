@@ -84,6 +84,11 @@ class KeranjangController extends Controller
     return response()->json(["data" => "Berhasil Memasukkan Produk!"]);
   }
 
+  public function updateCart(Request $request)
+  {
+    dd($request->all());
+  }
+
   public function cartCount()
   {
     $jumlahKeranjang = Keranjang::where('idUser', auth()->user()->id)->latest()->first()->produks()->count();

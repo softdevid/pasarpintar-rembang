@@ -71,7 +71,7 @@ const Checkout = ({ title, filteredProduk, user }) => {
     });
 
     if (payment !== "") {
-      router.post("/order", {
+      axios.post("/order", {
         recipient,
         produk,
         payment,
