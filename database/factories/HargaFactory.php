@@ -14,13 +14,13 @@ class HargaFactory extends Factory
    */
   public function definition()
   {
-    static $hrg = 0;
-    $hrg++;
+    // static $hrg = 0;
+    // $hrg++;
     return [
       "idProduk" => Produk::pluck('id')->random(),
       "namaHarga" => $this->faker->word(),
-      "hrgJual" => $hrg,
-      "hrgBeli" => $hrg,
+      "hrgJual" => $this->faker->numberBetween(1, 100),
+      "hrgBeli" => $this->faker->numberBetween(1, 90),
       "stokToko" => $this->faker->numberBetween(1, 100),
       "stokGudang" => $this->faker->numberBetween(1, 100),
       // "diskon",

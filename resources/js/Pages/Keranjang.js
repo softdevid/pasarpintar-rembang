@@ -1,10 +1,12 @@
 import { FormatRupiah } from "@/config/formatRupiah";
 import { AppContext } from "@/context/app-context";
 import Main from "@/Layouts/Main";
+import { TrashIcon } from "@heroicons/react/20/solid";
 import { Head, Link, router } from "@inertiajs/react";
 import axios from "axios";
 import React, { Fragment, useContext, useEffect, useState } from "react";
 import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const Keranjang = ({ title, keranjang }) => {
   if (keranjang == "kosong") {
@@ -18,10 +20,9 @@ const Keranjang = ({ title, keranjang }) => {
   const context = useContext(AppContext);
 
   const [cart, setCart] = useState(Object.entries(keranjang));
-  const [timeoutId, setTimeoutId] = useState(null);
-
-  const [rowId, setRowId] = useState(null);
   const [updatedCart, setUpdatedCart] = useState({});
+  const [timeoutId, setTimeoutId] = useState(null);
+  const [rowId, setRowId] = useState(null);
 
   const [isCheckAll, setIsCheckAll] = useState(false);
   const [isCheck, setIsCheck] = useState([]);
@@ -70,9 +71,15 @@ const Keranjang = ({ title, keranjang }) => {
         // prettier-ignore
         qty: operasi === "subtract" ? (
           qty > 1 ? qty - 1 : 1
+          ) : (
+            qty < stok ? qty + 1 : stok
+          ),
+        // prettier-ignore
+        subtotal: hargaJual * (operasi === "subtract" ? (
+          qty > 1 ? qty - 1 : 1
         ) : (
           qty < stok ? qty + 1 : stok
-        ),
+        )) * 1000,
       });
       setRowId(null);
     }, 2000);
@@ -82,6 +89,13 @@ const Keranjang = ({ title, keranjang }) => {
   useEffect(() => {
     if (Object.keys(updatedCart).length != 0) {
       console.log(updatedCart);
+      axios
+        .patch("/cart-update", updatedCart)
+        .then((res) => {
+          notify(res.data.data);
+          updateJumlahKeranjang();
+        })
+        .catch((err) => console.log(err.response.data.message));
     }
   }, [updatedCart]);
 
@@ -100,6 +114,7 @@ const Keranjang = ({ title, keranjang }) => {
     if (isCheckAll) {
       setIsCheck([]);
     }
+    setIsClicked(false);
   };
 
   const handleCheck = (e) => {
@@ -108,6 +123,7 @@ const Keranjang = ({ title, keranjang }) => {
     if (!checked) {
       setIsCheck(isCheck.filter((item) => item !== id));
     }
+    setIsClicked(false);
   };
 
   const toCheckout = () => {
@@ -117,6 +133,35 @@ const Keranjang = ({ title, keranjang }) => {
         idPivot: isCheck.join(","),
       });
     }
+  };
+
+  const hapusKeranjang = (isCheck) => {
+    const data = cart
+      .flatMap(([_, items]) => items)
+      .filter((item) => isCheck.includes(`${item.id}`))
+      .map((item, i) => ({
+        idProduk: item.idProduk,
+        idHarga: item.idHarga,
+      }));
+
+    axios
+      .delete("/cart-delete", {
+        data: data,
+      })
+      .then((res) => {
+        notify(res.data.data);
+        setCart((prev) => {
+          return prev.map((data) => {
+            return [
+              data[0],
+              data[1].filter((item) => !isCheck.includes(`${item.id}`)),
+            ];
+          });
+        });
+
+        updateJumlahKeranjang();
+      })
+      .catch((err) => console.log(err.response.data.message));
   };
 
   const notify = (message) => {
@@ -299,9 +344,9 @@ const Keranjang = ({ title, keranjang }) => {
               </tbody>
             </table>
           </div>
-          <div className="xl:fixed xl:top-32 xl:right-10 w-full max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
+          <div className="xl:fixed xl:top-32 xl:right-10 mt-5 w-full max-w-md p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
             <div className="flex flex-col items-start">
-              <h2 className="text-xl text-slate-800 font-medium">
+              <h2 className="text-xl text-slate-800 font-medium pb-6">
                 {`Total : `}
                 <span className="text-3xl">
                   <FormatRupiah value={total * 1000} />
@@ -332,28 +377,28 @@ const Keranjang = ({ title, keranjang }) => {
                   </div>
                 </div>
               )}
+              {isCheck.length !== 0 && (
+                <button
+                  onClick={() => hapusKeranjang(isCheck)}
+                  className="text-white bg-red-500 hover:bg-red-700 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2"
+                >
+                  Hapus
+                </button>
+              )}
               <div className="flex justify-center items-start mt-3">
                 <Link
                   as="button"
                   href="/"
-                  className="text-blue-700 hover:text-white border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 dark:border-blue-500 dark:text-blue-500 dark:hover:text-white dark:hover:bg-blue-600 dark:focus:ring-blue-800"
+                  className="text-blue-700 hover:text-white border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2"
                 >
                   Lanjut Belanja
                 </Link>
                 <button
                   onClick={toCheckout}
-                  className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
+                  className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5"
                 >
                   Checkout
                 </button>
-                {/* <Link
-                  as="button"
-                  // href="/checkout"
-                  onClick={toCheckout}
-                  className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
-                >
-                  Checkout
-                </Link> */}
               </div>
             </div>
           </div>

@@ -36,8 +36,9 @@ Route::middleware('auth',)->group(function () {
 
   // route keranjang
   Route::get('/cart', [KeranjangController::class, 'index'])->name('cart.index');
-  Route::post('/cart-add', [KeranjangController::class, 'tambah'])->name('cart.add');
-  Route::patch('/cart-update', [KeranjangController::class, 'updateCart'])->name('cart.update');
+  Route::post('/cart-add', [KeranjangController::class, 'add'])->name('cart.add');
+  Route::patch('/cart-update', [KeranjangController::class, 'update'])->name('cart.update');
+  Route::delete('/cart-delete', [KeranjangController::class, 'delete'])->name('cart.delete');
   Route::get('/cart-count', [KeranjangController::class, 'cartCount'])->name('cart.count');
 
   // route checkout

@@ -54,7 +54,7 @@ class KeranjangController extends Controller
     ]);
   }
 
-  public function tambah(Request $request)
+  public function add(Request $request)
   {
     $keranjang = Keranjang::where('idUser', auth()->user()->id)->latest()->first();
     if ($keranjang == null) {
@@ -84,9 +84,30 @@ class KeranjangController extends Controller
     return response()->json(["data" => "Berhasil Memasukkan Produk!"]);
   }
 
-  public function updateCart(Request $request)
+  public function update(Request $request)
   {
-    dd($request->all());
+    $keranjang = Keranjang::where('idUser', auth()->user()->id)->latest()->first();
+    $keranjang->produks()->wherePivot('idHarga', $request->idHarga)->updateExistingPivot((string) $request->idProduk, [
+      'qty' => (string) $request->qty,
+      'subtotal' => (string) $request->subtotal
+    ]);
+
+    return response()->json(["data" => "Berhasil mengupdate produk!"]);
+  }
+
+  public function delete(Request $request)
+  {
+    $toDelete = $request->all();
+    $keranjang = Keranjang::where('idUser', auth()->user()->id)->latest()->first();
+
+    foreach ($toDelete as $item) {
+      $idProduk = $item['idProduk'];
+      $idHarga = $item['idHarga'];
+
+      $keranjang->produks()->wherePivot('idHarga', $idHarga)->detach($idProduk);
+    }
+
+    return response()->json(["data" => "Berhasil menghapus produk!"]);
   }
 
   public function cartCount()
