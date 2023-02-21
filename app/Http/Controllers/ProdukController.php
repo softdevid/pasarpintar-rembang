@@ -34,22 +34,12 @@ class ProdukController extends Controller
   public function dataProduk()
   {
     $toko = Toko::where('idUser', auth()->user()->id)->select('id')->first();
-    // $produk = Produk::where('idToko', $toko->id)->paginate(5);
-    // $produk = Produk::join('hargas', 'produks.id', '=', 'hargas.idProduk')
-    //   ->where('produks.idToko', '=', $toko->id)
-    //   ->select('produks.namaProduk as namaProduk', 'produks.kategori as kategori', 'produks.kategoriGlobal as kategoriGlobal', 'produks.imgUrl as imgUrl')
-    //   ->get();
     $produk = Produk::with(['toko' => function ($q) {
-      $q->select('id', 'slug as slugToko');
+      $q->select('id', 'slug as slugToko', 'namaToko');
     }, 'hargas' => function ($q) {
-      $q->select('idProduk', 'hrgJual', 'hrgBeli', 'stokGudang', 'stokToko')->orderBy('hrgJual', 'asc');
+      $q->select('idProduk', 'hrgJual', 'hrgBeli', 'stokGudang', 'stokToko', 'namaHarga', 'diskon', 'tglAwalDiskon', 'tglAkhirDiskon')->orderBy('hrgJual', 'asc');
     }])->select(
-      'produks.id',
-      'produks.idToko',
-      'produks.namaProduk',
-      'produks.slug as slugProduk',
-      'produks.terjual',
-      'produks.imgUrl',
+      'produks.*',
     )->orderBy('terjual', 'desc')->limit(100)
       ->where('idToko', $toko->id)
       ->paginate(5);
@@ -108,6 +98,9 @@ class ProdukController extends Controller
     //   'values.namaProduk' => 'required|max:255',
     //   'values.idKategori' => 'required',
     //   'values.idKategoriGlobal' => 'required',
+    // ]);
+
+    // $request->validate([
     //   'forms.*.namaHarga' => 'required|max:255',
     //   'forms.*.hrgBeli' => 'required|numeric|min:0',
     //   'forms.*.hrgJual' => 'required|numeric|min:0',
@@ -117,35 +110,34 @@ class ProdukController extends Controller
 
     // dd($request->all());
     $image = GambarSementara::where(['idUser' => auth()->user()->id, 'kategoriGambar' => 'utama'])->first();
-    $id = Produk::create([
+    $produk = Produk::create([
       'namaProduk' => $request->input('values.namaProduk'),
       'slug' => Str::slug($request->input('values.namaProduk')),
       'idKategori' => $request->input('values.idKategori'),
       'idKategoriGlobal' => $request->input('values.idKategoriGlobal'),
       'deskripsi' => $request->input('values.satuan'),
+      'jenisHarga' => $request->input('values.jenisHarga'),
       'terjual' => 0,
       'imgName' => $image->public_id,
       'imgUrl' => $image->url,
       'idToko' => $toko->id,
     ]);
-
-    if ($request->input('forms')) {
-      $forms = $request->input('forms');
-      foreach ($forms as $key => $value) {
-        Harga::create([
-          'idProduk' => 1,
-          'namaHarga' => $value['namaHarga'] ?? '',
-          'hrgJual' => $value['hrgJual'],
-          'hrgBeli' => $value['hrgBeli'],
-          'stokToko' => $value['stokToko'],
-          'stokGudang' => $value['stokGudang'],
-          'diskon' => $value['diskon'] ?? '0',
-          'tglAwalDiskon' => $value['tglAwalDiskon'] ?? null,
-          'tglAkhirDiskon' => $value['tglAkhirDiskon'] ?? null,
-          'imgName' => $value['public_id'] ?? null,
-          'imgUrl' => $value['url'] ?? null,
-        ]);
-      }
+    // dd($id);
+    foreach ($request->input('forms') as $value) {
+      Harga::create([
+        'idProduk' => $produk->id,
+        'namaHarga' => $request->input('values.jenisHarga') ?? '',
+        'namaHarga' => $value['namaHarga'] ?? '',
+        'hrgJual' => $value['hrgJual'],
+        'hrgBeli' => $value['hrgBeli'],
+        'stokToko' => $value['stokToko'],
+        'stokGudang' => $value['stokGudang'],
+        'diskon' => $value['diskon'] ?? '0',
+        'tglAwalDiskon' => $value['tglAwalDiskon'] ?? null,
+        'tglAkhirDiskon' => $value['tglAkhirDiskon'] ?? null,
+        'imgName' => $value['public_id'] ?? null,
+        'imgUrl' => $value['url'] ?? null,
+      ]);
     }
 
     return redirect()->to('/toko/produk')->with('message', 'Berhasil ditambah');

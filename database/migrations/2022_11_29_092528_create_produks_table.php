@@ -20,7 +20,6 @@ class CreateProduksTable extends Migration
       $table->foreignId('idToko');
       $table->foreignId('idKategori')->nullable();
       $table->foreignId('idKategoriGlobal')->nullable();
-      $table->string('satuan')->nullable();
       $table->text('deskripsi')->nullable();
       $table->integer('totalStokGudang')->nullable()->default(0);
       $table->integer('totalStokToko')->nullable()->default(0);

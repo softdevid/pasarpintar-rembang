@@ -16,6 +16,7 @@ class CreateHargasTable extends Migration
     Schema::create('hargas', function (Blueprint $table) {
       $table->id();
       $table->foreignId('idProduk');
+      $table->string('jenisHarga')->nullable();
       $table->string('namaHarga'); //misal kalau warna merah/biru
       $table->integer('hrgJual');
       $table->integer('hrgBeli');

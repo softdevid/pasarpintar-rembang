@@ -392,9 +392,9 @@ function Page2({ setPage, props, forms, setForms, handleChange, values, variasiA
                     onChange={(event) => handleChangeOption(event, index)}
                   />
                   {rupiah(form.hrgJual)}
-                  {props.errors.forms && props.errors.forms.index && props.errors.forms.index.hrgJual && (
+                  {/* {props.errors.forms && props.errors.forms.index && props.errors.forms.index.hrgJual && (
                     <p className="text-red-500">{props.errors.forms[index].hrgJual}</p>
-                  )}
+                  )} */}
                 </div>
                 <div>
                   <label>Stok Gudang</label>
