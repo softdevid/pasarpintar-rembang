@@ -22,6 +22,7 @@ class CreateRinciOrdersTable extends Migration
       $table->text('alamatPengiriman');
       $table->foreignId('idToko');
       $table->foreignId('idProduk');
+      $table->foreignId('idHarga');
       $table->string('noFaktur');
       $table->bigInteger('total');
       $table->bigInteger('totalItem');

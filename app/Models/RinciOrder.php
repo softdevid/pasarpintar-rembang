@@ -9,4 +9,19 @@ class RinciOrder extends Model
 {
   use HasFactory;
   protected $guarded = ['id'];
+
+  public function toko()
+  {
+    return $this->belongsTo(Toko::class, 'idToko', 'id');
+  }
+
+  public function produk()
+  {
+    return $this->belongsTo(Produk::class, 'idProduk', 'id');
+  }
+
+  public function harga()
+  {
+    return $this->belongsTo(Harga::class, 'idHarga', 'id');
+  }
 }

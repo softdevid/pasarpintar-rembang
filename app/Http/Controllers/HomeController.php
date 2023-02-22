@@ -169,13 +169,21 @@ class HomeController extends Controller
 
   public function order(Request $request)
   {
+
     $authUser = auth()->user()->id;
 
-    foreach ($request->produk as $produk) {
+    $keranjang = Keranjang::where('idUser', $authUser)->latest()->first();
+
+    $timestamp = Carbon::now()->getPreciseTimestamp(0);
+
+    foreach ($request->produks as $produk) {
+      $keranjang->produks()->wherePivot('idHarga', $produk['idHarga'])->detach($produk['idProduk']);
+
       $order = new Order;
-      $order->noFaktur = Carbon::now()->getPreciseTimestamp(3);
+      $order->noFaktur = $timestamp;
       $order->idToko = $produk['idToko'];
       $order->idProduk = $produk['idProduk'];
+      $order->idHarga = $produk['idHarga'];
       $order->namaProduk = $produk['namaProduk'];
       $order->hrgBeli = $produk['hrgBeli'];
       $order->hrgJual = $produk['hrgJual'];
@@ -191,8 +199,9 @@ class HomeController extends Controller
       $rinciOrder->alamatPengiriman = $request->recipient['alamat'];
       $rinciOrder->idToko = $produk['idToko'];
       $rinciOrder->idProduk = $produk['idProduk'];
-      $rinciOrder->noFaktur = Carbon::now()->getPreciseTimestamp(3);
-      $rinciOrder->total = $request->total;
+      $rinciOrder->idHarga = $produk['idHarga'];
+      $rinciOrder->noFaktur = $timestamp;
+      $rinciOrder->total = $produk['subtotal'];
       $rinciOrder->totalItem = $produk['qty'];
       $rinciOrder->tglOrder = date("Y-m-d H:i:s");
       $rinciOrder->statusBayar = "Belum dibayar";

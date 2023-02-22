@@ -22,7 +22,7 @@ class CreateHargasTable extends Migration
       $table->integer('hrgBeli');
       $table->integer('stokToko')->default(0);
       $table->integer('stokGudang')->default(0);
-      $table->integer('diskon')->nullable();
+      $table->integer('diskon')->nullable()->default(0);
       $table->date('tglAwalDiskon')->nullable();
       $table->date('tglAkhirDiskon')->nullable();
       $table->integer('terjual')->nullable();

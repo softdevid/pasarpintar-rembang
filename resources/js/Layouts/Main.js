@@ -25,7 +25,9 @@ export default function Main({ children }) {
         <header>
           <NavBar />
         </header>
-        <div className="grow">{children}</div>
+        <div className="grow">
+          {children}
+        </div>
         <footer>
           <Footer />
         </footer>

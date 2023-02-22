@@ -62,6 +62,15 @@ const TopNavBar = () => {
                     </Menu.Item>
                     <Menu.Item>
                       <Link
+                        href="/user/orders"
+                        className="block w-full px-4 py-2 text-sm text-left text-slate-700 hover:bg-slate-100"
+                        as="button"
+                      >
+                        Pesanan
+                      </Link>
+                    </Menu.Item>
+                    <Menu.Item>
+                      <Link
                         href={route("logout")}
                         method="post"
                         className="block w-full px-4 py-2 text-sm text-left text-slate-700 hover:bg-slate-100"

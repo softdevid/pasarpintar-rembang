@@ -1,14 +1,17 @@
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useContext, useState } from "react";
 import { Head, Link, router } from "@inertiajs/react";
 import Main from "@/Layouts/Main";
 import Input from "@/Components/Input";
 import { FormatRupiah } from "@/config/formatRupiah";
 import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
+import { AppContext } from "@/context/app-context";
 
 const Checkout = ({ title, filteredProduk, user }) => {
-  const [filtCart, setFiltCart] = useState(Object.entries(filteredProduk));
+  const context = useContext(AppContext);
 
+  const [filtCart, setFiltCart] = useState(Object.entries(filteredProduk));
   const [recipient, setRecipient] = useState({
     nama: user.name,
     email: user.email,
@@ -57,31 +60,56 @@ const Checkout = ({ title, filteredProduk, user }) => {
   };
 
   const order = () => {
-    const produk = filtCart.map(([, items]) => {
-      const [
-        {
-          idProduk,
-          idToko,
-          qty,
-          produk: { namaProduk },
-          harga: { hrgBeli, hrgJual },
-        },
-      ] = items;
-      return { idProduk, idToko, qty, namaProduk, hrgJual, hrgBeli };
-    });
+    const produks = filtCart
+      .map(([, items]) => {
+        return items.map(
+          ({
+            idProduk,
+            idHarga,
+            idToko,
+            qty,
+            produk: { namaProduk },
+            harga: { hrgBeli, hrgJual },
+          }) => {
+            return {
+              idProduk,
+              idHarga,
+              idToko,
+              qty,
+              namaProduk,
+              hrgJual,
+              hrgBeli,
+              subtotal: qty * hrgJual * 1000,
+            };
+          }
+        );
+      })
+      .flat(1);
 
     if (payment !== "") {
-      axios.post("/order", {
+      const data = {
         recipient,
-        produk,
+        produks,
         payment,
-        total: subtotal * 1000 + ongkir * 1000,
-      })
-      .then((res) => {
-        notify(res.data.data);
-      })
-      .catch((err) => console.log(err.response.data.message));
+      };
+      console.log(produks);
+      axios
+        .post("/order", data)
+        .then((res) => {
+          notify(res.data.data);
+          updateJumlahKeranjang();
+          setTimeout(() => {
+            router.get("/user/orders");
+          }, 2000);
+        })
+        .catch((err) => console.log(err.response.data.message));
     }
+  };
+
+  const updateJumlahKeranjang = () => {
+    axios.get("/cart-count").then((res) => {
+      context.setCartCount(res.data.cartCount);
+    });
   };
 
   return (

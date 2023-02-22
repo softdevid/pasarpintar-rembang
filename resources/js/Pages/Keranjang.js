@@ -2,24 +2,16 @@ import { FormatRupiah } from "@/config/formatRupiah";
 import { AppContext } from "@/context/app-context";
 import Main from "@/Layouts/Main";
 import { TrashIcon } from "@heroicons/react/20/solid";
-import { Head, Link, router } from "@inertiajs/react";
+import { Head, Link, router, usePage } from "@inertiajs/react";
 import axios from "axios";
 import React, { Fragment, useContext, useEffect, useState } from "react";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 const Keranjang = ({ title, keranjang }) => {
-  if (keranjang == "kosong") {
-    return (
-      <>
-        <Head title={title} />
-        <div className="container py-3 md:py-5">kosong!</div>
-      </>
-    );
-  }
   const context = useContext(AppContext);
 
-  const [cart, setCart] = useState(Object.entries(keranjang));
+  const [cart, setCart] = useState({});
   const [updatedCart, setUpdatedCart] = useState({});
   const [timeoutId, setTimeoutId] = useState(null);
   const [rowId, setRowId] = useState(null);
@@ -27,6 +19,16 @@ const Keranjang = ({ title, keranjang }) => {
   const [isCheckAll, setIsCheckAll] = useState(false);
   const [isCheck, setIsCheck] = useState([]);
   const [isClicked, setIsClicked] = useState(false);
+
+  useEffect(() => {
+    axios
+      .get("/carts-get")
+      .then((res) => {
+        console.log(res.data.data);
+        setCart(Object.entries(res.data.data));
+      })
+      .catch((err) => console.log(err.response.data.message));
+  }, []);
 
   const handleQtyChange = (
     operasi,
@@ -99,10 +101,19 @@ const Keranjang = ({ title, keranjang }) => {
     }
   }, [updatedCart]);
 
-  const total = cart
-    .flatMap(([_, items]) => items)
-    .filter((item) => isCheck.includes(`${item.id}`))
-    .reduce((subtotal, prod) => subtotal + prod.qty * prod.harga.hrgJual, 0);
+  const total = () => {
+    if (Object.keys(cart).length !== 0) {
+      return cart
+        .flatMap(([_, items]) => items)
+        .filter((item) => isCheck.includes(`${item.id}`))
+        .reduce(
+          (subtotal, prod) => subtotal + prod.qty * prod.harga.hrgJual,
+          0
+        );
+    } else {
+      return 0;
+    }
+  };
 
   const handleSelectAll = (e) => {
     setIsCheckAll(!isCheckAll);
@@ -128,6 +139,7 @@ const Keranjang = ({ title, keranjang }) => {
 
   const toCheckout = () => {
     setIsClicked(true);
+    console.log(isCheck);
     if (isCheck.length != 0) {
       router.get("/checkout", {
         idPivot: isCheck.join(","),
@@ -158,7 +170,7 @@ const Keranjang = ({ title, keranjang }) => {
             ];
           });
         });
-
+        setIsCheck([]);
         updateJumlahKeranjang();
       })
       .catch((err) => console.log(err.response.data.message));
@@ -218,129 +230,146 @@ const Keranjang = ({ title, keranjang }) => {
                 </tr>
               </thead>
               <tbody>
-                {cart.map(([toko, produks], i) => (
-                  <Fragment key={i}>
-                    <tr>
-                      <td colSpan={3}>
-                        <div
-                          className={`text-center font-medium text-lg ${
-                            i == 0 ? "mt-0" : "mt-4"
-                          }`}
-                        >
-                          {toko}
-                        </div>
-                      </td>
-                    </tr>
-                    {produks.map((krj, i) => (
-                      <tr
-                        key={i}
-                        className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
-                      >
-                        <td className="w-4 p-4">
-                          <div className="flex items-center">
-                            <input
-                              id={krj.id}
-                              name={krj.produk.namaProduk}
-                              onChange={handleCheck}
-                              checked={isCheck.includes(`${krj.id}`)}
-                              type="checkbox"
-                              className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-                            />
-                            <label
-                              htmlFor="checkbox-table-search-1"
-                              className="sr-only"
+                {Object.keys(cart).length !== 0 ? (
+                  cart.map(([toko, produks], i) => (
+                    <Fragment key={i}>
+                      {produks.length !== 0 && (
+                        <tr>
+                          <td colSpan={4}>
+                            <div
+                              className={`text-center font-medium text-lg ${
+                                i == 0 ? "mt-0" : "mt-4"
+                              }`}
                             >
-                              checkbox
-                            </label>
-                          </div>
-                        </td>
-                        <th className="flex px-6 py-4">
-                          <div className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
-                            <img
-                              src={krj.produk.imgUrl}
-                              alt={krj.produk.imgName}
-                              className="h-full w-full object-cover object-center"
-                            />
-                          </div>
-                          <div className="ml-4">
-                            <div>
-                              <a
-                                href={`${krj.produk.slugToko}/${krj.produk.slugProduk}`}
-                                className="text-base font-medium text-left text-gray-900 line-clamp-2"
-                              >
-                                {krj.produk.namaProduk}
-                              </a>
-                              <p className="mt-1 text-sm text-gray-500">
-                                {krj.harga.namaHarga}
-                              </p>
-                              <p className="mt-1 text-sm text-gray-500">
-                                <FormatRupiah
-                                  value={krj.harga.hrgJual * 1000}
-                                />
-                              </p>
+                              {toko}
                             </div>
-                          </div>
-                        </th>
-                        <td className="px-6 py-4 text-center">
-                          <div
-                            className="inline-flex rounded-md shadow-sm"
-                            role="group"
+                          </td>
+                        </tr>
+                      )}
+                      {produks.length !== 0 &&
+                        produks.map((krj, i) => (
+                          <tr
+                            key={i}
+                            className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
                           >
-                            <button
-                              type="button"
-                              className="px-2 w-9 align-middle text-slate-900 bg-transparent rounded-l-md border-2 border-sky-400 hover:bg-sky-300 hover:text-white focus:z-10 focus:ring-2 focus:ring-sky-700 focus:bg-sky-400 focus:text-white"
-                              onClick={() =>
-                                handleQtyChange(
-                                  "subtract",
-                                  krj.idProduk,
-                                  krj.idHarga,
-                                  krj.harga.hrgJual,
-                                  krj.qty
-                                )
-                              }
-                              disabled={rowId !== null && rowId !== krj.idHarga}
-                            >
-                              <span className="m-auto text-2xl font-normal">
-                                -
-                              </span>
-                            </button>
-                            <input
-                              type="text"
-                              className="px-2 w-14 text-center align-middle text-slate-900 bg-transparent border-0 border-y-2 border-sky-400 hover:bg-sky-300 hover:text-white focus:z-10 focus:ring-2 focus:ring-sky-700 focus:bg-sky-400 focus:text-white"
-                              value={krj.qty}
-                              max={krj.harga.stokToko}
-                              readOnly
-                            />
-                            <button
-                              type="button"
-                              className="px-2 w-9 align-middle text-slate-900 bg-transparent rounded-r-md border-2 border-sky-400 hover:bg-sky-300 hover:text-white focus:z-10 focus:ring-2 focus:ring-sky-700 focus:bg-sky-400 focus:text-white"
-                              onClick={() =>
-                                handleQtyChange(
-                                  "add",
-                                  krj.idProduk,
-                                  krj.idHarga,
-                                  krj.harga.hrgJual,
-                                  krj.qty,
-                                  krj.harga.stokToko
-                                )
-                              }
-                              disabled={rowId !== null && rowId !== krj.idHarga}
-                            >
-                              <span className="m-auto text-2xl font-normal">
-                                +
-                              </span>
-                            </button>
-                          </div>
-                        </td>
-                        <td className="px-6 py-4 text-center">
-                          <FormatRupiah
-                            value={krj.qty * krj.harga.hrgJual * 1000}
-                          />
-                        </td>
-                      </tr>
-                    ))}
-                  </Fragment>
-                ))}
+                            <td className="w-4 p-4">
+                              <div className="flex items-center">
+                                <input
+                                  id={krj.id}
+                                  name={krj.produk.namaProduk}
+                                  onChange={handleCheck}
+                                  checked={isCheck.includes(`${krj.id}`)}
+                                  type="checkbox"
+                                  className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                                />
+                                <label
+                                  htmlFor="checkbox-table-search-1"
+                                  className="sr-only"
+                                >
+                                  checkbox
+                                </label>
+                              </div>
+                            </td>
+                            <th className="flex px-6 py-4">
+                              <div className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
+                                <img
+                                  src={krj.produk.imgUrl}
+                                  alt={krj.produk.imgName}
+                                  className="h-full w-full object-cover object-center"
+                                />
+                              </div>
+                              <div className="ml-4">
+                                <div>
+                                  <a
+                                    href={`${krj.produk.slugToko}/${krj.produk.slugProduk}`}
+                                    className="text-base font-medium text-left text-gray-900 line-clamp-2"
+                                  >
+                                    {krj.produk.namaProduk}
+                                  </a>
+                                  <p className="text-sm text-gray-500">
+                                    {krj.harga.namaHarga}
+                                  </p>
+                                  <p className="mt-1 text-sm text-gray-500">
+                                    <FormatRupiah
+                                      value={krj.harga.hrgJual * 1000}
+                                    />
+                                  </p>
+                                </div>
+                              </div>
+                            </th>
+                            <td className="px-6 py-4 text-center">
+                              <div
+                                className="inline-flex rounded-md shadow-sm"
+                                role="group"
+                              >
+                                <button
+                                  type="button"
+                                  className="px-2 w-9 align-middle text-slate-900 bg-transparent rounded-l-md border-2 border-sky-400 hover:bg-sky-300 hover:text-white focus:z-10 focus:ring-2 focus:ring-sky-700 focus:bg-sky-400 focus:text-white"
+                                  onClick={() =>
+                                    handleQtyChange(
+                                      "subtract",
+                                      krj.idProduk,
+                                      krj.idHarga,
+                                      krj.harga.hrgJual,
+                                      krj.qty
+                                    )
+                                  }
+                                  disabled={
+                                    rowId !== null && rowId !== krj.idHarga
+                                  }
+                                >
+                                  <span className="m-auto text-2xl font-normal">
+                                    -
+                                  </span>
+                                </button>
+                                <input
+                                  type="text"
+                                  className="px-2 w-14 text-center align-middle text-slate-900 bg-transparent border-0 border-y-2 border-sky-400 hover:bg-sky-300 hover:text-white focus:z-10 focus:ring-2 focus:ring-sky-700 focus:bg-sky-400 focus:text-white"
+                                  value={krj.qty}
+                                  max={krj.harga.stokToko}
+                                  readOnly
+                                />
+                                <button
+                                  type="button"
+                                  className="px-2 w-9 align-middle text-slate-900 bg-transparent rounded-r-md border-2 border-sky-400 hover:bg-sky-300 hover:text-white focus:z-10 focus:ring-2 focus:ring-sky-700 focus:bg-sky-400 focus:text-white"
+                                  onClick={() =>
+                                    handleQtyChange(
+                                      "add",
+                                      krj.idProduk,
+                                      krj.idHarga,
+                                      krj.harga.hrgJual,
+                                      krj.qty,
+                                      krj.harga.stokToko
+                                    )
+                                  }
+                                  disabled={
+                                    rowId !== null && rowId !== krj.idHarga
+                                  }
+                                >
+                                  <span className="m-auto text-2xl font-normal">
+                                    +
+                                  </span>
+                                </button>
+                              </div>
+                            </td>
+                            <td className="px-6 py-4 text-center">
+                              <FormatRupiah
+                                value={krj.qty * krj.harga.hrgJual * 1000}
+                              />
+                            </td>
+                          </tr>
+                        ))}
+                    </Fragment>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan={4}>
+                      <div className="text-center font-medium text-lg ">
+                        Kosong
+                      </div>
+                    </td>
+                  </tr>
+                )}
               </tbody>
             </table>
           </div>
@@ -349,7 +378,7 @@ const Keranjang = ({ title, keranjang }) => {
               <h2 className="text-xl text-slate-800 font-medium pb-6">
                 {`Total : `}
                 <span className="text-3xl">
-                  <FormatRupiah value={total * 1000} />
+                  <FormatRupiah value={total() * 1000} />
                 </span>
               </h2>
               {isCheck.length == 0 && isClicked && (

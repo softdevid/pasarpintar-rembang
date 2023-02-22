@@ -14,9 +14,9 @@ use App\Http\Controllers\GrafikController;
 use App\Http\Controllers\KategoriGlobalController;
 use App\Http\Controllers\KeranjangController;
 use App\Http\Controllers\LaporanSuperAdminController;
-use App\Http\Controllers\OrderController;
 use App\Http\Controllers\SuperAdminSettingController;
 use App\Http\Controllers\TokoController;
+use App\Http\Controllers\UserController;
 use Inertia\Inertia;
 
 // home route
@@ -28,14 +28,14 @@ Route::middleware('auth',)->group(function () {
 
   // route user
   Route::get('/user/profile', function () {
-    return Inertia::render('Dashboard');
-  })->name('dashboard');
+    return Inertia::render('User/UserProfile');
+  })->name('user.profile');
 
-  // route admin
-  // Route::get('/admin/dashboard', [AdminController::class, 'index'])->name('admin.index');
+  Route::get('/user/orders', [UserController::class, 'orders'])->name('user.orders');
 
   // route keranjang
   Route::get('/cart', [KeranjangController::class, 'index'])->name('cart.index');
+  Route::get('/carts-get', [KeranjangController::class, 'getCarts'])->name('cart.get');
   Route::post('/cart-add', [KeranjangController::class, 'add'])->name('cart.add');
   Route::patch('/cart-update', [KeranjangController::class, 'update'])->name('cart.update');
   Route::delete('/cart-delete', [KeranjangController::class, 'delete'])->name('cart.delete');
@@ -91,7 +91,6 @@ Route::post('/admin/kategori/delete', [KategoriGlobalController::class, 'destroy
 Route::get('/toko/dashboard', [AdminTokoController::class, 'index'])->name('toko.index');
 
 Route::get('/toko/pesanan', [AdminTokoController::class, 'pesanan'])->name('toko.pesanan');
-
 
 //route toko produk/list produk
 Route::get('/toko/produk', [ProdukController::class, 'index'])->name('toko.list');

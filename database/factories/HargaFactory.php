@@ -18,6 +18,7 @@ class HargaFactory extends Factory
     // $hrg++;
     return [
       "idProduk" => Produk::pluck('id')->random(),
+      "jenisHarga" => $this->faker->word(),
       "namaHarga" => $this->faker->word(),
       "hrgJual" => $this->faker->numberBetween(1, 100),
       "hrgBeli" => $this->faker->numberBetween(1, 90),
