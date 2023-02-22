@@ -94,7 +94,7 @@ Route::get('/toko/pesanan', [AdminTokoController::class, 'pesanan'])->name('toko
 
 //route toko produk/list produk
 Route::get('/toko/produk', [ProdukController::class, 'index'])->name('toko.list');
-Route::get('/toko/produk/1/edit', [ProdukController::class, 'edit'])->name('produk.edit');
+Route::get('/toko/produk/{slug}/edit', [ProdukController::class, 'edit'])->name('produk.edit');
 Route::get('/toko/produk/create', [ProdukController::class, 'create'])->name('produk.create');
 Route::post('/toko/produk', [ProdukController::class, 'store'])->name('produk.store');
 Route::post('/toko/produk/delete', [ProdukController::class, 'destroy'])->name('produk.destroy');
@@ -141,6 +141,7 @@ Route::get('/oneWeek', function () {
 Route::post('/image/session', [GambarSementaraController::class, 'insertgbrutama'])->name('gambarUtama');
 Route::post('/image-lainnya/session', [GambarSementaraController::class, 'gbrlain'])->name('gambarLainnya');
 Route::post('/delete-image-variasi-inaktive', [ProdukController::class, 'deleteImageVarian'])->name('deleteImageAllVariant');
+Route::post('/delete-harga', [ProdukController::class, 'deleteHarga'])->name('deleteHarga');
 
 // route autentikasi
 require __DIR__ . '/auth.php';

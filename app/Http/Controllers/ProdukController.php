@@ -12,6 +12,8 @@ use App\Models\Toko;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
+use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Validator;
 use Inertia\Inertia;
 
 class ProdukController extends Controller
@@ -79,20 +81,17 @@ class ProdukController extends Controller
     // dd($request->all());
     $toko = Toko::where('idUser', auth()->user()->id)->select('id')->first();
 
-    // $messages = [];
-    // foreach ($request->input('forms') as $key => $value) {
-    //   $messages["forms.$key.namaHarga.required"] = 'Nama harga harus diisi.';
-    //   $messages["forms.$key.hrgBeli.required"] = 'Harga beli harus diisi.';
-    //   $messages["forms.$key.hrgBeli.numeric"] = 'Harga beli harus berupa angka.';
-    //   $messages["forms.$key.hrgJual.required"] = 'Harga jual harus diisi.';
-    //   $messages["forms.$key.hrgJual.numeric"] = 'Harga jual harus berupa angka.';
-    //   $messages["forms.$key.stokGudang.required"] = 'Stok gudang harus diisi.';
-    //   $messages["forms.$key.stokGudang.numeric"] = 'Stok gudang harus berupa angka.';
-    //   $messages["forms.$key.stokToko.required"] = 'Stok toko harus diisi.';
-    //   $messages["forms.$key.stokToko.numeric"] = 'Stok toko harus berupa angka.';
-    //   $messages["forms.$key.jenisHarga.required"] = 'Jenis harga harus diisi.';
+    // $validator = Validator::make($request->all(), [
+    //   'forms.namaHarga' => 'required|max:255',
+    //   'forms.hrgBeli' => 'required|numeric|min:0',
+    //   'forms.hrgJual' => 'required|numeric|min:0',
+    //   'forms.stokGudang' => 'required|numeric|min:0',
+    //   'forms.stokToko' => 'required|numeric|min:0',
+    // ]);
+
+    // if ($validator->fails()) {
+    //   return Redirect::back()->withErrors($validator)->withInput();
     // }
-    // $request->validate($messages);
 
     // $request->validate([
     //   'values.namaProduk' => 'required|max:255',
@@ -126,7 +125,7 @@ class ProdukController extends Controller
     foreach ($request->input('forms') as $value) {
       Harga::create([
         'idProduk' => $produk->id,
-        'namaHarga' => $request->input('values.jenisHarga') ?? '',
+        'jenisHarga' => $request->input('values.jenisHarga') ?? '',
         'namaHarga' => $value['namaHarga'] ?? '',
         'hrgJual' => $value['hrgJual'],
         'hrgBeli' => $value['hrgBeli'],
@@ -162,11 +161,21 @@ class ProdukController extends Controller
    * @param  \App\Models\Produk  $produk
    * @return \Illuminate\Http\Response
    */
-  public function edit(Produk $produk, Request $request)
+  public function edit(Produk $produk, Request $request, $id)
   {
     $kategori = Kategori::select('id', 'namaKategori')->get();
     $kategoriGlobal = KategoriGlobal::select('id', 'namaKategoriGlobal')->get();
-    $produk = Produk::find($request->id);
+    // $produk = Produk::find($id);
+
+    $produk = Produk::with(['toko' => function ($q) {
+      $q->select('id', 'slug as slugToko', 'namaToko');
+    }, 'hargas' => function ($q) {
+      $q->select('hargas.*')->orderBy('hrgJual', 'asc');
+    }])->select(
+      'produks.*',
+    )->where('id', $id)
+      ->first();
+
     return Inertia::render('TokoProduk/Edit', [
       'title' => 'Edit Produk',
       'produk' => $produk,
@@ -304,6 +313,19 @@ class ProdukController extends Controller
       } else {
         return back()->with('message', 'Berhasil dihapus');
       }
+    }
+  }
+
+  public function deleteHarga(Request $request)
+  {
+    // dd($request->all());
+    $harga = Harga::where('id', $request->input('id.id'))->first();
+    $harga->delete();
+    if ($request->input('id.publicId') === null) {
+      return back()->with('message', 'Hapus Harga Berhasil');
+    } else {
+      Cloudinary::destroy($request->input('id.publicId'));
+      return back()->with('message', 'Hapus Harga Berhasil');
     }
   }
 }

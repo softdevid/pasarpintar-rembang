@@ -3,7 +3,8 @@ import { PlusCircleIcon, PlusIcon } from "@heroicons/react/20/solid";
 import { Head, router, usePage } from "@inertiajs/react";
 import axios from "axios";
 import { useState } from "react";
-import { Route, Router } from "react-router-dom";
+import * as Yup from 'yup';
+
 // import DOMPurify from 'dompurify';
 
 const Create2 = (props) => {
@@ -157,32 +158,6 @@ function Page1({ setPage, values, props, handleChange, setValues }) {
 
   return (
     <div>
-      {props.errors && props.errors.forms && (
-        <div className="alert alert-danger">
-          {props.errors.forms.hrgBeli && (
-            <p>{props.errors.forms.hrgBeli}</p>
-          )}
-          {props.errors.forms.hrgJual && (
-            <p>{props.errors.forms.hrgJual}</p>
-          )}
-          {props.errors.forms.stokGudang && (
-            <p>{props.errors.forms.stokGudang}</p>
-          )}
-          {props.errors.forms.stokToko && (
-            <p>{props.errors.forms.stokToko}</p>
-          )}
-          {props.errors.values && props.errors.values.idKategori && (
-            <p>{props.errors.values.idKategori}</p>
-          )}
-          {props.errors.values && props.errors.values.idKategoriGlobal && (
-            <p>{props.errors.values.idKategoriGlobal}</p>
-          )}
-          {props.errors.values && props.errors.values.namaProduk && (
-            <p>{props.errors.values.namaProduk}</p>
-          )}
-        </div>
-      )}
-
       <div className="mb-3">
         <label>Nama Produk</label>
         <input placeholder="Nama Produk" id="namaProduk" className="bg-white w-full rounded-md p-2 border border-black"
@@ -234,6 +209,16 @@ function Page1({ setPage, values, props, handleChange, setValues }) {
 }
 
 function Page2({ setPage, props, forms, setForms, handleChange, values, variasiAktif, closeVariasiAktif, handleVariasiAktif, rupiah }) {
+
+  const [formError, setFormErrors] = useState("");
+
+  const schema = Yup.object().shape({
+    hrgBeli: Yup.number().required('Harga beli harus diisi.'),
+    hrgJual: Yup.number().required('Harga jual harus diisi.'),
+    stokToko: Yup.number().required('Stok toko harus diisi.'),
+    stokGudang: Yup.number().required('Stok gudang harus diisi.'),
+  });
+
   const handleSubmit = () => {
     router.post("/toko/produk", { values, forms })
   }
@@ -265,8 +250,6 @@ function Page2({ setPage, props, forms, setForms, handleChange, values, variasiA
     }, (error, result) => {
       if (!error && result && result.event === "success") {
         // console.log('Done! Here is the image info: ', result.info);
-        // const uploadedImage = result.info.files[0];
-        // setImages((prev) => [...prev, ({ url: result.info.url, public_id: result.info.public_id })]);
         const newOptions = [...forms];
         newOptions[index].url = result.info.url;
         newOptions[index].public_id = result.info.public_id;
@@ -291,9 +274,6 @@ function Page2({ setPage, props, forms, setForms, handleChange, values, variasiA
     newOptions[index].public_id = "";
     setForms(newOptions);
   }
-
-  const errors = props.errors;
-  // console.log(errors);
 
   return (
     <>
@@ -382,6 +362,7 @@ function Page2({ setPage, props, forms, setForms, handleChange, values, variasiA
                     onChange={(event) => handleChangeOption(event, index)}
                   />
                   {rupiah(form.hrgBeli)}
+                  {formError.hrgBeli && <p className="text-red-500">{formError.hrgBeli}</p>}
                 </div>
                 <div>
                   <label>Harga Jual</label>
@@ -392,9 +373,7 @@ function Page2({ setPage, props, forms, setForms, handleChange, values, variasiA
                     onChange={(event) => handleChangeOption(event, index)}
                   />
                   {rupiah(form.hrgJual)}
-                  {/* {props.errors.forms && props.errors.forms.index && props.errors.forms.index.hrgJual && (
-                    <p className="text-red-500">{props.errors.forms[index].hrgJual}</p>
-                  )} */}
+                  {formError.hrgJual && <p className="text-red-500">{formError.hrgJual}</p>}
                 </div>
                 <div>
                   <label>Stok Gudang</label>
@@ -405,9 +384,7 @@ function Page2({ setPage, props, forms, setForms, handleChange, values, variasiA
                     value={form.stokGudang} className="w-full rounded-md"
                     onChange={(event) => handleChangeOption(event, index)}
                   />
-                  {props.errors.forms && props.errors.forms[index] && props.errors.forms[index].stokGudang && (
-                    <p className="text-red-500">{props.errors.forms[index].stokGudang}</p>
-                  )}
+                  {formError.stokGudang && <p className="text-red-500">{formError.stokGudang}</p>}
                 </div>
                 <div>
                   <label>Stok Toko</label>
@@ -418,9 +395,7 @@ function Page2({ setPage, props, forms, setForms, handleChange, values, variasiA
                     value={form.stokToko} className="w-full rounded-md"
                     onChange={(event) => handleChangeOption(event, index)}
                   />
-                  {props.errors.forms && props.errors.forms[index].stokToko && (
-                    <p className="text-red-500">{props.errors.forms[index].stokToko}</p>
-                  )}
+                  {formError.stokToko && <p className="text-red-500">{formError.stokToko}</p>}
                 </div>
                 <div>
                   <label>Pilih gambar (tidak wajib)</label><br />

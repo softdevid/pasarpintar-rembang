@@ -50,6 +50,10 @@ const Index = (props) => {
 
   const [showAktif, setShowAktif] = useState(false);
 
+  // const handleEdit = (id) => {
+  //   router.get(`/toko/produk/${id}/edit`);
+  // }
+
   return (
     <>
       {!showAktif ? (
@@ -62,7 +66,7 @@ const Index = (props) => {
             </div>
           </div>
 
-          <div className="mt-1 mb-7 mx-auto max-w-xl">
+          {/* <div className="mt-1 mb-7 mx-auto max-w-xl">
             <div className="flex items-center">
               <label htmlFor="search-kategori" className="sr-only">
                 Cari...
@@ -93,67 +97,104 @@ const Index = (props) => {
                 />
               </div>
             </div>
-          </div>
+          </div> */}
 
-          <div className="overflow-x-auto relative shadow-md sm:rounded-lg mt-3">
-            <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-              <thead className="text-xs text-center text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-                <tr>
-                  <th scope="col" className="py-3 px-6">
-                    #
-                  </th>
-                  <th scope="col" className="py-3 px-6">
-                    Nama Produk
-                  </th>
-                  <th scope="col" className="py-3 px-6">
-                    Harga Beli
-                  </th>
-                  <th scope="col" className="py-3 px-6">
-                    Harga Jual
-                  </th>
-                  {/* <th scope="col" className="py-3 px-6">
+          <div className="hidden md:block">
+            <div className="overflow-x-auto relative shadow-md sm:rounded-lg mt-3">
+              <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+                <thead className="text-xs text-center text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                  <tr>
+                    <th scope="col" className="py-3 px-6">
+                      #
+                    </th>
+                    <th scope="col" className="py-3 px-6">
+                      Nama Produk
+                    </th>
+                    <th scope="col" className="py-3 px-6">
+                      Harga Beli
+                    </th>
+                    <th scope="col" className="py-3 px-6">
+                      Harga Jual
+                    </th>
+                    {/* <th scope="col" className="py-3 px-6">
                 Stok Gudang
               </th>
               <th scope="col" className="py-3 px-6">
                 Stok Toko
               </th> */}
-                  <th scope="col" className="py-3 px-6">
-                    Aksi
-                  </th>
+                    <th scope="col" className="py-3 px-6">
+                      Aksi
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {search(produk).length > 0 ? (
+                    search(produk).map((data, i) => {
+                      return (
+
+                        <tr key={i} className="text-center bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+                          <th scope="row" className="py-4 px-6 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                            {i + 1}
+                          </th>
+                          <td>{data.namaProduk}</td>
+                          <td>{data.hargas.length} item</td>
+                          <td>{data.hargas.length} item</td>
+                          <td className="flex">
+                            <button onClick={() => handleShow(data)} className="bg-sky-400 text-white rounded-md p-2 mx-1">Detail</button>
+                            {/* <button onClick={() => handleEdit({ id: data.id })} className="bg-yellow-400 text-white rounded-md p-2 mx-1">Edit</button> */}
+                            <Link href={`/toko/produk/${data.id}/edit`} className="bg-yellow-400 text-white rounded-md p-2 mx-1">Edit</Link>
+                            <Link onClick={() => handleDelete({ id: data.id })} className="bg-red-500 text-white rounded-md p-2 mx-1">Hapus</Link>
+                          </td>
+                        </tr>
+
+                      );
+                    })
+                  ) : query !== "" ? (
+                    <tr>
+                      <td colSpan="7" className="text-center">{`Tidak ada data dengan pencarian '${query}'`}</td>
+                    </tr>
+                  ) : (
+                    <tr>
+                      <td colSpan="7" className="text-center">{`Tidak ada data`}</td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+              <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onPageChange={handlePageChange}
+              />
+            </div>
+          </div>
+
+          <div className="block md:hidden">
+            <div className="grid grid-cols-2">
+              {search(produk).length > 0 ? (
+                search(produk).map((data, i) => {
+                  return (
+                    <div key={i} class="bg-white rounded-lg shadow-md m-2">
+                      <img src={data.imgUrl} alt="Product 1" class="w-full h-48 object-cover" />
+                      <div class="p-4">
+                        <h2 class="text-lg font-medium text-gray-900">{data.namaProduk}</h2>
+                        <div class="mt-4">
+                          <span class="text-gray-900 text-sm">Jual: {data.hargas[0].hrgJual} dll</span>
+                          <span class="text-gray-900 text-sm">Beli: {data.hargas[0].hrgBeli} dll</span>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })
+              ) : query !== "" ? (
+                <tr>
+                  <td colSpan="7" className="text-center">{`Tidak ada data dengan pencarian '${query}'`}</td>
                 </tr>
-              </thead>
-              <tbody>
-                {search(produk).length > 0 ? (
-                  search(produk).map((data, i) => {
-                    return (
-
-                      <tr key={i} className="text-center bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                        <th scope="row" className="py-4 px-6 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                          {i + 1}
-                        </th>
-                        <td>{data.namaProduk}</td>
-                        <td>{data.hargas.length} item</td>
-                        <td>{data.hargas.length} item</td>
-                        <td className="flex">
-                          <button onClick={() => handleShow(data)} className="bg-sky-400 text-white rounded-md p-2 mx-1">Detail</button>
-                          <Link href={`/toko/produk/${data.slug}/edit`} className="bg-yellow-400 text-white rounded-md p-2 mx-1">Edit</Link>
-                          <Link onClick={() => handleDelete({ id: data.id })} className="bg-red-500 text-white rounded-md p-2 mx-1">Hapus</Link>
-                        </td>
-                      </tr>
-
-                    );
-                  })
-                ) : query !== "" ? (
-                  <tr>
-                    <td colSpan="7" className="text-center">{`Tidak ada data dengan pencarian '${query}'`}</td>
-                  </tr>
-                ) : (
-                  <tr>
-                    <td colSpan="7" className="text-center">{`Tidak ada data`}</td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
+              ) : (
+                <tr>
+                  <td colSpan="7" className="text-center">{`Tidak ada data`}</td>
+                </tr>
+              )}
+            </div>
             <Pagination
               currentPage={currentPage}
               totalPages={totalPages}
