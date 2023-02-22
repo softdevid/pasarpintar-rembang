@@ -83,7 +83,13 @@ const ProdukAcak = () => {
                         </div>
                         <div>
                           <span className="text-lg font-bold">
-                          <FormatRupiah value={`${data.hargas[0]?.hrgJual}000`} />
+                            <FormatRupiah
+                              value={
+                                (data.harga_terkecil !== null
+                                  ? data.harga_terkecil.hrgJual
+                                  : 0) * 1000
+                              }
+                            />
                           </span>
                         </div>
                       </div>

@@ -8,12 +8,9 @@ const Produk = ({ produk, toko, images, auth }) => {
   return (
     <>
       <Head title={produk.namaProduk} />
-      <section className="overflow-hidden bg-white py-4 my-8">
-        <div className="container">
-          <div className="flex flex-wrap">
-            <ProdukImage images={images} />
-            <ProdukDetail produk={produk} toko={toko} user={auth.user} />
-          </div>
+      <section className="bg-white py-4 my-8">
+        <div className="container flex flex-wrap">
+          <ProdukDetail images={images} produk={produk} toko={toko} user={auth.user} />
         </div>
       </section>
     </>

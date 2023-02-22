@@ -15,12 +15,9 @@ class HomeController extends Controller
 {
   public function index()
   {
-
     $produkTerlaris = Produk::with(['toko' => function ($q) {
       $q->select('id', 'slug as slugToko');
-    }, 'hargas' => function ($q) {
-      $q->select('idProduk', 'hrgJual')->orderBy('hrgJual', 'asc');
-    }])->select(
+    }, 'hargaTerkecil:id,idProduk,hrgJual'])->select(
       'produks.id',
       'produks.idToko',
       'produks.namaProduk',
@@ -55,6 +52,7 @@ class HomeController extends Controller
         "slug" => $toko->slug,
         "jumlahProduk" => $produk->where("idToko", $toko->id)->count(),
         "lamaBergabung" => $lamaBergabung,
+        "level" => $toko->statusToko
       ],
       "produk" => [
         "idProduk" => $produk->id,
@@ -67,7 +65,7 @@ class HomeController extends Controller
         "jenisHarga" => $produk->jenisHarga,
         "hargas" => $produk
           ->hargas()
-          ->select('id', 'idProduk', 'namaHarga', 'hrgJual', 'stokToko', 'diskon', 'tglAwalDiskon', 'tglAkhirDiskon')
+          ->select('id', 'idProduk', 'namaHarga', 'hrgJual', 'stokToko', 'diskon', 'tglAwalDiskon', 'tglAkhirDiskon', 'imgName', 'imgUrl')
           ->orderBy('hrgJual', 'asc')
           ->get()
           ->toArray()
@@ -78,7 +76,7 @@ class HomeController extends Controller
           "imgName" => $produk->imgName,
           "imgUrl" => $produk->imgUrl
         ],
-        ...$produk->hargas()->select('imgName', 'imgUrl')->get()->toArray(),
+        ...$produk->hargas()->select('imgName', 'imgUrl')->orderBy('hrgJual', 'asc')->get()->toArray(),
       ]
     ];
     return Inertia::render('Produk', $dataProduk);
@@ -88,9 +86,7 @@ class HomeController extends Controller
   {
     return Produk::with(['toko' => function ($q) {
       $q->select('id', 'slug as slugToko');
-    }, 'hargas' => function ($q) {
-      $q->select('idProduk', 'hrgJual')->orderBy('hrgJual', 'asc');
-    }])->select(
+    }, 'hargaTerkecil:id,idProduk,hrgJual'])->select(
       'produks.id',
       'produks.idToko',
       'produks.namaProduk',

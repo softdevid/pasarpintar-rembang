@@ -8,6 +8,12 @@ use Inertia\Inertia;
 
 class UserController extends Controller
 {
+
+  public function profile()
+  {
+    return Inertia::render('User/UserProfile');
+  }
+
   public function orders()
   {
     $orders = RinciOrder::with(

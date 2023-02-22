@@ -27,10 +27,7 @@ Route::get('/cari', [SearchController::class, 'search'])->name('pencarian');
 Route::middleware('auth',)->group(function () {
 
   // route user
-  Route::get('/user/profile', function () {
-    return Inertia::render('User/UserProfile');
-  })->name('user.profile');
-
+  Route::get('/user/profile', [UserController::class, 'profile'])->name('user.profile');
   Route::get('/user/orders', [UserController::class, 'orders'])->name('user.orders');
 
   // route keranjang
@@ -127,16 +124,13 @@ Route::get('/toko/laporan/year', [LaporanController::class, 'year'])->name('lapo
 //route hapus gambar cloudinary
 Route::post('/delete-image', [ProdukController::class, 'deleteImage'])->name('deleteImage');
 
-
 Route::get('/toko/setting', [AdminTokoController::class, 'setting'])->name('toko.setting');
-
 
 //route grafik 7 hari kebelakang
 Route::get('/oneWeekData', [GrafikController::class, 'index']);
 Route::get('/oneWeek', function () {
   Inertia::render('Grafik/OneWeek');
 });
-
 
 Route::post('/image/session', [GambarSementaraController::class, 'insertgbrutama'])->name('gambarUtama');
 Route::post('/image-lainnya/session', [GambarSementaraController::class, 'gbrlain'])->name('gambarLainnya');
@@ -147,8 +141,5 @@ Route::post('/delete-harga', [ProdukController::class, 'deleteHarga'])->name('de
 require __DIR__ . '/auth.php';
 require __DIR__ . '/api.php';
 
-
-// route toko
 Route::get('/{toko:slug}', [HomeController::class, 'toko'])->name('toko');
-// route produk toko
 Route::get('/{toko:slug}/{produk:slug}', [HomeController::class, 'produk'])->name('toko.produk')->scopeBindings();

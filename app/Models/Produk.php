@@ -31,6 +31,11 @@ class Produk extends Model
     return $this->hasMany(Harga::class, "idProduk", 'id');
   }
 
+  public function hargaTerkecil()
+  {
+    return $this->hasOne(Harga::class, "idProduk", 'id')->orderBy('hrgJual', 'asc');
+  }
+
   public function keranjangs()
   {
     return $this

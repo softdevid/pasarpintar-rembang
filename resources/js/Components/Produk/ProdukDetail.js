@@ -8,12 +8,31 @@ import React, { useContext, useEffect, useState } from "react";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-const ProdukDetail = ({ produk, toko, user }) => {
+const ProdukDetail = ({ images, produk, toko, user }) => {
   const [active, setActive] = useState(false);
   const [harga, setHarga] = useState({});
   const [qty, setQty] = useState(1);
 
   const context = useContext(AppContext);
+
+  const [img, setImg] = useState({
+    name: "",
+    imageUrl: "",
+  });
+
+  useEffect(() => {
+    setImg({
+      name: images[0].imgName,
+      imageUrl: images[0].imgUrl,
+    });
+  }, []);
+
+  const gantiImg = (name, imageUrl) => {
+    setImg({
+      name,
+      imageUrl,
+    });
+  };
 
   useEffect(() => {
     if (active === false) {
@@ -44,7 +63,9 @@ const ProdukDetail = ({ produk, toko, user }) => {
   };
 
   const decrement = () => {
-    setQty(qty > 1 ? qty - 1 : 1);
+    if (qty > 1) {
+      setQty(qty - 1);
+    }
   };
 
   const increment = (max) => {
@@ -91,10 +112,37 @@ const ProdukDetail = ({ produk, toko, user }) => {
     });
   };
 
-  console.log(qty);
+  console.log(harga);
 
   return (
     <>
+      <div className="relative w-full px-4 md:w-[35%]">
+        <div className="sticky top-10 z-50">
+          <div className="mb-2 lg:mb-4 lg:h-2/4">
+            <img
+              src={img.imageUrl}
+              className="object-cover w-full lg:h-full rounded-md"
+              alt={img.name}
+            />
+          </div>
+          <div className="relative max-w-max">
+            <ul className="flex overflow-x-scroll space-x-2">
+              {images.map((img, i) => (
+                <li key={i} className="p-2 w-20 h-20 flex-shrink-0">
+                  <div className="block border border-sky-700 rounded">
+                    <img
+                      src={img.imgUrl}
+                      className="object-cover w-full lg:h-full rounded"
+                      alt={img.imgName}
+                      onClick={() => gantiImg(img.imgName, img.imgUrl)}
+                    />
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      </div>
       <div className="w-full px-4 md:w-[65%]">
         <div className="md:pl-2 h-full">
           <div className="mt-3">
@@ -152,6 +200,7 @@ const ProdukDetail = ({ produk, toko, user }) => {
                           : setActive(index);
 
                         gantiHarga(harga.namaHarga);
+                        gantiImg(harga.imgName, harga.imgUrl);
                       }}
                     >
                       {harga.namaHarga}
@@ -160,7 +209,7 @@ const ProdukDetail = ({ produk, toko, user }) => {
                 </div>
               </div>
             </div>
-            {user !== null ? (
+            {user !== null && toko.level === "premium" ? (
               <>
                 <div className="flex items-center mt-4 mb-5">
                   <span className="mr-5 text-lg text-slate-900">Kuantitas</span>
@@ -171,7 +220,7 @@ const ProdukDetail = ({ produk, toko, user }) => {
                     <button
                       type="button"
                       className="px-2 w-9 align-middle text-slate-900 bg-transparent rounded-l-md border-2 border-sky-400 hover:bg-sky-300 hover:text-white focus:z-10 focus:ring-2 focus:ring-sky-700 focus:bg-sky-400 focus:text-white"
-                      onClick={() => decrement}
+                      onClick={() => decrement()}
                     >
                       <span className="m-auto text-2xl font-normal">-</span>
                     </button>

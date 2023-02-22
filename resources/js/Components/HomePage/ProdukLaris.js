@@ -4,7 +4,7 @@ import { Link } from "@inertiajs/react";
 import React from "react";
 
 const ProdukLaris = ({ produk }) => {
-  // console.log(produk);
+  console.log(produk);
   return (
     <div className="container">
       <div className="bg-sky-900 border-2 border-sky-900 rounded-lg overflow-hidden">
@@ -34,7 +34,13 @@ const ProdukLaris = ({ produk }) => {
                         </div>
                         <div>
                           <span className="text-lg font-bold">
-                            <FormatRupiah value={`${data.hargas[0]?.hrgJual}000`} />
+                            <FormatRupiah
+                              value={
+                                (data.harga_terkecil !== null
+                                  ? data.harga_terkecil.hrgJual
+                                  : 0) * 1000
+                              }
+                            />
                           </span>
                           <div className="flex items-center justify-between">
                             <span className="text-xs font-bold text-slate-900 pt-1">
