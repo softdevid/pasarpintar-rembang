@@ -48,9 +48,9 @@ const Index = (props) => {
 
   return (
     <>
-      <div className="flex">
+      <div className="grid grid-cols-2 gap-4">
         <h1 className="font-bold text-3xl">Kategori</h1>
-        <div className="mt-1 mb-7 mx-auto max-w-xl">
+        {/* <div className="mt-1 mb-7 mx-auto max-w-xl">
           <div className="flex items-center">
             <label htmlFor="search-kategori" className="sr-only">
               Cari...
@@ -81,9 +81,9 @@ const Index = (props) => {
               />
             </div>
           </div>
-        </div>
-        <div>
-          <button onClick={() => setIsOpen(true)} className="bg-blue-600 text-white p-2 rounded-lg hover:bg-blue-700" type="button">
+        </div> */}
+        <div className="text-right">
+          <button onClick={() => setIsOpen(true)} className="bg-blue-600 text-white p-1 md:p-2 rounded-lg hover:bg-blue-700" type="button">
             Tambah Kategori
           </button>
           {/* <MyButton />
@@ -132,18 +132,18 @@ const Index = (props) => {
                 })
               ) : query !== "" ? (
                 <tr>
-                  <td colSpan="7">{`Tidak ada data dengan pencarian '${query}'`}</td>
+                  <td colSpan="7" className="text-center">{`Tidak ada data dengan pencarian '${query}'`}</td>
                 </tr>
               ) : (
                 <tr>
-                  <td colSpan="7">{`Tidak ada data`}</td>
+                  <td colSpan="7" className="text-center">{`Tidak ada data`}</td>
                 </tr>
               )}
             </tbody>
           </table>
         </div>
 
-        <Add data={data} />
+        {/* <Add data={data} /> */}
       </div>
 
     </>

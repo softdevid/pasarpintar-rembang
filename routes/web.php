@@ -14,6 +14,7 @@ use App\Http\Controllers\GrafikController;
 use App\Http\Controllers\KategoriGlobalController;
 use App\Http\Controllers\KeranjangController;
 use App\Http\Controllers\LaporanSuperAdminController;
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\SuperAdminSettingController;
 use App\Http\Controllers\TokoController;
 use App\Http\Controllers\UserController;
@@ -105,12 +106,14 @@ Route::post('/toko/kategori', [KategoriController::class, 'store'])->name('kateg
 Route::post('/toko/kategori/delete', [KategoriController::class, 'destroy'])->name('kategoriToko.delete');
 
 //route order toko
-Route::get('/toko/pesanan', [AdminTokoController::class, 'pesananBaru'])->name('pesananBaru');
+Route::get('/toko/pesanan', [OrderController::class, 'pesananBaru'])->name('pesananBaru');
+Route::get('/toko/pesanan/dikirim', [OrderController::class, 'dikirim'])->name('dikirim');
+Route::get('/toko/pesanan/sampai', [OrderController::class, 'sampai'])->name('sampai');
+
 Route::get('/toko/pesanan/konfirmasi-bayar', [AdminTokoController::class, 'konfirmasiBayar'])->name('konfirmasiBayar');
 Route::get('/toko/pesanan/dikemas', [AdminTokoController::class, 'dikemas'])->name('dikemas');
-Route::get('/toko/pesanan/dikirim', [AdminTokoController::class, 'dikirim'])->name('dikirim');
-Route::get('/toko/pesanan/sampai', [AdminTokoController::class, 'sampai'])->name('sampai');
 
+// route kurir
 Route::get('/toko/kurir', [AdminTokoController::class, 'kurir'])->name('kurir');
 Route::get('/toko/kurir/create', [KurirController::class, 'create'])->name('kurir.create');
 Route::get('/toko/kurir/1/edit', [KurirController::class, 'edit'])->name('kurir.edit');

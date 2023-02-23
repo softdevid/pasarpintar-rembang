@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProdukController;
 use App\Http\Controllers\TokoController;
 use App\Http\Controllers\ValidateProdukController;
@@ -25,6 +26,10 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::get('/api/data-toko', [TokoController::class, 'dataToko']);
 
 Route::get('/api/data-produk', [ProdukController::class, 'dataProduk']);
+
+Route::get('/api/data-pesanan-baru', [OrderController::class, 'dataPesananBaru']);
+Route::get('/api/data-pesanan-dikirim', [OrderController::class, 'dataDikirim']);
+Route::get('/api/data-pesanan-sampai', [OrderController::class, 'dataSampai']);
 
 //validation produk step
 Route::post('/validate-step-1', [ValidateProdukController::class, 'validate1']);

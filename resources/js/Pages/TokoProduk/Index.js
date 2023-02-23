@@ -178,8 +178,7 @@ const Index = (props) => {
                       <div class="p-4">
                         <h2 class="text-lg font-medium text-gray-900">{data.namaProduk}</h2>
                         <div class="mt-4">
-                          <span class="text-gray-900 text-sm">Jual: {data.hargas[0].hrgJual} dll</span>
-                          <span class="text-gray-900 text-sm">Beli: {data.hargas[0].hrgBeli} dll</span>
+                          <span class="text-gray-900 text-sm">Jual: {data.hargas.length} item</span>
                         </div>
                       </div>
                     </div>

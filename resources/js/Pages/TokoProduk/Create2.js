@@ -79,10 +79,10 @@ const Create2 = (props) => {
       <Head title={props.title} />
 
       <div>
-        <h1 className="font-bold text-3xl">{props.title}</h1>
+        <h1 className="font-bold text-3xl container">{props.title}</h1>
       </div>
 
-      <div>
+      <div className="container">
         {currentPage === 1 ? (
           <Page1
             setPage={setCurrentPage}
@@ -182,8 +182,6 @@ function Page1({ setPage, values, props, handleChange, setValues }) {
         {props.errors.idKategoriGlobal && <div className="text-red-600">{props.errors.idKategoriGlobal}</div>}
       </div>
 
-
-
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
           <label>Thumbnail Produk (wajib)</label>
@@ -202,6 +200,8 @@ function Page1({ setPage, values, props, handleChange, setValues }) {
           </div>
         </div>
       </div>
+
+      <textarea className="w-full h-48" id="deskripsi" onChange={handleChange} value={values.deskripsi} />
 
       <button onClick={() => setPage(2)} className="bg-sky-400 text-white rounded-lg p-2 mt-5">Selanjutnya</button>
     </div>
@@ -526,5 +526,5 @@ function Page3({ setPage, forms, setForms, values, rupiah, props }) {
 }
 
 
-Create2.layout = (page) => <Main children={page} />
+// Create2.layout = (page) => <Main children={page} />
 export default Create2;

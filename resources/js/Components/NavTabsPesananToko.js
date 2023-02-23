@@ -10,11 +10,11 @@ export default function NavTabsPesananToko() {
         {/* <li className="mr-2">
           <Link href="/toko/pesanan/konfirmasi-bayar" className="inline-block p-4 rounded-t-lg hover:text-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 dark:hover:text-gray-300">Konfirmasi Bayar</Link>
         </li> */}
-        <li className="mr-2">
+        {/* <li className="mr-2">
           <Link href="/toko/pesanan/dikemas" className="inline-block p-4 rounded-t-lg hover:text-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 dark:hover:text-gray-300">Dikemas</Link>
-        </li>
+        </li> */}
         <li className="mr-2">
-          <Link href="/toko/pesanan/dikirim" className="inline-block p-4 rounded-t-lg hover:text-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 dark:hover:text-gray-300">Di kirim</Link>
+          <Link href="/toko/pesanan/dikirim" className="inline-block p-4 rounded-t-lg hover:text-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 dark:hover:text-gray-300">Dikirim</Link>
         </li>
         <li className="mr-2">
           <Link href="/toko/pesanan/sampai" className="inline-block p-4 rounded-t-lg hover:text-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 dark:hover:text-gray-300">Sampai</Link>

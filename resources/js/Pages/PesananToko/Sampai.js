@@ -1,10 +1,23 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Main from "@/Components/TokoTemplate/Main";
 import Input from "@/Components/Input";
-import { Link } from "@inertiajs/react";
+import { Head, Link } from "@inertiajs/react";
 import NavTabsPesananToko from "@/Components/NavTabsPesananToko";
 
-const PesananBaru = () => {
+const PesananBaru = (props) => {
+
+  const [rinciOrder, setRinciOrder] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(0);
+  console.log(rinciOrder);
+
+  useEffect(() => {
+    axios.get(`/api/data-pesanan-sampai?page=${currentPage}`).then((response) => {
+      setRinciOrder(response.data.data);
+      setTotalPages(response.data.last_page);
+    });
+  }, [currentPage]);
+
   return (
     <>
       <div>
@@ -12,6 +25,7 @@ const PesananBaru = () => {
       </div>
       <div>
         <NavTabsPesananToko />
+        <Head title={props.title} />
 
         <div className="overflow-x-auto relative shadow-md sm:rounded-lg mt-3">
           <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
@@ -24,7 +38,7 @@ const PesananBaru = () => {
                   Nama pemesan
                 </th>
                 <th scope="col" className="py-3 px-6">
-                  Status bayar
+                  Metode bayar
                 </th>
                 <th scope="col" className="py-3 px-6">
                   Status pesan
@@ -38,29 +52,40 @@ const PesananBaru = () => {
               </tr>
             </thead>
             <tbody>
-              <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-                <th scope="row" className="py-4 px-6 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                  PS-20319313814
-                </th>
-                <th scope="row" className="py-4 px-6 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                  Ardianto
-                </th>
-                <td className="py-4 px-6">
-                  Sudah Bayar
-                </td>
-                <td className="py-4 px-6">
-                  Dikemas
-                </td>
-                <td className="py-4 px-6">
-                  Selabaya RT 2/5, Kalimanah, Purbalingga.
-                </td>
-                <td className="py-4 px-6">
-                  Putra
-                </td>
-                <td className="py-4 px-6">
-                  <Link href="#" className="font-medium bg-blue-500 text-white mx-1 p-2 rounded-md">Detail</Link>
-                </td>
-              </tr>
+              {rinciOrder ? (
+                <>
+                  {rinciOrder.map((data, i) => {
+                    return (
+                      <>
+                        <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                          <th scope="row" className="py-4 px-6 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                            {data.noFaktur}
+                          </th>
+                          <th scope="row" className="py-4 px-6 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                            {data.namaCustomer}
+                          </th>
+                          <td className="py-4 px-6">
+                            {data.metodeBayar}
+                          </td>
+                          <td className="py-4 px-6">
+                            {data.statusOrder}
+                          </td>
+                          <td className="py-4 px-6">
+                            {data.alamatPengiriman}
+                          </td>
+                          <td className="py-4 px-6">
+                            <Link href="#" className="font-medium bg-blue-500 text-white mx-1 p-2 rounded-md">Detail</Link>
+                          </td>
+                        </tr>
+                      </>
+                    )
+                  })}
+                </>
+              ) : (
+                <>
+                  <th colSpan={6} className="text-center">Tidak ada barang sampai</th>
+                </>
+              )}
             </tbody>
           </table>
         </div>

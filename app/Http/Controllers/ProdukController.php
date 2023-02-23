@@ -114,11 +114,11 @@ class ProdukController extends Controller
       'slug' => Str::slug($request->input('values.namaProduk')),
       'idKategori' => $request->input('values.idKategori'),
       'idKategoriGlobal' => $request->input('values.idKategoriGlobal'),
-      'deskripsi' => $request->input('values.satuan'),
-      'jenisHarga' => $request->input('values.jenisHarga'),
+      'deskripsi' => $request->input('values.deskripsi'),
+      'jenisHarga' => $request->input('values.jenisHarga') ?? '',
       'terjual' => 0,
-      'imgName' => $image->public_id,
-      'imgUrl' => $image->url,
+      'imgName' => $image->public_id ?? '',
+      'imgUrl' => $image->url ?? '',
       'idToko' => $toko->id,
     ]);
     // dd($id);
