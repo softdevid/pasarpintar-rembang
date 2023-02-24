@@ -15,15 +15,15 @@ class CreateOrdersTable extends Migration
   {
     Schema::create('orders', function (Blueprint $table) {
       $table->id();
+      $table->foreignId('idUser');
+      $table->string('namaCustomer');
+      $table->string('email');
+      $table->string('noHp');
+      $table->text('alamatPengiriman');
       $table->string('noFaktur');
-      $table->foreignId('idToko');
-      $table->foreignId('idProduk');
-      $table->foreignId('idHarga');
-      $table->string('namaProduk');
-      $table->bigInteger('hrgBeli');
-      $table->bigInteger('hrgJual');
-      $table->bigInteger('jumlah');
       $table->date('tglOrder');
+      $table->string('statusBayar');  //belum bayar. sudah bayar
+      $table->string('metodeBayar'); //cod
       $table->timestamps();
     });
   }

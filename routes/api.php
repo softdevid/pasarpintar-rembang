@@ -30,6 +30,7 @@ Route::get('/api/data-produk', [ProdukController::class, 'dataProduk']);
 Route::get('/api/data-pesanan-baru', [OrderController::class, 'dataPesananBaru']);
 Route::get('/api/data-pesanan-dikirim', [OrderController::class, 'dataDikirim']);
 Route::get('/api/data-pesanan-sampai', [OrderController::class, 'dataSampai']);
+Route::get('/api/data-pesanan-dibatalkan', [OrderController::class, 'dataDibatalkan']);
 
 //validation produk step
 Route::post('/validate-step-1', [ValidateProdukController::class, 'validate1']);

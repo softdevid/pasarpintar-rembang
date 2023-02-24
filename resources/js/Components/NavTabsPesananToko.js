@@ -19,6 +19,9 @@ export default function NavTabsPesananToko() {
         <li className="mr-2">
           <Link href="/toko/pesanan/sampai" className="inline-block p-4 rounded-t-lg hover:text-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 dark:hover:text-gray-300">Sampai</Link>
         </li>
+        <li className="mr-2">
+          <Link href="/toko/pesanan/dibatalkan" className="inline-block p-4 rounded-t-lg hover:text-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 dark:hover:text-gray-300">Dibatalkan</Link>
+        </li>
       </ul>
 
     </>

@@ -32,25 +32,19 @@ class OrderController extends Controller
     ]);
   }
 
+  public function dibatalkan()
+  {
+    return Inertia::render('PesananToko/Dibatalkan', [
+      'title' => 'Dibatalkan',
+    ]);
+  }
+
   // JSON DATA
   public function dataPesananBaru()
   {
     $toko = Toko::where('idUser', auth()->user()->id)->select('id')->first();
     $rinciOrder = RinciOrder::where(['idToko' => $toko->id, 'statusOrder' => 'diproses'])->get();
     return response()->json(['rinciOrder' => $rinciOrder]);
-
-    // $toko = Toko::where('idUser', auth()->user()->id)->select('id')->first();
-    // $rinciOrder = RinciOrder::with(['toko' => function ($q) {
-    //   $q->select('id', 'slug as slugToko', 'namaToko');
-    // }, 'orders' => function ($q) {
-    //   $q->select('orders.*')->orderBy('created_at', 'asc');
-    // }])->select(
-    //   'rinci_orders.*',
-    // )->orderBy('created_at', 'desc')
-    //   ->where(['idToko' => $toko->id, 'statusOrder' => 'diproses'])
-    //   ->get();
-
-    // return response()->json($rinciOrder);
   }
 
   public function dataDikirim()
@@ -64,6 +58,13 @@ class OrderController extends Controller
   {
     $toko = Toko::where('idUser', auth()->user()->id)->select('id')->first();
     $rinciOrder = RinciOrder::where(['idToko' => $toko->id, 'statusOrder' => 'sampai'])->get();
+    return response()->json(['rinciOrder' => $rinciOrder]);
+  }
+
+  public function dataDibatalkan()
+  {
+    $toko = Toko::where('idUser', auth()->user()->id)->select('id')->first();
+    $rinciOrder = RinciOrder::where(['idToko' => $toko->id, 'statusOrder' => 'dibatalkan'])->get();
     return response()->json(['rinciOrder' => $rinciOrder]);
   }
 

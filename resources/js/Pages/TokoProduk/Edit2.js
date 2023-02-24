@@ -7,29 +7,32 @@ import * as Yup from 'yup';
 
 // import DOMPurify from 'dompurify';
 
-const Create2 = (props) => {
+const Edit2 = (props) => {
+  console.log(props);
   const [values, setValues] = useState({
-    namaProduk: "",
-    idKategori: "",
-    idKategoriGlobal: "",
-    deskripsi: "",
-    jenisHarga: "",
-    url: "",
-    public_id: ""
+    id: props.produk.id,
+    namaProduk: props.produk.namaProduk,
+    idKategori: props.produk.idKategori,
+    idKategoriGlobal: props.produk.idKategoriGlobal,
+    deskripsi: props.produk.deskripsi,
+    jenisHarga: props.produk.jenisHarga,
+    url: props.produk.imgUrl,
+    public_id: props.produk.imgName,
   })
 
-  const [forms, setForms] = useState([
-    {
-      namaHarga: "",
-      hrgBeli: "",
-      hrgJual: "",
-      stokGudang: "",
-      stokToko: "",
-      jenisHarga: "",
-      url: "",
-      public_id: "",
-    }
-  ]);
+  const [forms, setForms] = useState(props.produk.hargas.map((form) => {
+    return {
+      id: form.id,
+      namaHarga: form.namaHarga,
+      hrgBeli: form.hrgBeli,
+      hrgJual: form.hrgJual,
+      stokGudang: form.stokGudang,
+      stokToko: form.stokToko,
+      jenisHarga: form.jenisHarga,
+      url: form.imgUrl,
+      public_id: form.imgName,
+    };
+  }));
 
   function handleChange(e) {
     setValues(values => ({
@@ -46,19 +49,7 @@ const Create2 = (props) => {
   }
 
   const closeVariasiAktif = (publicId) => {
-    router.post("/delete-image-variasi-inaktive", { forms });
-    setForms([
-      {
-        namaHarga: "",
-        hrgBeli: "",
-        hrgJual: "",
-        stokGudang: "",
-        stokToko: "",
-        jenisHarga: "",
-        url: "",
-        public_id: "",
-      }
-    ]);
+    router.post("/delete-image-variasi-inaktive-edit", { forms });
     setVariasiAktif(false);
   }
 
@@ -187,19 +178,17 @@ function Page1({ setPage, values, props, handleChange, setValues }) {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
           <label>Thumbnail Produk (wajib)</label>
-          {props.image < 1 &&
+          {props.image < 1 ? (
             <button onClick={() => uploadImageUtama()} className="w-full bg-white p-1 border-black border rounded-md">Upload gambar</button>
+          ) : (
+            <>
+              <div className="grid grid-cols-4 gap-4">
+                <img src={values.url} className="max-w-md max-h-32" />
+                <button onClick={() => deleteImage({ publicId: values.public_id })}>Hapus</button>
+              </div>
+            </>
+          )
           }
-          <div className="grid grid-cols-4 gap-4">
-            {props.image.map((data, i) => {
-              return (
-                <div key={i}>
-                  <img src={data.url} className="max-w-md max-h-32" />
-                  <button onClick={() => deleteImage({ publicId: data.public_id })}>Hapus</button>
-                </div>
-              )
-            })}
-          </div>
         </div>
       </div>
 
@@ -209,20 +198,13 @@ function Page1({ setPage, values, props, handleChange, setValues }) {
       </div>
 
       <button onClick={() => setPage(2)} className="bg-sky-400 text-white rounded-lg p-2 mt-5">Selanjutnya</button>
-    </div>
+    </div >
   );
 }
 
 function Page2({ setPage, props, forms, setForms, handleChange, values, variasiAktif, closeVariasiAktif, handleVariasiAktif, rupiah }) {
 
   const [formError, setFormErrors] = useState("");
-
-  const schema = Yup.object().shape({
-    hrgBeli: Yup.number().required('Harga beli harus diisi.'),
-    hrgJual: Yup.number().required('Harga jual harus diisi.'),
-    stokToko: Yup.number().required('Stok toko harus diisi.'),
-    stokGudang: Yup.number().required('Stok gudang harus diisi.'),
-  });
 
   const handleSubmit = () => {
     router.post("/toko/produk", { values, forms })
@@ -282,40 +264,128 @@ function Page2({ setPage, props, forms, setForms, handleChange, values, variasiA
 
   return (
     <>
-      <div>
-        <div className="flex my-3">
-          <div className="">
-            <label>Jenis Varian</label>
-            <input placeholder="Jenis Varian. misal warna" id="jenisHarga" className="bg-white w-full rounded-md p-2 border border-black"
-              onChange={handleChange} value={values.jenisHarga} />
-            {props.errors.jenisHarga && <div className="text-red-600">{props.errors.jenisHarga}</div>}
-            <button className="bg-sky-600 text-white p-2 rounded-lg my-3" onClick={addForm}>Add option</button>
+      {variasiAktif ? (
+        <button onClick={closeVariasiAktif} className="bg-red-600 text-white hover:bg-red-700 p-2 rounded-lg">Nonaktif variasi</button>
+      ) : (
+        <button onClick={handleVariasiAktif} className="bg-green-500 text-white p-2 rounded-lg">Aktifkan variasi</button>
+      )}
+
+      {variasiAktif ? (
+        <>
+
+          <div>
+            <div className="flex my-3">
+              <div className="">
+                <label>Jenis Varian</label>
+                <input placeholder="Jenis Varian. misal warna" id="jenisHarga" className="bg-white w-full rounded-md p-2 border border-black"
+                  onChange={handleChange} value={values.jenisHarga} />
+                {props.errors.jenisHarga && <div className="text-red-600">{props.errors.jenisHarga}</div>}
+                <button className="bg-sky-600 text-white p-2 rounded-lg my-3" onClick={addForm}>Add option</button>
+              </div>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-5 gap-8">
+              {forms.map((form, index) => (
+                <div key={index}>
+                  <div className="my-5 mx-2">
+                    <div>
+                      <label>Nama Varian</label><br />
+                      <div className="flex items-center">
+                        <div className="relative w-full">
+                          <input
+                            type="text"
+                            name="namaHarga" className="p-2 rounded-md block w-full pl-10"
+                            value={form.namaHarga}
+                            onChange={(event) => handleChangeOption(event, index)} />
+                          {/* <input type="text" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Search" required></input> */}
+                        </div>
+                        {index > 0 &&
+                          <button onClick={() => removeForm(index, { publicId: form.public_id })} className="p-2 text-sm font-medium text-white bg-red-500 rounded-lg">
+                            Hapus</button>
+                        }
+                      </div>
+                      {/* {errors.forms[0].hrgBeli} */}
+                    </div>
+                    <div className="mt-2">
+                      <label>Pilih gambar</label><br />
+                      {!form.url ? (
+                        <PlusIcon name="url" onClick={(event) => uploadImages(event, index)} className="w-10 h-10 cursor-pointer bg-white border-black border rounded-md" />
+                      ) : (
+                        <>
+                          <div className="grid grid-cols-3 md:grid-cols-12 gap-8">
+                            <div className="mt-2">
+                              <img src={form.url} className="max-w-[128px] max-h-32" />
+                              <button onClick={() => deleteImage({ publicId: form.public_id }, index)}>Hapus</button>
+                            </div>
+                          </div>
+                        </>
+                      )
+                      }
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-5 gap-8">
+        </>
+      ) : (
+        <>
           {forms.map((form, index) => (
             <div key={index}>
-              <div className="my-5 mx-2">
-                <div>
-                  <label>Nama Varian</label><br />
-                  <div className="flex items-center">
-                    <div className="relative w-full">
-                      <input
-                        type="text"
-                        name="namaHarga" className="p-2 rounded-md block w-full pl-10"
-                        value={form.namaHarga}
-                        onChange={(event) => handleChangeOption(event, index)} />
-                      {/* <input type="text" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Search" required></input> */}
-                    </div>
-                    {index > 0 &&
-                      <button onClick={() => removeForm(index, { publicId: form.public_id })} className="p-2 text-sm font-medium text-white bg-red-500 rounded-lg">
-                        Hapus</button>
-                    }
-                  </div>
-                  {/* {errors.forms[0].hrgBeli} */}
+              <div className="grid gap-8 grid-cols-2 md:grid-cols-5 my-5">
+                <div className="hidden md:hidden">
+                  <label>Nama Varian</label>
+                  <input
+                    type="text"
+                    name="namaHarga" className="w-full rounded-md"
+                    value="utama"
+                    onChange={(event) => handleChangeOption(event, index)} disabled />
                 </div>
-                <div className="mt-2">
-                  <label>Pilih gambar</label><br />
+                <div>
+                  <label>Harga Beli</label>
+                  <input
+                    type="number"
+                    name="hrgBeli"
+                    value={form.hrgBeli} className="w-full rounded-md"
+                    onChange={(event) => handleChangeOption(event, index)}
+                  />
+                  {rupiah(form.hrgBeli)}
+                  {formError.hrgBeli && <p className="text-red-500">{formError.hrgBeli}</p>}
+                </div>
+                <div>
+                  <label>Harga Jual</label>
+                  <input
+                    type="number"
+                    name="hrgJual"
+                    value={form.hrgJual} className="w-full rounded-md"
+                    onChange={(event) => handleChangeOption(event, index)}
+                  />
+                  {rupiah(form.hrgJual)}
+                  {formError.hrgJual && <p className="text-red-500">{formError.hrgJual}</p>}
+                </div>
+                <div>
+                  <label>Stok Gudang</label>
+                  <input
+                    type="number"
+                    name="stokGudang"
+                    placeholder="stok yang tidak ditampilkan olshop"
+                    value={form.stokGudang} className="w-full rounded-md"
+                    onChange={(event) => handleChangeOption(event, index)}
+                  />
+                  {formError.stokGudang && <p className="text-red-500">{formError.stokGudang}</p>}
+                </div>
+                <div>
+                  <label>Stok Toko</label>
+                  <input
+                    type="number"
+                    name="stokToko"
+                    placeholder="stok yang akan ditampilkan olshop"
+                    value={form.stokToko} className="w-full rounded-md"
+                    onChange={(event) => handleChangeOption(event, index)}
+                  />
+                  {formError.stokToko && <p className="text-red-500">{formError.stokToko}</p>}
+                </div>
+                <div>
+                  <label>Pilih gambar (tidak wajib)</label><br />
                   {!form.url ? (
                     <PlusIcon name="url" onClick={(event) => uploadImages(event, index)} className="w-10 h-10 cursor-pointer bg-white border-black border rounded-md" />
                   ) : (
@@ -329,16 +399,24 @@ function Page2({ setPage, props, forms, setForms, handleChange, values, variasiA
                     </>
                   )
                   }
+
+
                 </div>
               </div>
             </div>
           ))}
-        </div>
-      </div>
+        </>
+      )}
+
       {/* <p dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(props.auth.user.name) }} /> */}
 
       <button onClick={() => setPage(1)} className="bg-gray-500 text-white rounded-lg p-2 mt-5">Sebelumnya</button>
-      <button onClick={() => setPage(3)} className="bg-sky-400 text-white rounded-lg p-2 mt-5 ml-3">Selanjutnya</button>
+      {variasiAktif ? (
+        <button onClick={() => setPage(3)} className="bg-sky-400 text-white rounded-lg p-2 mt-5 ml-3">Selanjutnya</button>
+      ) : (
+        <button onClick={() => handleSubmit()} className="p-2 bg-blue-500 text-white rounded-lg ml-3">Simpan</button>
+      )
+      }
     </>
   );
 }
@@ -356,7 +434,7 @@ function Page3({ setPage, forms, setForms, values, rupiah, props }) {
   // console.log(errors);
 
   const handleSubmit = () => {
-    router.post("/toko/produk", { values, forms })
+    router.patch("/toko/produk/update", { values, forms })
   }
 
   // const props = props;
@@ -364,34 +442,13 @@ function Page3({ setPage, forms, setForms, values, rupiah, props }) {
 
   return (
     <>
-      {props.errors ? (
-        <div class="flex p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400" role="alert">
-          <svg aria-hidden="true" class="flex-shrink-0 inline w-5 h-5 mr-3" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg>
-          <span class="sr-only">Info</span>
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-4 text-center">
-            {props.errors && Object.keys(props.errors).map((key) => (
-              <div key={key}>
-                <span class="font-medium">{props.errors[key]}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-      ) : (
-        <div class="flex p-4 mb-4 text-sm text-blue-800 rounded-lg bg-blue-50 dark:bg-gray-800 dark:text-blue-400" role="alert">
-          <svg aria-hidden="true" class="flex-shrink-0 inline w-5 h-5 mr-3" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg>
-          <span class="sr-only">Info</span>
-          <div>
-            <span class="font-medium">Pastikan semua data terisi</span>
-          </div>
-        </div>
-      )}
-      {/* <div className="grid grid-cols-2 md:grid-cols-5 bg-red-600 text-white">
+      <div className="grid grid-cols-2 md:grid-cols-5 bg-red-600 text-white">
         {props.errors && Object.keys(props.errors).map((key) => (
           <div key={key}>
             <span>{props.errors[key]}</span>
           </div>
         ))}
-      </div> */}
+      </div>
 
 
 
@@ -470,5 +527,5 @@ function Page3({ setPage, forms, setForms, values, rupiah, props }) {
 }
 
 
-// Create2.layout = (page) => <Main children={page} />
-export default Create2;
+// Edit2.layout = (page) => <Main children={page} />
+export default Edit2;

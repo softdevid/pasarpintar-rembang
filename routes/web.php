@@ -95,6 +95,7 @@ Route::get('/toko/produk', [ProdukController::class, 'index'])->name('toko.list'
 Route::get('/toko/produk/{slug}/edit', [ProdukController::class, 'edit'])->name('produk.edit');
 Route::get('/toko/produk/create', [ProdukController::class, 'create'])->name('produk.create');
 Route::post('/toko/produk', [ProdukController::class, 'store'])->name('produk.store');
+Route::patch('/toko/produk/update', [ProdukController::class, 'update'])->name('produk.update');
 Route::post('/toko/produk/delete', [ProdukController::class, 'destroy'])->name('produk.destroy');
 
 //route toko kategori
@@ -105,13 +106,12 @@ Route::get('/toko/kategori/1/edit', [KategoriController::class, 'edit'])->name('
 Route::post('/toko/kategori', [KategoriController::class, 'store'])->name('kategoriToko.store');
 Route::post('/toko/kategori/delete', [KategoriController::class, 'destroy'])->name('kategoriToko.delete');
 
-//route order toko
+//route order/pesanan toko
 Route::get('/toko/pesanan', [OrderController::class, 'pesananBaru'])->name('pesananBaru');
 Route::get('/toko/pesanan/dikirim', [OrderController::class, 'dikirim'])->name('dikirim');
 Route::get('/toko/pesanan/sampai', [OrderController::class, 'sampai'])->name('sampai');
+Route::get('/toko/pesanan/dibatalkan', [OrderController::class, 'sampai'])->name('dibatalkan');
 
-Route::get('/toko/pesanan/konfirmasi-bayar', [AdminTokoController::class, 'konfirmasiBayar'])->name('konfirmasiBayar');
-Route::get('/toko/pesanan/dikemas', [AdminTokoController::class, 'dikemas'])->name('dikemas');
 
 // route kurir
 Route::get('/toko/kurir', [AdminTokoController::class, 'kurir'])->name('kurir');
@@ -138,6 +138,7 @@ Route::get('/oneWeek', function () {
 Route::post('/image/session', [GambarSementaraController::class, 'insertgbrutama'])->name('gambarUtama');
 Route::post('/image-lainnya/session', [GambarSementaraController::class, 'gbrlain'])->name('gambarLainnya');
 Route::post('/delete-image-variasi-inaktive', [ProdukController::class, 'deleteImageVarian'])->name('deleteImageAllVariant');
+Route::post('/delete-image-variasi-inaktive-edit', [ProdukController::class, 'deleteImageVarianEdit'])->name('deleteImageAllVariantEdit');
 Route::post('/delete-harga', [ProdukController::class, 'deleteHarga'])->name('deleteHarga');
 
 // route autentikasi

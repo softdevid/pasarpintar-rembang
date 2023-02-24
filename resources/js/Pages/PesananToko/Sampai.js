@@ -4,7 +4,7 @@ import Input from "@/Components/Input";
 import { Head, Link } from "@inertiajs/react";
 import NavTabsPesananToko from "@/Components/NavTabsPesananToko";
 
-const PesananBaru = (props) => {
+const Sampai = (props) => {
 
   const [rinciOrder, setRinciOrder] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -95,6 +95,6 @@ const PesananBaru = (props) => {
   );
 };
 
-PesananBaru.layout = (page) => <Main children={page} />;
+Sampai.layout = (page) => <Main children={page} />;
 
-export default PesananBaru;
+export default Sampai;

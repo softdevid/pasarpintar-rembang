@@ -4,7 +4,7 @@ import Input from "@/Components/Input";
 import { Head, Link } from "@inertiajs/react";
 import NavTabsPesananToko from "@/Components/NavTabsPesananToko";
 
-const Dikirim = (props) => {
+const Dibatalkan = (props) => {
 
   const [rinciOrder, setRinciOrder] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -12,7 +12,7 @@ const Dikirim = (props) => {
   console.log(rinciOrder);
 
   useEffect(() => {
-    axios.get(`/api/data-pesanan-dikirim?page=${currentPage}`).then((response) => {
+    axios.get(`/api/data-pesanan-dibatalkan?page=${currentPage}`).then((response) => {
       setRinciOrder(response.data.data);
       setTotalPages(response.data.last_page);
     });
@@ -83,7 +83,7 @@ const Dikirim = (props) => {
                 </>
               ) : (
                 <>
-                  <th colSpan={6} className="text-center">Tidak yang dikirim</th>
+                  <th colSpan={6} className="text-center">Tidak yang dibatalkan</th>
                 </>
               )}
             </tbody>
@@ -95,6 +95,6 @@ const Dikirim = (props) => {
   );
 };
 
-Dikirim.layout = (page) => <Main children={page} />;
+Dibatalkan.layout = (page) => <Main children={page} />;
 
-export default Dikirim;
+export default Dibatalkan;
