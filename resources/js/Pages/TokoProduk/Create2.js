@@ -385,13 +385,6 @@ function Page3({ setPage, forms, setForms, values, rupiah, props }) {
           </div>
         </div>
       )}
-      {/* <div className="grid grid-cols-2 md:grid-cols-5 bg-red-600 text-white">
-        {props.errors && Object.keys(props.errors).map((key) => (
-          <div key={key}>
-            <span>{props.errors[key]}</span>
-          </div>
-        ))}
-      </div> */}
 
 
 
@@ -470,5 +463,5 @@ function Page3({ setPage, forms, setForms, values, rupiah, props }) {
 }
 
 
-// Create2.layout = (page) => <Main children={page} />
+Create2.layout = (page) => <Main children={page} />
 export default Create2;

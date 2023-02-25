@@ -15,16 +15,16 @@ class Trigger extends Migration
   public function up()
   {
     DB::unprepared(
-      'CREATE TRIGGER `updateStok` AFTER INSERT ON `orders`
+      'CREATE TRIGGER `updateStok` AFTER INSERT ON `rinci_orders`
          FOR EACH ROW BEGIN
-            UPDATE hargas set stokToko = stokToko - NEW.jumlah where id = NEW.idHarga;
+            UPDATE hargas set stokToko = stokToko - NEW.qty where id = NEW.idHarga AND statusOrder = "dikirim";
         END'
     );
 
     DB::unprepared(
-      'CREATE TRIGGER `updateTotalStokToko` AFTER INSERT ON `orders`
+      'CREATE TRIGGER `updateTotalStokToko` AFTER INSERT ON `rinci_orders`
          FOR EACH ROW BEGIN
-            UPDATE produks set totalStokToko = totalStokToko - NEW.jumlah where id = NEW.idProduk;
+            UPDATE produks set totalStokToko = totalStokToko - NEW.qty where id = NEW.idProduk AND statusOrder = "dikirim";
         END'
     );
 

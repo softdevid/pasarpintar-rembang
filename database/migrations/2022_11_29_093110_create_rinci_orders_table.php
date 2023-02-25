@@ -35,6 +35,6 @@ class CreateRinciOrdersTable extends Migration
    */
   public function down()
   {
-    Schema::dropIfExists('order_rincian');
+    Schema::dropIfExists('rinci_orders');
   }
 }

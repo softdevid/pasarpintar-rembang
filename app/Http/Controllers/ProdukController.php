@@ -9,6 +9,7 @@ use App\Models\Kategori;
 use App\Models\KategoriGlobal;
 use App\Models\Produk;
 use App\Models\Toko;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
@@ -334,6 +335,19 @@ class ProdukController extends Controller
     } else {
       Cloudinary::destroy($request->input('id.publicId'));
       return back()->with('message', 'Hapus Harga Berhasil');
+    }
+  }
+
+
+  public function updateProductDiscountStatus()
+  {
+    $products = Harga::where('tglAkhirDiskon', '<', Carbon::now())->get();
+
+    foreach ($products as $product) {
+      $product->diskon = 0;
+      $product->tglAwalDiskon = null;
+      $product->tglAkhirDiskon = null;
+      $product->save();
     }
   }
 }
