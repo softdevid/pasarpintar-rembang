@@ -5,7 +5,9 @@ namespace Database\Seeders;
 use App\Models\Toko;
 use App\Models\User;
 use App\Models\Harga;
+use App\Models\Order;
 use App\Models\Produk;
+use App\Models\RinciOrder;
 use Illuminate\Support\Str;
 use Illuminate\Database\Seeder;
 
@@ -60,8 +62,34 @@ class DatabaseSeeder extends Seeder
       'statusToko' => 'premium',
     ]);
 
+
     User::factory(20)->has(Toko::factory()->count(1), 'toko')->create();
     Produk::factory(100)->create();
     Harga::factory(200)->create();
+
+
+    // Order::create([
+    //   'idUser' => 3,
+    //   'namaCustomer' => 'Software Store',
+    //   'email' => 'softdev@gmail.com',
+    //   'noHp' => '088888888888',
+    //   'alamatPengiriman' => 'Pluto',
+    //   'noFaktur' => '12345',
+    //   'tglOrder' => '2023-02-02',
+    //   'statusBayar' => 'sudah bayar',
+    //   'metodeBayar' => 'cod',
+    // ]);
+
+    // RinciOrder::create([
+    //   'idOrder' => 1,
+    //   'idToko' => 1,
+    //   'idProduk' => 1,
+    //   'idHarga' => 1,
+    //   'hrgJual' => 2000,
+    //   'hrgDiskon' => 0,
+    //   'qty' => 1,
+    //   'statusOrder' => 'diterima',
+    //   'alasanPembatalan' => '-',
+    // ]);
   }
 }
