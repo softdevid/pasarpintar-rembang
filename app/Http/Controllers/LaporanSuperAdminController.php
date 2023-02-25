@@ -126,6 +126,7 @@ class LaporanSuperAdminController extends Controller
 
         $toko = Toko::where('id', $request->id)->first();
 
+        $toko = $request->id;
         $date = $request->year;
         $laporan = RinciOrder::where('idToko', $toko)
             ->whereYear('tglOrder', $date)

@@ -18,10 +18,11 @@ const Main = (props) => {
   };
 
   return (
-    <div className="flex">
+    <div className="flex overflow-auto">
       <div
-        className={` ${open ? "w-72" : "w-20 "
-          } bg-dark-purple h-screen p-5  pt-8 relative duration-300`}
+        className={` ${
+          open ? "w-72" : "w-20 "
+        } bg-dark-purple h-screen p-5  pt-8 relative duration-300`}
       >
         <img
           src="/img/control.png"
@@ -32,12 +33,14 @@ const Main = (props) => {
         <div className="flex gap-x-4 items-center">
           <img
             src="/img/logo.png"
-            className={`cursor-pointer duration-500 ${open && "rotate-[360deg]"
-              }`}
+            className={`cursor-pointer duration-500 ${
+              open && "rotate-[360deg]"
+            }`}
           />
           <h1
-            className={`text-white origin-left font-medium text-xl duration-200 ${!open && "scale-0"
-              }`}
+            className={`text-white origin-left font-medium text-xl duration-200 ${
+              !open && "scale-0"
+            }`}
           >
             Admin PasarPintar
           </h1>
