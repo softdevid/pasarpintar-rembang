@@ -24,6 +24,7 @@ class CreateRinciOrdersTable extends Migration
       $table->bigInteger('qty');
       $table->string('statusOrder');  //diproses, dikirim, diterima, dibatalkan
       $table->text('alasanPembatalan')->nullable();
+      $table->date('tglOrder');
       $table->timestamps();
     });
   }

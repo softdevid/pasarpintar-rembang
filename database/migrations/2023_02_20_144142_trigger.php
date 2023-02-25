@@ -17,14 +17,14 @@ class Trigger extends Migration
     DB::unprepared(
       'CREATE TRIGGER `updateStok` AFTER INSERT ON `rinci_orders`
          FOR EACH ROW BEGIN
-            UPDATE hargas set stokToko = stokToko - NEW.qty where id = NEW.idHarga AND statusOrder = "dikirim";
+            UPDATE hargas set stokToko = stokToko - NEW.qty where id = NEW.idHarga AND NEW.statusOrder = "dikirim";
         END'
     );
 
     DB::unprepared(
       'CREATE TRIGGER `updateTotalStokToko` AFTER INSERT ON `rinci_orders`
          FOR EACH ROW BEGIN
-            UPDATE produks set totalStokToko = totalStokToko - NEW.qty where id = NEW.idProduk AND statusOrder = "dikirim";
+            UPDATE produks set totalStokToko = totalStokToko - NEW.qty where id = NEW.idProduk AND NEW.statusOrder = "dikirim";
         END'
     );
 

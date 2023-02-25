@@ -24,6 +24,7 @@ class CreateOrdersTable extends Migration
       $table->date('tglOrder');
       $table->string('statusBayar');  //belum bayar. sudah bayar
       $table->string('metodeBayar'); //cod
+      $table->integer('biayaAdmin')->default(0); //cod
       $table->timestamps();
     });
   }

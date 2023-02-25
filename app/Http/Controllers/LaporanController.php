@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Inertia\Inertia;
 use App\Models\RinciOrder;
 use App\Models\Toko;
+use Illuminate\Support\Facades\DB;
 
 class LaporanController extends Controller
 {
@@ -80,23 +81,35 @@ class LaporanController extends Controller
   {
     $request->validate(['year' => 'required'], ['year.required' => 'Tahun harus dipilih']);
 
-    $toko = Toko::where('idUser', auth()->user()->id)->select('id')->first();
+    $toko = Toko::where('idUser', auth()->user()->id)->select('id', 'namaToko')->first();
 
     $date = $request->year;
-    $laporan = Order::whereYear('tglOrder', $date)
-      ->where('idToko', $toko->id)
+    // $laporan = RinciOrder::whereYear('tglOrder', $date)
+    //   ->where('idToko', $toko->id)
+    //   ->get();
+
+    $laporan =  DB::table('rinci_orders')
+      ->join('produks', 'rinci_orders.idProduk', '=', 'produks.id')
+      ->join('hargas', 'rinci_orders.idHarga', '=', 'hargas.id')
+      ->join('orders', 'rinci_orders.idOrder', '=', 'orders.id')
+      ->select('produks.namaProduk', 'hargas.hrgBeli', 'rinci_orders.*', 'orders.biayaAdmin')
+      ->where('rinci_orders.idToko', $toko->id)
+      ->whereYear('rinci_orders.tglOrder', $date)
       ->get();
+    // dd($laporan);
 
     $omset = 0;
     foreach ($laporan as $key => $value) {
-      $omset += $value['hrgJual'] * $value['jumlah'];
+      $omset += ($value->hrgJual + $value->hrgDiskon + $value->biayaAdmin) * $value->qty;
     }
+    // dd($omset);
 
     return Inertia::render('LaporanToko/LaporanTahunan', [
       'title' => 'Laporan Harian',
       'laporan' => $laporan,
       'date' => $date,
       'omset' => $omset,
+      'toko' => $toko,
     ]);
   }
 }

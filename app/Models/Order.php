@@ -19,4 +19,9 @@ class Order extends Model
   {
     return $this->hasMany(RinciOrder::class, 'idOrder', 'id');
   }
+
+  public function produk()
+  {
+    return $this->hasOne(Produk::class, 'id', 'idProduk');
+  }
 }
