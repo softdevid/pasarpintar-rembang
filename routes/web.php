@@ -26,11 +26,12 @@ Route::get('/produk-acak', [HomeController::class, 'produkAcak'])->name('produk.
 Route::get('/cari', [SearchController::class, 'search'])->name('pencarian');
 Route::get('/kategori/{kategoriGlobal:slug}', [HomeController::class, 'kategori'])->name('kategori');
 
-Route::get('/user/orders', [UserController::class, 'orders'])->name('user.orders');
 Route::middleware('auth',)->group(function () {
 
   // route user
   Route::get('/user/profile', [UserController::class, 'profile'])->name('user.profile');
+  Route::get('/user/orders', [UserController::class, 'orders'])->name('user.orders');
+  Route::get('/user/orders/detail', [UserController::class, 'orderDetail'])->name('user.order.detail');
 
   // route keranjang
   Route::get('/cart', [KeranjangController::class, 'index'])->name('cart.index');

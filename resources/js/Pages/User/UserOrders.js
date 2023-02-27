@@ -3,11 +3,11 @@ import Main from "@/Layouts/Main";
 import UserLayout from "@/Layouts/UserLayout";
 import { Tab } from "@headlessui/react";
 import { BuildingStorefrontIcon } from "@heroicons/react/20/solid";
-import { Head } from "@inertiajs/react";
+import { Head, router } from "@inertiajs/react";
+import axios from "axios";
 import React, { Fragment, useEffect, useState } from "react";
 
 const UserOrders = ({ title, orders }) => {
-  // console.log(orders);
   const [orderan, setOrderan] = useState({});
 
   useEffect(() => {
@@ -28,7 +28,12 @@ const UserOrders = ({ title, orders }) => {
     });
   }, []);
 
-  console.log(orderan);
+  const toDetailOrder = (param) => {
+
+    router.get("/user/orders/detail", {
+      rinciId: param.data.rinciId.join(","),
+    });
+  };
 
   return (
     <>
@@ -56,7 +61,7 @@ const UserOrders = ({ title, orders }) => {
               {ord.map(([ordId, ordData]) =>
                 Object.entries(ordData).map(([toko, produks], i) => (
                   <div className="bg-white pt-6 p-3" key={i}>
-                    <div className="flex justify-start items-center pb-3 border-b border-slate-200">
+                    <div className="flex justify-between items-center pb-3 border-b border-slate-200">
                       <div className="flex items-center whitespace-nowrap">
                         <div className="text-slate-600 text-sm font-semibold overflow-hidden text-ellipsis">
                           {toko}
@@ -67,6 +72,25 @@ const UserOrders = ({ title, orders }) => {
                             <span className="text-xs">Kunjungi Toko</span>
                           </button>
                         </div>
+                      </div>
+                      <div
+                        className="mr-3 text-sm cursor-pointer"
+                        onClick={() =>
+                          toDetailOrder(
+                            produks.reduce((acc, curr) => {
+                              const { rinciId = [] } = acc["data"] || {
+                                rinciId: [],
+                              };
+                              rinciId.push(curr.id);
+                              return {
+                                ...acc,
+                                data: { rinciId },
+                              };
+                            }, {})
+                          )
+                        }
+                      >
+                        Lihat detail >>>
                       </div>
                     </div>
                     {produks.map((produk, i) => (
@@ -95,7 +119,7 @@ const UserOrders = ({ title, orders }) => {
                           </div>
                         </div>
                         <div className="text-right flex">
-                          {produk.harga.hrgDiskon >= 0 ? (
+                          {produk.harga.hrgDiskon ? (
                             <>
                               <span className="align-middle text-sm line-through mr-3">
                                 <FormatRupiah
@@ -124,7 +148,7 @@ const UserOrders = ({ title, orders }) => {
                     ))}
                     <div className="flex flex-col items-end justify-center mt-3 pt-3 border-t border-slate-200">
                       <div className="flex space-x-8">
-                        <div className="">Subtotal</div>
+                        <div className="">Total</div>
                         <div className="">
                           <FormatRupiah
                             value={

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Order;
 use App\Models\RinciOrder;
+use App\Models\Toko;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -35,7 +36,7 @@ class UserController extends Controller
       ]
     )
       ->whereHas('order', function ($q) {
-        return $q->where('idUser', 2);
+        return $q->where('idUser', auth()->id());
       })
       ->get()
       ->sortByDesc(function ($item) {
@@ -47,16 +48,6 @@ class UserController extends Controller
               return [
                 'id' => $rinci->id,
                 'idOrder' => $rinci->order->id,
-                'order' => [
-                  'namaCustomer' => $rinci->order->namaCustomer,
-                  'email' => $rinci->order->email,
-                  'noHp' => $rinci->order->noHp,
-                  'alamatPengiriman' => $rinci->order->alamatPengiriman,
-                  'noFaktur' => $rinci->order->noFaktur,
-                  'tglOrder' => $rinci->order->tglOrder,
-                  'statusBayar' => $rinci->order->statusBayar,
-                  'metodeBayar' => $rinci->order->metodeBayar,
-                ],
                 'toko' => [
                   'namaToko' => $rinci->toko->namaToko,
                   'slug' => $rinci->toko->slug,
@@ -80,10 +71,65 @@ class UserController extends Controller
         });
       });
 
-    // return response()->json($rinciOrder);
     return Inertia::render('User/UserOrders', [
       "title" => "Pesanan User",
       "orders" => $rinciOrder,
+    ]);
+  }
+
+  public function orderDetail(Request $request)
+  {
+
+    $order = Order::whereHas('rinciOrder', function ($q) use ($request) {
+      $q->whereIn('id', explode(',', $request->rinciId));
+    })->get();
+
+    $rinciOrder = RinciOrder::with(
+      [
+        'produk' => function ($q) {
+          $q->select('id', 'namaProduk', 'slug');
+        },
+        'produk.toko' => function ($q) {
+          $q->select('id', 'namaToko', 'slug');
+        },
+        'harga' => function ($q) {
+          $q->select('id', 'jenisHarga', 'namaHarga', 'hrgJual', 'imgName', 'imgUrl', 'diskon');
+        }
+      ]
+    )->whereIn('id', explode(',', $request->rinciId))
+      ->get()
+      ->sortByDesc(function ($item) {
+        return $item->id;
+      })->groupBy('toko.namaToko')->map(function ($namaToko) {
+        return $namaToko->map(function ($rinci) {
+          return [
+            'id' => $rinci->id,
+            'idOrder' => $rinci->order->id,
+            'toko' => [
+              'namaToko' => $rinci->toko->namaToko,
+              'slug' => $rinci->toko->slug,
+            ],
+            'produk' => [
+              'namaProduk' => $rinci->produk->namaProduk,
+              'slug' => $rinci->produk->slug,
+            ],
+            'harga' => [
+              'idHarga' => $rinci->idHarga,
+              'namaHarga' => $rinci->harga->namaHarga,
+              'hrgJual' => $rinci->hrgJual,
+              'hrgDiskon' => $rinci->hrgDiskon,
+              'imgName' => $rinci->harga->imgName,
+              'imgUrl' => $rinci->harga->imgUrl,
+            ],
+            'qty' => $rinci->qty
+          ];
+        });
+      });
+
+    return Inertia::render('User/UserOrderDetail', [
+      "title" => "Detail Pesanan User",
+      "order" => $order[0],
+      "rinciOrder" => $rinciOrder
     ]);
   }
 }
