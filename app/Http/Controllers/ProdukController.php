@@ -237,6 +237,7 @@ class ProdukController extends Controller
       'idToko' => $toko->id,
     ]);
 
+    // $dataHarga = Harga::whereIn('id', $request->input('forms.id'))->get();
     foreach ($request->input('forms') as $value) {
       Harga::where('id', $value['id'])
         ->update([
@@ -291,6 +292,20 @@ class ProdukController extends Controller
     }
   }
 
+  public function deleteImageEdit(Request $request)
+  {
+    if ($request->publicId) {
+      Cloudinary::destroy($request->publicId);
+      $harga = Harga::where('id', $request->id)->first();
+      $harga->update(['imgName' => null, 'imgUrl' => null]);
+      return back()->with('message', 'Berhasil dihapus');
+    } else {
+      $harga = Harga::where('id', $request->id)->first();
+      $harga->update(['imgName' => null, 'imgUrl' => null]);
+      return back()->with('message', 'Berhasil dihapus');
+    }
+  }
+
   public function deleteImageVarian(Request $request)
   {
     $forms = $request->input('forms');
@@ -328,12 +343,13 @@ class ProdukController extends Controller
   public function deleteHarga(Request $request)
   {
     // dd($request->all());
-    $harga = Harga::where('id', $request->input('id.id'))->first();
-    $harga->delete();
-    if ($request->input('id.publicId') === null) {
+    $harga = Harga::where('id', $request->input('id'))->first();
+    if ($request->input('publicId') === null) {
+      $harga->delete();
       return back()->with('message', 'Hapus Harga Berhasil');
     } else {
-      Cloudinary::destroy($request->input('id.publicId'));
+      Cloudinary::destroy($request->input('publicId'));
+      $harga->delete();
       return back()->with('message', 'Hapus Harga Berhasil');
     }
   }

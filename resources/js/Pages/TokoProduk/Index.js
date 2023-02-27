@@ -18,7 +18,7 @@ const Index = (props) => {
   const [produk, setProducts] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
-  console.log(produk);
+  // console.log(produk);
 
   useEffect(() => {
     axios.get(`/api/data-produk?page=${currentPage}`).then((response) => {
@@ -40,7 +40,6 @@ const Index = (props) => {
   const handleShow = (data) => {
     setDataShow(data);
     setShowAktif(true);
-    // console.log(dataShow);
   }
 
   const handleCloseShow = () => {

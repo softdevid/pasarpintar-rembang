@@ -15,7 +15,16 @@ class LaporanController extends Controller
   {
     $toko = Toko::where('idUser', auth()->user()->id)->select('id')->first();
 
-    $rinciOrder = RinciOrder::where('idToko', $toko->id)->latest()->paginate(10)->withQueryString();
+    // $rinciOrder = RinciOrder::where('idToko', $toko->id)->latest()->paginate(10)->withQueryString();
+    $rinciOrder =  DB::table('rinci_orders')
+      ->join('produks', 'rinci_orders.idProduk', '=', 'produks.id')
+      ->join('hargas', 'rinci_orders.idHarga', '=', 'hargas.id')
+      ->join('orders', 'rinci_orders.idOrder', '=', 'orders.id')
+      ->select('produks.namaProduk', 'hargas.hrgBeli', 'rinci_orders.*', 'orders.biayaAdmin', 'orders.noFaktur')
+      ->where('rinci_orders.idToko', $toko->id)
+      ->paginate(10);
+    // ->withQueryString()
+    // ->get();
     return Inertia::render('LaporanToko/Index', [
       'title' => 'Laporan Keuangan',
       'rinciOrder' => $rinciOrder,
@@ -31,13 +40,18 @@ class LaporanController extends Controller
     $toko = Toko::where('idUser', auth()->user()->id)->select('id')->first(); //ambil id toko
     $date = date('Y-m-d', strtotime($request->date)); //mengubah format tanggalnya
 
-    $laporan = Order::whereDate('tglOrder', $date) //Select dari order
-      ->where('idToko', $toko->id)
+    $laporan =  DB::table('rinci_orders')
+      ->join('produks', 'rinci_orders.idProduk', '=', 'produks.id')
+      ->join('hargas', 'rinci_orders.idHarga', '=', 'hargas.id')
+      ->join('orders', 'rinci_orders.idOrder', '=', 'orders.id')
+      ->select('produks.namaProduk', 'hargas.hrgBeli', 'rinci_orders.*', 'orders.biayaAdmin')
+      ->where('rinci_orders.idToko', $toko->id)
+      ->whereDate('rinci_orders.tglOrder', $date)
       ->get();
 
     $omset = 0;
     foreach ($laporan as $key => $value) {
-      $omset += $value['hrgJual'] * $value['jumlah'];
+      $omset += ($value->hrgJual + $value->hrgDiskon + $value->biayaAdmin) * $value->qty;
     }
 
     return Inertia::render('LaporanToko/LaporanHarian', [
@@ -57,18 +71,20 @@ class LaporanController extends Controller
     $month = date('m', strtotime($date));
     $year = date('Y', strtotime($date));
 
-    $laporan = Order::whereMonth('tglOrder', $month)
-      ->whereYear('tglOrder', $year)
-      ->where('idToko', $toko->id)
+    $laporan =  DB::table('rinci_orders')
+      ->join('produks', 'rinci_orders.idProduk', '=', 'produks.id')
+      ->join('hargas', 'rinci_orders.idHarga', '=', 'hargas.id')
+      ->join('orders', 'rinci_orders.idOrder', '=', 'orders.id')
+      ->select('produks.namaProduk', 'hargas.hrgBeli', 'rinci_orders.*', 'orders.biayaAdmin')
+      ->where('rinci_orders.idToko', $toko->id)
+      ->whereMonth('rinci_orders.tglOrder', $month)
+      ->whereYear('rinci_orders.tglOrder', $year)
       ->get();
-
-    // dd($laporan);
 
     $omset = 0;
     foreach ($laporan as $key => $value) {
-      $omset += $value['hrgJual'] * $value['jumlah'];
+      $omset += ($value->hrgJual + $value->hrgDiskon + $value->biayaAdmin) * $value->qty;
     }
-
     return Inertia::render('LaporanToko/LaporanBulanan', [
       'title' => 'Laporan Harian',
       'laporan' => $laporan,
@@ -84,9 +100,6 @@ class LaporanController extends Controller
     $toko = Toko::where('idUser', auth()->user()->id)->select('id', 'namaToko')->first();
 
     $date = $request->year;
-    // $laporan = RinciOrder::whereYear('tglOrder', $date)
-    //   ->where('idToko', $toko->id)
-    //   ->get();
 
     $laporan =  DB::table('rinci_orders')
       ->join('produks', 'rinci_orders.idProduk', '=', 'produks.id')
@@ -96,13 +109,11 @@ class LaporanController extends Controller
       ->where('rinci_orders.idToko', $toko->id)
       ->whereYear('rinci_orders.tglOrder', $date)
       ->get();
-    // dd($laporan);
 
     $omset = 0;
     foreach ($laporan as $key => $value) {
       $omset += ($value->hrgJual + $value->hrgDiskon + $value->biayaAdmin) * $value->qty;
     }
-    // dd($omset);
 
     return Inertia::render('LaporanToko/LaporanTahunan', [
       'title' => 'Laporan Harian',

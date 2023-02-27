@@ -128,6 +128,7 @@ Route::get('/toko/laporan/year', [LaporanController::class, 'year'])->name('lapo
 
 //route hapus gambar cloudinary
 Route::post('/delete-image', [ProdukController::class, 'deleteImage'])->name('deleteImage');
+Route::post('/delete-image-edit', [ProdukController::class, 'deleteImageEdit'])->name('deleteImageEdit');
 
 Route::get('/toko/setting', [AdminTokoController::class, 'setting'])->name('toko.setting');
 

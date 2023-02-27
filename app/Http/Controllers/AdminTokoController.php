@@ -17,10 +17,14 @@ class AdminTokoController extends Controller
     $toko = Toko::where('idUser', auth()->user()->id)->select('id')->first();
     $today = RinciOrder::where('idToko', $toko->id)
       ->whereDay('tglOrder', date('Y-m-d'))
-      ->select('total')
+      ->select('hrgJual', 'hrgDiskon', 'qty')
       ->get();
+    $omset = 0;
+    foreach ($today as $t) {
+      $omset += ($t->hrgJual + $t->hrgDiskon) * $t->qty;
+    }
 
-    $totalOrder = RinciOrder::where('statusOrder', 'pesanan-baru')
+    $totalOrder = RinciOrder::where('statusOrder', 'diproses')
       ->where('idToko', $toko->id)
       ->count();
 
@@ -33,74 +37,12 @@ class AdminTokoController extends Controller
 
     return Inertia::render('DashboardToko/Dashboard', [
       "title" => "Admin Toko",
-      'omset' => $today->sum('total'),
+      'omset' => $omset,
       'totalOrder' => $totalOrder,
       'totalKategori' => $totalKategori,
       'totalProduk' => $totalProduk,
       'produk' => $produk,
       'kategori' => $kategori,
-    ]);
-  }
-
-  public function list()
-  {
-    return Inertia::render('TokoProduk', [
-      "title" => "Admin Toko Produk",
-    ]);
-  }
-
-  public function kategori()
-  {
-    return Inertia::render('TokoAdminKategori', [
-      "title" => "Admin Toko Kategori",
-    ]);
-  }
-  public function setting()
-  {
-    return Inertia::render('TokoAdminSetting', [
-      "title" => "Admin Toko Setting",
-    ]);
-  }
-
-  public function pesananBaru()
-  {
-    return Inertia::render('PesananToko/PesananBaru', [
-      'title' => 'Pesanan Baru',
-    ]);
-  }
-
-  public function konfirmasiBayar()
-  {
-    return Inertia::render('PesananToko/KonfirmasiBayar', [
-      'title' => 'Konfirmasi Bayar',
-    ]);
-  }
-
-  public function dikemas()
-  {
-    return Inertia::render('PesananToko/Dikemas', [
-      'title' => 'Dikemas',
-    ]);
-  }
-
-  public function dikirim()
-  {
-    return Inertia::render('PesananToko/Dikirim', [
-      'title' => 'Dikirim',
-    ]);
-  }
-
-  public function sampai()
-  {
-    return Inertia::render('PesananToko/Sampai', [
-      'title' => 'Sampai',
-    ]);
-  }
-
-  public function kurir()
-  {
-    return Inertia::render('KurirToko/KurirToko', [
-      'title' => 'Kurir',
     ]);
   }
 }

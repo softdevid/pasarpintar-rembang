@@ -1,5 +1,5 @@
 import Main from "@/Components/TokoTemplate/Main";
-import { router } from "@inertiajs/react";
+import { Head, router } from "@inertiajs/react";
 import { useState } from "react";
 
 const Index = (props) => {
@@ -35,6 +35,7 @@ const Index = (props) => {
 
   return (
     <>
+      <Head title={props.title} />
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
         <div className="space-y-6">
           <div>
@@ -87,16 +88,25 @@ const Index = (props) => {
                 No Faktur
               </th>
               <th scope="col" className="px-6 py-3">
-                Nama Customer
+                Nama Produk
               </th>
               <th scope="col" className="px-6 py-3">
-                Alamat Pengiriman
+                Harga Jual
+              </th>
+              <th scope="col" className="px-6 py-3">
+                Harga Diskon
+              </th>
+              <th scope="col" className="px-6 py-3">
+                Biaya admin
+              </th>
+              <th scope="col" className="px-6 py-3">
+                Qty
               </th>
               <th scope="col" className="px-6 py-3">
                 Total Harga
               </th>
               <th scope="col" className="px-6 py-3">
-                Total Item
+                Tanggal Order
               </th>
             </tr>
           </thead>
@@ -111,16 +121,25 @@ const Index = (props) => {
                     {data.noFaktur}
                   </td>
                   <td className="px-6 py-4">
-                    {data.namaCustomer}
+                    {data.namaProduk}
                   </td>
                   <td className="px-6 py-4">
-                    {data.alamatPengiriman}
+                    {data.hrgJual}
                   </td>
                   <td className="px-6 py-4">
-                    {formatter.format(data.total)}
+                    {data.hrgDiskon}
                   </td>
                   <td className="px-6 py-4">
-                    {data.totalItem}
+                    {data.biayaAdmin}
+                  </td>
+                  <td className="px-6 py-4">
+                    {data.qty}
+                  </td>
+                  <td className="px-6 py-4">
+                    {formatter.format((data.hrgJual + data.hrgDiskon) + data.qty)}
+                  </td>
+                  <td className="px-6 py-4">
+                    {data.tglOrder}
                   </td>
                 </tr>
               )

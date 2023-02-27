@@ -9,7 +9,7 @@ const Dikirim = (props) => {
   const [rinciOrder, setRinciOrder] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
-  console.log(rinciOrder);
+  // console.log(rinciOrder);
 
   useEffect(() => {
     axios.get(`/api/data-pesanan-dikirim?page=${currentPage}`).then((response) => {

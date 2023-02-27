@@ -6,6 +6,7 @@ use App\Models\Order;
 use App\Models\RinciOrder;
 use App\Models\Toko;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 
 class OrderController extends Controller
@@ -43,28 +44,73 @@ class OrderController extends Controller
   public function dataPesananBaru()
   {
     $toko = Toko::where('idUser', auth()->user()->id)->select('id')->first();
-    $rinciOrder = RinciOrder::where(['idToko' => $toko->id, 'statusOrder' => 'diproses'])->get();
+
+    $rinciOrder = DB::table('rinci_orders')
+      ->join('orders', 'rinci_orders.idOrder', '=', 'orders.id')
+      ->join('produks', 'rinci_orders.idProduk', '=', 'produks.id')
+      ->join('hargas', 'rinci_orders.idHarga', '=', 'hargas.id')
+      ->where('rinci_orders.idToko', $toko->id)
+      ->where('rinci_orders.statusOrder', 'diproses')
+      ->select('orders.*', 'rinci_orders.*', 'produks.namaProduk', 'hargas.*')
+      ->limit(100)
+      ->paginate(10);
+
+    // $rinciOrder = RinciOrder::where(['idToko' => $toko->id, 'statusOrder' => 'diproses'])->get();
     return response()->json(['rinciOrder' => $rinciOrder]);
   }
 
   public function dataDikirim()
   {
     $toko = Toko::where('idUser', auth()->user()->id)->select('id')->first();
-    $rinciOrder = RinciOrder::where(['idToko' => $toko->id, 'statusOrder' => 'dikirim'])->get();
+    $rinciOrder = DB::table('rinci_orders')
+      ->join('orders', 'rinci_orders.idOrder', '=', 'orders.id')
+      ->join('produks', 'rinci_orders.idProduk', '=', 'produks.id')
+      ->join('hargas', 'rinci_orders.idHarga', '=', 'hargas.id')
+      ->where('rinci_orders.idToko', $toko->id)
+      ->where('rinci_orders.statusOrder', 'dikirim')
+      ->select('orders.*', 'rinci_orders.*', 'produks.namaProduk', 'hargas.*')
+      ->limit(100)
+      ->paginate(10);
+
+    // $rinciOrder = RinciOrder::where(['idToko' => $toko->id, 'statusOrder' => 'dikirim'])->get();
     return response()->json(['rinciOrder' => $rinciOrder]);
   }
 
   public function dataSampai()
   {
     $toko = Toko::where('idUser', auth()->user()->id)->select('id')->first();
-    $rinciOrder = RinciOrder::where(['idToko' => $toko->id, 'statusOrder' => 'sampai'])->get();
-    return response()->json(['rinciOrder' => $rinciOrder]);
+
+    $rinciOrder = DB::table('rinci_orders')
+      ->join('orders', 'rinci_orders.idOrder', '=', 'orders.id')
+      ->join('produks', 'rinci_orders.idProduk', '=', 'produks.id')
+      ->join('hargas', 'rinci_orders.idHarga', '=', 'hargas.id')
+      ->where('rinci_orders.idToko', $toko->id)
+      ->where('rinci_orders.statusOrder', 'diterima')
+      ->select('orders.*', 'rinci_orders.*', 'produks.namaProduk', 'hargas.*')
+      ->limit(100)
+      ->paginate(10);
+
+    // dd($rinciOrder);
+
+    // $rinciOrder = RinciOrder::where(['idToko' => $toko->id, 'statusOrder' => 'diterima'])->get();
+    return response()->json($rinciOrder);
   }
 
   public function dataDibatalkan()
   {
     $toko = Toko::where('idUser', auth()->user()->id)->select('id')->first();
-    $rinciOrder = RinciOrder::where(['idToko' => $toko->id, 'statusOrder' => 'dibatalkan'])->get();
+
+    $rinciOrder = DB::table('rinci_orders')
+      ->join('orders', 'rinci_orders.idOrder', '=', 'orders.id')
+      ->join('produks', 'rinci_orders.idProduk', '=', 'produks.id')
+      ->join('hargas', 'rinci_orders.idHarga', '=', 'hargas.id')
+      ->where('rinci_orders.idToko', $toko->id)
+      ->where('rinci_orders.statusOrder', 'diterima')
+      ->select('orders.*', 'rinci_orders.*', 'produks.namaProduk', 'hargas.*')
+      ->limit(100)
+      ->paginate(10);
+
+    // $rinciOrder = RinciOrder::where(['idToko' => $toko->id, 'statusOrder' => 'dibatalkan'])->get();
     return response()->json(['rinciOrder' => $rinciOrder]);
   }
 

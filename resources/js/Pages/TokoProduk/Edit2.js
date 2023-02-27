@@ -203,9 +203,6 @@ function Page1({ setPage, values, props, handleChange, setValues }) {
 }
 
 function Page2({ setPage, props, forms, setForms, handleChange, values, variasiAktif, closeVariasiAktif, handleVariasiAktif, rupiah }) {
-
-  const [formError, setFormErrors] = useState("");
-
   const handleSubmit = () => {
     router.post("/toko/produk", { values, forms })
   }
@@ -221,8 +218,8 @@ function Page2({ setPage, props, forms, setForms, handleChange, values, variasiA
     setForms([...forms, { namaHarga: "", hrgBeli: "", hrgJual: "", stokGudang: "", stokToko: "" }]);
   };
 
-  const removeForm = (index, publicId) => {
-    router.post('/delete-image', publicId);
+  const removeForm = ({ index, publicId, id }) => {
+    router.post('/delete-harga', { publicId, id });
     setForms(forms.filter((_, i) => i !== index));
   };
 
@@ -254,8 +251,8 @@ function Page2({ setPage, props, forms, setForms, handleChange, values, variasiA
     myWidget.open();
   }
 
-  const deleteImage = (publicId, index) => {
-    router.post('/delete-image', publicId);
+  const deleteImage = ({ publicId, index, id }) => {
+    router.post('/delete-image-edit', { publicId, id });
     const newOptions = [...forms];
     newOptions[index].url = "";
     newOptions[index].public_id = "";
@@ -264,128 +261,40 @@ function Page2({ setPage, props, forms, setForms, handleChange, values, variasiA
 
   return (
     <>
-      {variasiAktif ? (
-        <button onClick={closeVariasiAktif} className="bg-red-600 text-white hover:bg-red-700 p-2 rounded-lg">Nonaktif variasi</button>
-      ) : (
-        <button onClick={handleVariasiAktif} className="bg-green-500 text-white p-2 rounded-lg">Aktifkan variasi</button>
-      )}
-
-      {variasiAktif ? (
-        <>
-
-          <div>
-            <div className="flex my-3">
-              <div className="">
-                <label>Jenis Varian</label>
-                <input placeholder="Jenis Varian. misal warna" id="jenisHarga" className="bg-white w-full rounded-md p-2 border border-black"
-                  onChange={handleChange} value={values.jenisHarga} />
-                {props.errors.jenisHarga && <div className="text-red-600">{props.errors.jenisHarga}</div>}
-                <button className="bg-sky-600 text-white p-2 rounded-lg my-3" onClick={addForm}>Add option</button>
-              </div>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-5 gap-8">
-              {forms.map((form, index) => (
-                <div key={index}>
-                  <div className="my-5 mx-2">
-                    <div>
-                      <label>Nama Varian</label><br />
-                      <div className="flex items-center">
-                        <div className="relative w-full">
-                          <input
-                            type="text"
-                            name="namaHarga" className="p-2 rounded-md block w-full pl-10"
-                            value={form.namaHarga}
-                            onChange={(event) => handleChangeOption(event, index)} />
-                          {/* <input type="text" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Search" required></input> */}
-                        </div>
-                        {index > 0 &&
-                          <button onClick={() => removeForm(index, { publicId: form.public_id })} className="p-2 text-sm font-medium text-white bg-red-500 rounded-lg">
-                            Hapus</button>
-                        }
-                      </div>
-                      {/* {errors.forms[0].hrgBeli} */}
-                    </div>
-                    <div className="mt-2">
-                      <label>Pilih gambar</label><br />
-                      {!form.url ? (
-                        <PlusIcon name="url" onClick={(event) => uploadImages(event, index)} className="w-10 h-10 cursor-pointer bg-white border-black border rounded-md" />
-                      ) : (
-                        <>
-                          <div className="grid grid-cols-3 md:grid-cols-12 gap-8">
-                            <div className="mt-2">
-                              <img src={form.url} className="max-w-[128px] max-h-32" />
-                              <button onClick={() => deleteImage({ publicId: form.public_id }, index)}>Hapus</button>
-                            </div>
-                          </div>
-                        </>
-                      )
-                      }
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
+      <div>
+        <div className="flex my-3">
+          <div className="">
+            <label>Jenis Varian</label>
+            <input placeholder="Jenis Varian. misal warna" id="jenisHarga" className="bg-white w-full rounded-md p-2 border border-black"
+              onChange={handleChange} value={values.jenisHarga} />
+            {props.errors.jenisHarga && <div className="text-red-600">{props.errors.jenisHarga}</div>}
+            <button className="bg-sky-600 text-white p-2 rounded-lg my-3" onClick={addForm}>Add option</button>
           </div>
-        </>
-      ) : (
-        <>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-8">
           {forms.map((form, index) => (
             <div key={index}>
-              <div className="grid gap-8 grid-cols-2 md:grid-cols-5 my-5">
-                <div className="hidden md:hidden">
-                  <label>Nama Varian</label>
-                  <input
-                    type="text"
-                    name="namaHarga" className="w-full rounded-md"
-                    value="utama"
-                    onChange={(event) => handleChangeOption(event, index)} disabled />
-                </div>
+              <div className="my-5 mx-2">
                 <div>
-                  <label>Harga Beli</label>
-                  <input
-                    type="number"
-                    name="hrgBeli"
-                    value={form.hrgBeli} className="w-full rounded-md"
-                    onChange={(event) => handleChangeOption(event, index)}
-                  />
-                  {rupiah(form.hrgBeli)}
-                  {formError.hrgBeli && <p className="text-red-500">{formError.hrgBeli}</p>}
+                  <label>Nama Varian</label><br />
+                  <div className="flex items-center">
+                    <div className="relative w-full">
+                      <input
+                        type="text"
+                        name="namaHarga" className="p-2 rounded-md block w-full pl-10"
+                        value={form.namaHarga}
+                        onChange={(event) => handleChangeOption(event, index)} />
+                      {/* <input type="text" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Search" required></input> */}
+                    </div>
+                    {index > 0 &&
+                      <button onClick={() => removeForm({ index, publicId: form.public_id, id: form.id })} className="p-2 text-sm font-medium text-white bg-red-500 rounded-lg">
+                        Hapus</button>
+                    }
+                  </div>
+                  {/* {errors.forms[0].hrgBeli} */}
                 </div>
-                <div>
-                  <label>Harga Jual</label>
-                  <input
-                    type="number"
-                    name="hrgJual"
-                    value={form.hrgJual} className="w-full rounded-md"
-                    onChange={(event) => handleChangeOption(event, index)}
-                  />
-                  {rupiah(form.hrgJual)}
-                  {formError.hrgJual && <p className="text-red-500">{formError.hrgJual}</p>}
-                </div>
-                <div>
-                  <label>Stok Gudang</label>
-                  <input
-                    type="number"
-                    name="stokGudang"
-                    placeholder="stok yang tidak ditampilkan olshop"
-                    value={form.stokGudang} className="w-full rounded-md"
-                    onChange={(event) => handleChangeOption(event, index)}
-                  />
-                  {formError.stokGudang && <p className="text-red-500">{formError.stokGudang}</p>}
-                </div>
-                <div>
-                  <label>Stok Toko</label>
-                  <input
-                    type="number"
-                    name="stokToko"
-                    placeholder="stok yang akan ditampilkan olshop"
-                    value={form.stokToko} className="w-full rounded-md"
-                    onChange={(event) => handleChangeOption(event, index)}
-                  />
-                  {formError.stokToko && <p className="text-red-500">{formError.stokToko}</p>}
-                </div>
-                <div>
-                  <label>Pilih gambar (tidak wajib)</label><br />
+                <div className="mt-2">
+                  <label>Pilih gambar</label><br />
                   {!form.url ? (
                     <PlusIcon name="url" onClick={(event) => uploadImages(event, index)} className="w-10 h-10 cursor-pointer bg-white border-black border rounded-md" />
                   ) : (
@@ -393,30 +302,22 @@ function Page2({ setPage, props, forms, setForms, handleChange, values, variasiA
                       <div className="grid grid-cols-3 md:grid-cols-12 gap-8">
                         <div className="mt-2">
                           <img src={form.url} className="max-w-[128px] max-h-32" />
-                          <button onClick={() => deleteImage({ publicId: form.public_id }, index)}>Hapus</button>
+                          <button onClick={() => deleteImage({ publicId: form.public_id, id: form.id, index })}>Hapus</button>
                         </div>
                       </div>
                     </>
                   )
                   }
-
-
                 </div>
               </div>
             </div>
           ))}
-        </>
-      )}
+        </div>
+      </div>
 
       {/* <p dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(props.auth.user.name) }} /> */}
-
       <button onClick={() => setPage(1)} className="bg-gray-500 text-white rounded-lg p-2 mt-5">Sebelumnya</button>
-      {variasiAktif ? (
-        <button onClick={() => setPage(3)} className="bg-sky-400 text-white rounded-lg p-2 mt-5 ml-3">Selanjutnya</button>
-      ) : (
-        <button onClick={() => handleSubmit()} className="p-2 bg-blue-500 text-white rounded-lg ml-3">Simpan</button>
-      )
-      }
+      <button onClick={() => setPage(3)} className="bg-sky-400 text-white rounded-lg p-2 mt-5 ml-3">Selanjutnya</button>
     </>
   );
 }
@@ -428,17 +329,9 @@ function Page3({ setPage, forms, setForms, values, rupiah, props }) {
     setForms(newForms);
   };
 
-  // const [errors, setErrors] = useState([props.errors]);
-  // const { errors } = usePage().props;
-  // const errors = Object.reduce(props.errors.forms.hrgBeli);
-  // console.log(errors);
-
   const handleSubmit = () => {
     router.patch("/toko/produk/update", { values, forms })
   }
-
-  // const props = props;
-
 
   return (
     <>
@@ -456,12 +349,7 @@ function Page3({ setPage, forms, setForms, values, rupiah, props }) {
         <div className="grid grid-cols-1 gap-8">
           {forms.map((form, index) => (
             <div key={index}>
-              {/* {Object.keys(props.errors.forms[index]).map((field, i) => (
-                <p key={i} className="text-red-500">{props.errors.forms[index][field].split(': ')[1]}</p>
-              ))} */}
-
-
-              <div className="my-5 grid grid-cols-2 md:grid-cols-5 gap-8">
+              <div className="grid grid-cols-2 md:grid-cols-5 gap-8">
                 <div>
                   <label>Nama Varian</label>
                   <input

@@ -12,21 +12,33 @@ class DashboardTokoController extends Controller
   public function today()
   {
     $date = date('Y-m-d', strtotime(Carbon::now()));
-    $data = RinciOrder::whereDay(['updated_at' => $date, 'idToko' => auth()->user()->id])->sum('total');
+    $dataRinciOrder = RinciOrder::whereDay(['tglOrder' => $date, 'idToko' => auth()->user()->id])->get();
+    $data = 0;
+    foreach ($dataRinciOrder as $r) {
+      $data += ($r->hrgJual + $r->hrgDiskon) * $r->qty;
+    }
     return;
   }
 
   public function month()
   {
     $date = date('Y-m', strtotime(Carbon::now()));
-    $data = RinciOrder::whereDay(['updated_at' => $date, 'idToko' => auth()->user()->id])->sum('total');
+    $dataRinciOrder = RinciOrder::whereDay(['tglOrder' => $date, 'idToko' => auth()->user()->id])->get();
+    $data = 0;
+    foreach ($dataRinciOrder as $r) {
+      $data += ($r->hrgJual + $r->hrgDiskon) * $r->qty;
+    }
     return;
   }
 
   public function year()
   {
     $date = date('Y', strtotime(Carbon::now()));
-    $data = RinciOrder::whereDay(['updated_at' => $date, 'idToko' => auth()->user()->id])->sum('total');
+    $dataRinciOrder = RinciOrder::whereDay(['tglOrder' => $date, 'idToko' => auth()->user()->id])->get();
+    $data = 0;
+    foreach ($dataRinciOrder as $r) {
+      $data += ($r->hrgJual + $r->hrgDiskon) * $r->qty;
+    }
     return;
   }
 
