@@ -24,12 +24,13 @@ use Inertia\Inertia;
 Route::get('/', [HomeController::class, 'index'])->name('index');
 Route::get('/produk-acak', [HomeController::class, 'produkAcak'])->name('produk.acak');
 Route::get('/cari', [SearchController::class, 'search'])->name('pencarian');
+Route::get('/kategori/{kategoriGlobal:slug}', [HomeController::class, 'kategori'])->name('kategori');
 
+Route::get('/user/orders', [UserController::class, 'orders'])->name('user.orders');
 Route::middleware('auth',)->group(function () {
 
   // route user
   Route::get('/user/profile', [UserController::class, 'profile'])->name('user.profile');
-  Route::get('/user/orders', [UserController::class, 'orders'])->name('user.orders');
 
   // route keranjang
   Route::get('/cart', [KeranjangController::class, 'index'])->name('cart.index');
@@ -146,4 +147,5 @@ require __DIR__ . '/auth.php';
 require __DIR__ . '/api.php';
 
 Route::get('/{toko:slug}', [HomeController::class, 'toko'])->name('toko');
+Route::get('/{toko:slug}/semua-produk', [HomeController::class, 'semuaProduk'])->name('produk.semua');
 Route::get('/{toko:slug}/{produk:slug}', [HomeController::class, 'produk'])->name('toko.produk')->scopeBindings();

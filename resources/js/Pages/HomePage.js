@@ -7,13 +7,13 @@ import ProdukLaris from "@/Components/HomePage/ProdukLaris";
 import ProdukPromo from "@/Components/HomePage/ProdukPromo";
 import ProdukAcak from "@/Components/HomePage/ProdukAcak";
 
-const HomePage = ({ title, produk }) => {
+const HomePage = ({ title, kategori, produks }) => {
   return (
     <div className="space-y-3">
       <Head title={title} />
       <Carousel />
-      <Kategori />
-      <ProdukLaris produk={produk.produkTerlaris} />
+      <Kategori kategori={kategori} />
+      <ProdukLaris produk={produks.produkTerlaris} />
       {/* <ProdukPromo /> */}
       <ProdukAcak />
     </div>

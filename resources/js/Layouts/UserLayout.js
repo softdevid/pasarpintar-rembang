@@ -11,7 +11,6 @@ import React from "react";
 
 const UserLayout = ({ children}) => {
   const props = usePage().props;
-  console.log(props)
   return (
     <div className="container flex my-5 px-3">
       <div className="w-44 flex-shrink-0 divide-y hidden lg:block">
@@ -21,27 +20,27 @@ const UserLayout = ({ children}) => {
             <div className="mb-1 text-ellipsis">{props.auth.user.name}</div>
           </div>
         </div>
-        <div className="pt-4 space-y-3">
+        <div className="pt-4 space-y-4">
           <div className="relative">
             <Link
               as="button"
               href="/user/profile"
               className="flex items-center"
             >
-              <UserIcon className="h-5 w-5 mr-2 text-slate-400" />
-              <span className="text-xs">Profil</span>
+              <UserIcon className="h-7 w-7 mr-2 text-slate-400" />
+              <span className="text-base">Profil</span>
             </Link>
           </div>
           <div className="relative">
             <Link as="button" href="/user/orders" className="flex items-center">
-              <ClipboardDocumentListIcon className="h-5 w-5 mr-2 text-slate-400" />
-              <span className="text-xs">Pesanan</span>
+              <ClipboardDocumentListIcon className="h-7 w-7 mr-2 text-slate-400" />
+              <span className="text-base">Pesanan</span>
             </Link>
           </div>
           <div className="relative">
-            <Link as="button" href="/logout" className="flex items-center">
-              <ArrowLeftOnRectangleIcon className="h-5 w-5 mr-2 text-slate-400" />
-              <span className="text-xs">LogOut</span>
+            <Link as="button" href="/logout" method="post" className="flex items-center">
+              <ArrowLeftOnRectangleIcon className="h-7 w-7 mr-2 text-slate-400" />
+              <span className="text-base">LogOut</span>
             </Link>
           </div>
         </div>

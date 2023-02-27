@@ -14,9 +14,7 @@ class SearchController extends Controller
 
     $produk = Produk::with(['toko' => function ($q) {
       $q->select('id', 'slug as slugToko');
-    }, 'hargas' => function ($q) {
-      $q->select('idProduk', 'hrgJual')->orderBy('hrgJual', 'asc');
-    }])->select(
+    }, 'hargaTerkecil:id,idProduk,hrgJual'])->select(
       'produks.id',
       'produks.idToko',
       'produks.namaProduk',

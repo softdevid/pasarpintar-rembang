@@ -8,6 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 class Harga extends Model
 {
   use HasFactory;
+  use \Staudenmeir\EloquentEagerLimit\HasEagerLimit;
+
   protected $guarded = ['id'];
 
   public function produk()

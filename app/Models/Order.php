@@ -10,18 +10,13 @@ class Order extends Model
   use HasFactory;
   protected $guarded = ['id'];
 
-  public function toko()
+  public function user()
   {
-    return $this->belongsTo(Toko::class, 'idToko', 'id');
+    return $this->belongsTo(User::class, 'idUser', 'id');
   }
 
   public function rinciOrder()
   {
     return $this->hasMany(RinciOrder::class, 'idOrder', 'id');
-  }
-
-  public function produk()
-  {
-    return $this->hasOne(Produk::class, 'id', 'idProduk');
   }
 }

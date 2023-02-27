@@ -87,17 +87,18 @@ const ProdukDetail = ({ images, produk, toko, user }) => {
     });
   };
 
-  const tambahKeranjang = (idProduk, idToko, qty, harga, diskon) => {
+  const tambahKeranjang = (idProduk, idToko, qty, harga) => {
     if (harga.idHarga != 0) {
+      const data = {
+        idProduk,
+        qty,
+        idHarga: harga.idHarga,
+        idToko,
+        subtotal: qty * harga.hargaJual,
+      };
+      console.log(data);
       axios
-        .post("/cart-add", {
-          idProduk,
-          qty,
-          idHarga: harga.idHarga,
-          idToko,
-          diskon,
-          subtotal: qty * harga.hargaJual,
-        })
+        .post("/cart-add", data)
         .then((res) => {
           notify(res.data.data);
           updateJumlahKeranjang();
@@ -111,8 +112,6 @@ const ProdukDetail = ({ images, produk, toko, user }) => {
       context.setCartCount(res.data.cartCount);
     });
   };
-
-  console.log(harga);
 
   return (
     <>
@@ -158,7 +157,7 @@ const ProdukDetail = ({ images, produk, toko, user }) => {
               </div>
             </div>
             <div className="inline-block mb-2 text-2xl lg:text-3xl font-semibold text-slate-800">
-              {active === false ? (
+              {active === false && produk.hargas.length !== 0 ? (
                 <span className="mr-2 flex justify-start items-center">
                   <FormatRupiah value={`${produk.hargas[0].hrgJual}000`} />
                   {" ~ "}
@@ -252,8 +251,7 @@ const ProdukDetail = ({ images, produk, toko, user }) => {
                           produk.idProduk,
                           produk.idToko,
                           qty,
-                          harga,
-                          produk.diskon
+                          harga
                         )
                       }
                       className="relative w-full inline-flex items-center justify-center p-0.5 mb-2 mr-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-teal-300 to-sky-400 group-hover:from-cyan-500 group-hover:to-blue-500 hover:text-slate-900 focus:ring-4 focus:outline-none focus:ring-cyan-200"

@@ -20,9 +20,7 @@ class CreateKeranjangDetailsTable extends Migration
       $table->foreignId('idHarga');
       $table->foreignId('idToko');
       $table->integer('qty');
-      $table->double('diskon', 12, 2)->default(0);
-      $table->double('subtotal', 12, 2)->default(0);
-      $table->string('status_produk')->default('keranjang');
+      $table->integer('subtotal')->default(0);
       $table->timestamps();
     });
   }

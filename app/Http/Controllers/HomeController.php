@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\KategoriGlobal;
 use App\Models\Keranjang;
 use App\Models\Order;
 use App\Models\Produk;
@@ -29,11 +30,33 @@ class HomeController extends Controller
       ->limit(10)
       ->get();
 
+    $kategori = KategoriGlobal::select('namaKategoriGlobal', 'slug')->get();
+
     return Inertia::render('HomePage', [
       "title" => "HomePage",
-      "produk" => [
+      "kategori" => $kategori,
+      "produks" => [
         "produkTerlaris" => $produkTerlaris
       ],
+    ]);
+  }
+
+  public function kategori(Request $request, KategoriGlobal $kategoriGlobal)
+  {
+    $produks = $kategoriGlobal->produks()->with(['toko' => function ($q) {
+      $q->select('id', 'slug as slugToko');
+    }, 'hargaTerkecil:id,idProduk,hrgJual'])->select(
+      'produks.id',
+      'produks.idToko',
+      'produks.namaProduk',
+      'produks.slug as slugProduk',
+      'produks.terjual',
+      'produks.imgUrl',
+    )->get();
+
+    return Inertia::render('Pencarian', [
+      "query" => $kategoriGlobal->namaKategoriGlobal,
+      "hasil" => $produks
     ]);
   }
 
@@ -68,8 +91,7 @@ class HomeController extends Controller
           ->select('id', 'idProduk', 'namaHarga', 'hrgJual', 'stokToko', 'diskon', 'tglAwalDiskon', 'tglAkhirDiskon', 'imgName', 'imgUrl')
           ->orderBy('hrgJual', 'asc')
           ->get()
-          ->toArray()
-
+          ->toArray() ?? [0]
       ],
       "images" => [
         [
@@ -79,6 +101,8 @@ class HomeController extends Controller
         ...$produk->hargas()->select('imgName', 'imgUrl')->orderBy('hrgJual', 'asc')->get()->toArray(),
       ]
     ];
+
+    // dd($dataProduk);
     return Inertia::render('Produk', $dataProduk);
   }
 
@@ -93,20 +117,56 @@ class HomeController extends Controller
       'produks.slug as slugProduk',
       'produks.terjual',
       'produks.imgUrl',
-    )->orderBy('terjual', 'desc')->limit(200)
+    )->latest()->limit(200)
       ->paginate(18);
   }
 
   public function toko(Toko $toko)
   {
+    $produkTerlaris = $toko
+      ->select('id', 'slug as slugToko')->where('slug', $toko->slug)
+      ->with([
+        'produks' => fn ($q) => $q->select(
+          'produks.id',
+          'produks.idToko',
+          'produks.namaProduk',
+          'produks.slug as slugProduk',
+          'produks.terjual',
+          'produks.imgUrl',
+        )->orderBy('terjual', 'desc')->limit(10),
+        'produks.hargaTerkecil:id,idProduk,hrgJual'
+      ])->get();
+
     return Inertia::render('Toko', [
       "toko" => [
         "namaToko" => $toko->namaToko,
+        "slug" => $toko->slug,
         "namaPengelola" => $toko->namaPengelola,
         "noHp" => $toko->noHp,
         "alamat" => $toko->alamat
+      ],
+      "produks" => [
+        "produkLaris" => $produkTerlaris,
       ]
     ]);
+  }
+
+  public function semuaProduk(Toko $toko)
+  {
+    return Produk::with(
+      [
+        'toko' => fn ($q) => $q->select('id', 'slug as slugToko'),
+        'hargaTerkecil:id,idProduk,hrgJual'
+      ]
+    )->select(
+      'produks.id',
+      'produks.idToko',
+      'produks.namaProduk',
+      'produks.slug as slugProduk',
+      'produks.terjual',
+      'produks.imgUrl',
+    )->where('produks.idToko', $toko->id)->latest()->limit(200)
+      ->paginate(18);
   }
 
   public function checkout(Request $request)
@@ -138,12 +198,12 @@ class HomeController extends Controller
             "imgUrl" => $item->pivot->produk->imgUrl,
           ],
           "qty" => $item->pivot->qty,
-          "diskon" => $item->pivot->diskon,
           "harga" => [
             "namaHarga" => $item->pivot->harga->namaHarga,
             "hrgJual" => $item->pivot->harga->hrgJual,
             "hrgBeli" => $item->pivot->harga->hrgBeli,
             "stokToko" => $item->pivot->harga->stokToko,
+            "diskon" => $item->pivot->harga->diskon,
           ],
         ],
       ];
@@ -167,43 +227,35 @@ class HomeController extends Controller
   {
 
     $authUser = auth()->user()->id;
-
     $keranjang = Keranjang::where('idUser', $authUser)->latest()->first();
 
-    $timestamp = Carbon::now()->getPreciseTimestamp(0);
+    Order::create([
+      "idUser" => $authUser,
+      "namaCustomer" => $request->recipient['nama'],
+      "email" => $request->recipient['email'],
+      "noHp" => $request->recipient['noHp'],
+      "alamatPengiriman" => $request->recipient['alamat'],
+      "noFaktur" => date("Y-m-d H:i:s") . '=N' . Order::count() + 1,
+      "tglOrder" => date("Y-m-d H:i:s"),
+      "statusBayar" => "belum bayar",
+      "metodeBayar" => $request->payment,
+      "biayaAdmin" => 1000,
+    ]);
 
     foreach ($request->produks as $produk) {
       $keranjang->produks()->wherePivot('idHarga', $produk['idHarga'])->detach($produk['idProduk']);
 
-      $order = new Order;
-      $order->noFaktur = $timestamp;
-      $order->idToko = $produk['idToko'];
-      $order->idProduk = $produk['idProduk'];
-      $order->idHarga = $produk['idHarga'];
-      $order->namaProduk = $produk['namaProduk'];
-      $order->hrgBeli = $produk['hrgBeli'];
-      $order->hrgJual = $produk['hrgJual'];
-      $order->jumlah = $produk['qty'];
-      $order->tglOrder = date("Y-m-d H:i:s");
-      $order->save();
-
-      $rinciOrder = new RinciOrder;
-      $rinciOrder->idUser = $authUser;
-      $rinciOrder->namaCustomer = $request->recipient['nama'];
-      $rinciOrder->email = $request->recipient['email'];
-      $rinciOrder->noHp = $request->recipient['noHp'];
-      $rinciOrder->alamatPengiriman = $request->recipient['alamat'];
-      $rinciOrder->idToko = $produk['idToko'];
-      $rinciOrder->idProduk = $produk['idProduk'];
-      $rinciOrder->idHarga = $produk['idHarga'];
-      $rinciOrder->noFaktur = $timestamp;
-      $rinciOrder->total = $produk['subtotal'];
-      $rinciOrder->totalItem = $produk['qty'];
-      $rinciOrder->tglOrder = date("Y-m-d H:i:s");
-      $rinciOrder->statusBayar = "Belum dibayar";
-      $rinciOrder->statusOrder = "Diproses";
-      $rinciOrder->metodeBayar = $request->payment;
-      $rinciOrder->save();
+      RinciOrder::create([
+        "idOrder" => Order::select('id')->latest()->first()->id,
+        "idToko" => $produk['idToko'],
+        "idProduk" => $produk['idProduk'],
+        "idHarga" => $produk['idHarga'],
+        "hrgJual" => $produk['hrgJual'],
+        "hrgDiskon" => $produk['hrgDiskon'],
+        "qty" => $produk['qty'],
+        "statusOrder" => "diproses",
+        "tglOrder" => date("Y-m-d H:i:s"),
+      ]);
     }
 
     return response()->json(["data" => "Pesanan telah dibuat!"]);

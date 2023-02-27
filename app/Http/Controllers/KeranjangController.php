@@ -22,7 +22,6 @@ class KeranjangController extends Controller
 
     $krjPrdk = $keranjang
       ->produks()
-      ->wherePivot('status_produk', 'keranjang')
       ->orderByPivot('created_at', 'desc')
       ->get()
       ->sortByDesc(function ($item) {
@@ -43,11 +42,11 @@ class KeranjangController extends Controller
               "imgUrl" => $item->pivot->produk->imgUrl,
             ],
             "qty" => $item->pivot->qty,
-            "diskon" => $item->pivot->diskon,
             "harga" => [
               "namaHarga" => $item->pivot->harga->namaHarga,
               "hrgJual" => $item->pivot->harga->hrgJual,
               "stokToko" => $item->pivot->harga->stokToko,
+              "diskon" => $item->pivot->harga->diskon,
             ],
           ],
         ];
@@ -58,10 +57,10 @@ class KeranjangController extends Controller
 
   public function add(Request $request)
   {
-    $keranjang = Keranjang::where('idUser', auth()->user()->id)->latest()->first();
+    $keranjang = Keranjang::where('idUser', auth()->id())->latest()->first();
     if ($keranjang == null) {
       $keranjang = Keranjang::create([
-        "idUser" => auth()->user()->id
+        "idUser" => auth()->id()
       ]);
     }
 
@@ -70,7 +69,6 @@ class KeranjangController extends Controller
       $keranjang->produks()->updateExistingPivot((string) $request->idProduk, [
         'qty' => (string) $request->qty + $krjPrdk->pivot->qty,
         'idHarga' => (string) $request->idHarga,
-        'diskon' => (string) $request->diskon,
         'subtotal' => (string) $request->subtotal + $krjPrdk->pivot->subtotal
       ]);
     } else if ($krjPrdk == null) {
@@ -78,7 +76,6 @@ class KeranjangController extends Controller
         'qty' => (string) $request->qty,
         'idHarga' => (string) $request->idHarga,
         'idToko' => (string) $request->idToko,
-        'diskon' => (string) $request->diskon,
         'subtotal' => (string) $request->subtotal
       ]);
     }

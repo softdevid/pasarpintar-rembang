@@ -1,12 +1,13 @@
 import TokoMainBar from "@/Components/Toko/TokoMainBar";
-import TokoProdukSemua from "@/Components/Toko/TokoProdukSemua";
-import TokoProdukLaris from "@/Components/Toko/TokoProdukLaris";
-import TokoProdukPromo from "@/Components/Toko/TokoProdukPromo";
 import Main from "@/Layouts/Main";
 import { Head } from "@inertiajs/react";
 import React from "react";
+import ProdukLaris from "@/Components/HomePage/ProdukLaris";
+import ProdukAcak from "@/Components/HomePage/ProdukAcak";
+import TokoProdukLaris from "@/Components/Toko/TokoProdukLaris";
+import TokoProdukSemua from "@/Components/Toko/TokoProdukSemua";
 
-const Toko = ({ toko }) => {
+const Toko = ({ toko, produks }) => {
   // console.log(toko);
   return (
     <>
@@ -15,8 +16,8 @@ const Toko = ({ toko }) => {
         <div className="container space-y-3">
           <TokoMainBar toko={toko} />
           {/* <TokoProdukPromo /> */}
-          <TokoProdukLaris />
-          <TokoProdukSemua />
+          <TokoProdukLaris tokoProduk={produks.produkLaris} />
+          <TokoProdukSemua slug={toko.slug} />
         </div>
       </section>
     </>

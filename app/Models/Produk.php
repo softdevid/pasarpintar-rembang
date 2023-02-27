@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Produk extends Model
 {
   use HasFactory;
+  use \Staudenmeir\EloquentEagerLimit\HasEagerLimit;
 
   protected $guarded = ['id'];
 
@@ -40,7 +41,7 @@ class Produk extends Model
   {
     return $this
       ->belongsToMany(Keranjang::class, 'keranjang_details',  'idProduk', 'idKeranjang')
-      ->withPivot('id', 'idHarga', 'idToko', 'qty', 'diskon', 'subtotal', 'status_produk')
+      ->withPivot('id', 'idHarga', 'idToko', 'qty', 'subtotal')
       ->withTimestamps()
       ->using(KeranjangDetail::class);
   }

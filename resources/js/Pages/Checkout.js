@@ -58,7 +58,7 @@ const Checkout = ({ title, filteredProduk, user }) => {
       theme: "colored",
     });
   };
-
+  console.log(filtCart);
   const order = () => {
     const produks = filtCart
       .map(([, items]) => {
@@ -69,7 +69,7 @@ const Checkout = ({ title, filteredProduk, user }) => {
             idToko,
             qty,
             produk: { namaProduk },
-            harga: { hrgBeli, hrgJual },
+            harga: { hrgJual, diskon },
           }) => {
             return {
               idProduk,
@@ -78,7 +78,7 @@ const Checkout = ({ title, filteredProduk, user }) => {
               qty,
               namaProduk,
               hrgJual,
-              hrgBeli,
+              hrgDiskon: diskon,
               subtotal: qty * hrgJual * 1000,
             };
           }

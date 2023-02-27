@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Order;
 use App\Models\RinciOrder;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -16,59 +17,73 @@ class UserController extends Controller
 
   public function orders()
   {
-    $orders = RinciOrder::with(
+
+    $rinciOrder = RinciOrder::with(
       [
-        'toko' => function ($q) {
-          $q->select('id', 'namaToko', 'slug');
+        'order' => function ($q) {
+          $q->select('id', 'namaCustomer', 'email', 'noHp', 'alamatPengiriman', 'noFaktur', 'tglOrder', 'statusBayar', 'metodeBayar');
         },
         'produk' => function ($q) {
           $q->select('id', 'namaProduk', 'slug');
+        },
+        'produk.toko' => function ($q) {
+          $q->select('id', 'namaToko', 'slug');
         },
         'harga' => function ($q) {
           $q->select('id', 'jenisHarga', 'namaHarga', 'hrgJual', 'imgName', 'imgUrl', 'diskon');
         }
       ]
     )
-      ->where('idUser', auth()->id())
+      ->whereHas('order', function ($q) {
+        return $q->where('idUser', 2);
+      })
       ->get()
       ->sortByDesc(function ($item) {
         return $item->id;
-      })
-      ->groupBy('statusOrder')->map(function ($ordersByStatus) {
-        return $ordersByStatus->groupBy('toko.namaToko')->map(function ($ordersByToko) {
-          return $ordersByToko->map(function ($order) {
-            return [
-              'id' => $order->id,
-              'idToko' => $order->idToko,
-              'idProduk' => $order->idProduk,
-              'idHarga' => $order->idHarga,
-              'toko' => [
-                'namaToko' => $order->toko->namaToko,
-                'slugToko' => $order->toko->slug,
-              ],
-              'produk' => [
-                'namaProduk' => $order->produk->namaProduk,
-                'slugProduk' => $order->produk->slug,
-              ],
-              'harga' => [
-                'namaHarga' => $order->harga->namaHarga,
-                'hrgJual' => $order->harga->hrgJual,
-                'diskon' => $order->harga->diskon ?? 0,
-                'imgName' => $order->harga->imgName,
-                'imgUrl' => $order->harga->imgUrl,
-              ],
-              'qty' => $order->totalItem,
-              'tglOrder' => $order->tglOrder,
-              'metodeBayar' => $order->metodeBayar,
-            ];
+      })->groupBy('statusOrder')->map(function ($statusOrder) {
+        return $statusOrder->groupBy('idOrder')->map(function ($idOrder) {
+          return $idOrder->groupBy('toko.namaToko')->map(function ($toko) {
+            return $toko->map(function ($rinci) {
+              return [
+                'id' => $rinci->id,
+                'idOrder' => $rinci->order->id,
+                'order' => [
+                  'namaCustomer' => $rinci->order->namaCustomer,
+                  'email' => $rinci->order->email,
+                  'noHp' => $rinci->order->noHp,
+                  'alamatPengiriman' => $rinci->order->alamatPengiriman,
+                  'noFaktur' => $rinci->order->noFaktur,
+                  'tglOrder' => $rinci->order->tglOrder,
+                  'statusBayar' => $rinci->order->statusBayar,
+                  'metodeBayar' => $rinci->order->metodeBayar,
+                ],
+                'toko' => [
+                  'namaToko' => $rinci->toko->namaToko,
+                  'slug' => $rinci->toko->slug,
+                ],
+                'produk' => [
+                  'namaProduk' => $rinci->produk->namaProduk,
+                  'slug' => $rinci->produk->slug,
+                ],
+                'harga' => [
+                  'idHarga' => $rinci->idHarga,
+                  'namaHarga' => $rinci->harga->namaHarga,
+                  'hrgJual' => $rinci->hrgJual,
+                  'hrgDiskon' => $rinci->hrgDiskon,
+                  'imgName' => $rinci->harga->imgName,
+                  'imgUrl' => $rinci->harga->imgUrl,
+                ],
+                'qty' => $rinci->qty
+              ];
+            });
           });
         });
-      })
-      ->toArray();
+      });
 
+    // return response()->json($rinciOrder);
     return Inertia::render('User/UserOrders', [
       "title" => "Pesanan User",
-      "orders" => $orders,
+      "orders" => $rinciOrder,
     ]);
   }
 }

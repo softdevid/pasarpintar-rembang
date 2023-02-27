@@ -3,9 +3,10 @@ import {
   HandThumbUpIcon,
   ShieldCheckIcon,
 } from "@heroicons/react/20/solid";
+import { Link } from "@inertiajs/react";
 import React from "react";
 
-const Kategori = () => {
+const Kategori = ({ kategori }) => {
   return (
     <>
       <div className="container">
@@ -30,17 +31,23 @@ const Kategori = () => {
           </div>
         </div>
       </div>
-      <div className="py-2">
-        <div className="container">
-          <div className="relative px-4 overflow-auto">
-            <div className="grid grid-rows-2 grid-flow-col-dense gap-4 overflow-x-auto scrollbar">
-              {Array.from({ length: 12 }, (_, i) => (
-                <div key={i} className="flex flex-col items-center justify-start">
-                  <div className="h-20 w-20 bg-white border border-slate-500 rounded-md"></div>
-                  <span className="px-1 pt-1 text-sm font-semibold whitespace-normal text-center line-clamp-2">HAHIHEH {i}</span>
-                </div>
-              ))}
-            </div>
+      <div className="container py-2">
+        <div className="relative px-4 overflow-auto">
+          <div className="grid grid-rows-2 grid-flow-col-dense gap-4 overflow-x-auto scrollbar">
+            {kategori.map((ktgr, i) => (
+              <div
+                key={i}
+                className="flex flex-col items-center justify-start p-4 border border-slate-500 bg-white rounded-lg"
+              >
+                <Link
+                  as="button"
+                  href={`/kategori/${ktgr.slug}`}
+                  className="px-1 pt-1 text-sm font-semibold whitespace-nowrap text-center line-clamp-2"
+                >
+                  {ktgr.namaKategoriGlobal}
+                </Link>
+              </div>
+            ))}
           </div>
         </div>
       </div>

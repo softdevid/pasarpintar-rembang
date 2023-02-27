@@ -27,6 +27,6 @@ class RinciOrder extends Model
 
   public function order()
   {
-    return $this->hasMany(Harga::class, 'idOrder', 'id');
+    return $this->belongsTo(Order::class, 'idOrder', 'id');
   }
 }

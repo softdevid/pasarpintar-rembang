@@ -15,7 +15,7 @@ class Keranjang extends Model
   {
     return $this
       ->belongsToMany(Produk::class, 'keranjang_details', 'idKeranjang', 'idProduk')
-      ->withPivot('id', 'idHarga', 'idToko', 'qty', 'diskon', 'subtotal', 'status_produk')
+      ->withPivot('id', 'idHarga', 'idToko', 'qty', 'subtotal')
       ->withTimestamps()
       ->using(KeranjangDetail::class);
   }

@@ -4,7 +4,6 @@ import { Link } from "@inertiajs/react";
 import React from "react";
 
 const ProdukLaris = ({ produk }) => {
-  console.log(produk);
   return (
     <div className="container">
       <div className="bg-sky-900 border-2 border-sky-900 rounded-lg overflow-hidden">

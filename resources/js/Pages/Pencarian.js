@@ -18,13 +18,13 @@ const Pencarian = ({ query, hasil }) => {
             </div>
           </div>
           <div className="relative p-2">
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2 justify-items-center overflow-y-auto scrollbar-hide">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2 justify-items-center overflow-y-auto scrollbar-hide">
               {hasil.map((data, index) => (
                 <div
                   key={index}
                   className="w-full bg-white border-2 border-slate-600 rounded-md overflow-hidden"
                 >
-                  <Link href={`${data.toko.slugToko}/${data.slugProduk}`}>
+                  <Link href={`/${data.toko.slugToko}/${data.slugProduk}`}>
                     <div className="relative flex flex-col overflow-visible w-full h-full bg-white rounded-md">
                       <img
                         className="shrink-0 bg-cover bg-center w-full p-2"
@@ -40,7 +40,13 @@ const Pencarian = ({ query, hasil }) => {
                         </div>
                         <div>
                           <span className="text-lg font-bold">
-                          <FormatRupiah value={`${data.hargas[0]?.hrgJual}000`} />
+                            <FormatRupiah
+                              value={
+                                (data.harga_terkecil !== null
+                                  ? data.harga_terkecil.hrgJual
+                                  : 0) * 1000
+                              }
+                            />
                           </span>
                         </div>
                       </div>
