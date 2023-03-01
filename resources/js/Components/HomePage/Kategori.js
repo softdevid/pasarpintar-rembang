@@ -35,18 +35,16 @@ const Kategori = ({ kategori }) => {
         <div className="relative px-4 overflow-auto">
           <div className="grid grid-rows-2 grid-flow-col-dense gap-4 overflow-x-auto scrollbar">
             {kategori.map((ktgr, i) => (
-              <div
+              <Link
                 key={i}
-                className="flex flex-col items-center justify-start p-4 border border-slate-500 bg-white rounded-lg"
+                as="button"
+                href={`/kategori/${ktgr.slug}`}
+                className="px-1 pt-1 text-sm font-semibold whitespace-nowrap text-center line-clamp-2"
               >
-                <Link
-                  as="button"
-                  href={`/kategori/${ktgr.slug}`}
-                  className="px-1 pt-1 text-sm font-semibold whitespace-nowrap text-center line-clamp-2"
-                >
+                <div className="flex flex-col items-center justify-start p-4 border border-slate-500 bg-white rounded-lg">
                   {ktgr.namaKategoriGlobal}
-                </Link>
-              </div>
+                </div>
+              </Link>
             ))}
           </div>
         </div>

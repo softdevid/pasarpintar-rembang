@@ -60,7 +60,7 @@ const UserOrders = ({ title, orders }) => {
             <Tab.Panel key={i} className="space-y-4">
               {ord.map(([ordId, ordData]) =>
                 Object.entries(ordData).map(([toko, produks], i) => (
-                  <div className="bg-white pt-6 p-3" key={i}>
+                  <div className="bg-white p-6" key={i}>
                     <div className="flex justify-between items-center pb-3 border-b border-slate-200">
                       <div className="flex items-center whitespace-nowrap">
                         <div className="text-slate-600 text-sm font-semibold overflow-hidden text-ellipsis">
