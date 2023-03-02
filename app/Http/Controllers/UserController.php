@@ -86,7 +86,7 @@ class UserController extends Controller
   {
     $konfirmasi = RinciOrder::whereIn('id', explode(',', $request->rinciId))->get();
     foreach ($konfirmasi as $rinci) {
-      $rinci->statusOrder = "selesai";
+      $rinci->statusOrder = "diterima";
       $rinci->save();
     }
 

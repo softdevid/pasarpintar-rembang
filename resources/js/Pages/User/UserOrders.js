@@ -26,8 +26,8 @@ const UserOrders = ({ title }) => {
           dikirim: res.data.hasOwnProperty("dikirim")
             ? Object.entries(res.data.dikirim)
             : [],
-          selesai: res.data.hasOwnProperty("selesai")
-            ? Object.entries(res.data.selesai)
+          diterima: res.data.hasOwnProperty("diterima")
+            ? Object.entries(res.data.diterima)
             : [],
           dibatalkan: res.data.hasOwnProperty("dibatalkan")
             ? Object.entries(res.data.dibatalkan)
@@ -64,8 +64,8 @@ const UserOrders = ({ title }) => {
           dikirim: res.data.hasOwnProperty("dikirim")
             ? Object.entries(res.data.dikirim)
             : [],
-          selesai: res.data.hasOwnProperty("selesai")
-            ? Object.entries(res.data.selesai)
+          diterima: res.data.hasOwnProperty("diterima")
+            ? Object.entries(res.data.diterima)
             : [],
           dibatalkan: res.data.hasOwnProperty("dibatalkan")
             ? Object.entries(res.data.dibatalkan)
