@@ -1,43 +1,81 @@
 import { FormatRupiah } from "@/config/formatRupiah";
 import Main from "@/Layouts/Main";
 import UserLayout from "@/Layouts/UserLayout";
-import { Tab } from "@headlessui/react";
+import { Dialog, Tab, Transition } from "@headlessui/react";
 import { BuildingStorefrontIcon } from "@heroicons/react/20/solid";
 import { Head, router } from "@inertiajs/react";
 import axios from "axios";
 import React, { Fragment, useEffect, useState } from "react";
 
-const UserOrders = ({ title, orders }) => {
+const UserOrders = ({ title }) => {
   const [orderan, setOrderan] = useState({});
+  const [isOpen, setIsOpen] = useState(false);
+  const [rinciId, setRinciId] = useState([]);
 
   useEffect(() => {
-    setOrderan({
-      semua: Object.entries(orders)
-        .map(([status, toko]) => Object.entries(toko))
-        .flat(),
-      // diproses: Object.entries(orders.diproses),
-      diproses: orders.hasOwnProperty("diproses")
-        ? Object.entries(orders.dikirim)
-        : [],
-      dikirim: orders.hasOwnProperty("dikirim")
-        ? Object.entries(orders.dikirim)
-        : [],
-      selesai: orders.hasOwnProperty("selesai")
-        ? Object.entries(orders.selesai)
-        : [],
-      dibatalkan: orders.hasOwnProperty("dibatalkan")
-        ? Object.entries(orders.dibatalkan)
-        : [],
-    });
+    axios
+      .get("/user/get-orders")
+      .then((res) => {
+        setOrderan({
+          semua: Object.entries(res.data)
+            .map(([status, toko]) => Object.entries(toko))
+            .flat(),
+          diproses: res.data.hasOwnProperty("diproses")
+            ? Object.entries(res.data.diproses)
+            : [],
+          dikirim: res.data.hasOwnProperty("dikirim")
+            ? Object.entries(res.data.dikirim)
+            : [],
+          selesai: res.data.hasOwnProperty("selesai")
+            ? Object.entries(res.data.selesai)
+            : [],
+          dibatalkan: res.data.hasOwnProperty("dibatalkan")
+            ? Object.entries(res.data.dibatalkan)
+            : [],
+        });
+      })
+      .catch((err) => console.log(err.message));
   }, []);
 
   const toDetailOrder = (param) => {
-
     router.get("/user/orders/detail", {
       rinciId: param.data.rinciId.join(","),
     });
   };
 
+  const openDialog = (param) => {
+    setRinciId(param.data.rinciId);
+    setIsOpen(true);
+  };
+
+  const konfirmasiDiterima = () => {
+    axios
+      .patch("/user/orders", {
+        rinciId: rinciId.join(","),
+      })
+      .then((res) => {
+        setOrderan({
+          semua: Object.entries(res.data)
+            .map(([status, toko]) => Object.entries(toko))
+            .flat(),
+          diproses: res.data.hasOwnProperty("diproses")
+            ? Object.entries(res.data.diproses)
+            : [],
+          dikirim: res.data.hasOwnProperty("dikirim")
+            ? Object.entries(res.data.dikirim)
+            : [],
+          selesai: res.data.hasOwnProperty("selesai")
+            ? Object.entries(res.data.selesai)
+            : [],
+          dibatalkan: res.data.hasOwnProperty("dibatalkan")
+            ? Object.entries(res.data.dibatalkan)
+            : [],
+        });
+      })
+      .catch((err) => console.log(err.message));
+    setIsOpen(false);
+  };
+  console.log(orderan);
   return (
     <>
       <Head title={title} />
@@ -47,7 +85,8 @@ const UserOrders = ({ title, orders }) => {
             <Tab
               key={status}
               className={({ selected }) =>
-                `flex flex-1 items-center justify-center overflow-hidden cursor-pointer py-4 bg-white text-base text-center border-b-2 focus:outline-none  ${selected ? "text-sky-500 border-sky-500" : "text-slate-800"
+                `flex flex-1 items-center justify-center overflow-hidden cursor-pointer py-4 bg-white text-base text-center border-b-2 focus:outline-none  ${
+                  selected ? "text-sky-500 border-sky-500" : "text-slate-800"
                 }`
               }
             >
@@ -149,7 +188,7 @@ const UserOrders = ({ title, orders }) => {
                       </div>
                     ))}
                     <div className="flex flex-col items-end justify-center mt-3 pt-3 border-t border-slate-200">
-                      <div className="flex space-x-8">
+                      <div className="flex space-x-8 mt-2">
                         <div className="">Total</div>
                         <div className="">
                           <FormatRupiah
@@ -158,13 +197,39 @@ const UserOrders = ({ title, orders }) => {
                                 (subtotal, prod) =>
                                   subtotal +
                                   prod.qty *
-                                  (prod.harga.hrgJual - prod.harga.hrgDiskon),
+                                    (prod.harga.hrgJual - prod.harga.hrgDiskon),
                                 0
                               ) * 1000
                             }
                           />
                         </div>
                       </div>
+                      {produks.some(
+                        (produk) => produk.statusOrder === "dikirim"
+                      ) && (
+                        <div className="flex mt-4">
+                          <button
+                            type="button"
+                            className="text-blue-700 hover:text-white border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2 dark:border-blue-500 dark:text-blue-500 dark:hover:text-white dark:hover:bg-blue-600 dark:focus:ring-blue-800"
+                            onClick={() =>
+                              openDialog(
+                                produks.reduce((acc, curr) => {
+                                  const { rinciId = [] } = acc["data"] || {
+                                    rinciId: [],
+                                  };
+                                  rinciId.push(curr.id);
+                                  return {
+                                    ...acc,
+                                    data: { rinciId },
+                                  };
+                                }, {})
+                              )
+                            }
+                          >
+                            Diterima
+                          </button>
+                        </div>
+                      )}
                     </div>
                   </div>
                 ))
@@ -173,6 +238,70 @@ const UserOrders = ({ title, orders }) => {
           ))}
         </Tab.Panels>
       </Tab.Group>
+      <Transition appear show={isOpen} as={Fragment}>
+        <Dialog
+          as="div"
+          className="relative z-10"
+          onClose={() => setIsOpen(false)}
+        >
+          <Transition.Child
+            as={Fragment}
+            enter="ease-out duration-300"
+            enterFrom="opacity-0"
+            enterTo="opacity-100"
+            leave="ease-in duration-200"
+            leaveFrom="opacity-100"
+            leaveTo="opacity-0"
+          >
+            <div className="fixed inset-0 bg-black bg-opacity-25" />
+          </Transition.Child>
+
+          <div className="fixed inset-0 overflow-y-auto">
+            <div className="flex min-h-full items-center justify-center p-4 text-center">
+              <Transition.Child
+                as={Fragment}
+                enter="ease-out duration-300"
+                enterFrom="opacity-0 scale-95"
+                enterTo="opacity-100 scale-100"
+                leave="ease-in duration-200"
+                leaveFrom="opacity-100 scale-100"
+                leaveTo="opacity-0 scale-95"
+              >
+                <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
+                  <Dialog.Title
+                    as="h3"
+                    className="text-lg font-medium leading-6 text-gray-900"
+                  >
+                    Konfimasi Pesanan
+                  </Dialog.Title>
+                  <div className="mt-2">
+                    <p className="text-sm text-gray-500">
+                      Apakah produk sudah diterima?
+                    </p>
+                  </div>
+
+                  <div className="flex mt-4">
+                    <button
+                      type="button"
+                      className="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 mr-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+                      onClick={() => konfirmasiDiterima()}
+                    >
+                      Iya
+                    </button>
+                    <button
+                      type="button"
+                      className="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 mr-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+                      onClick={() => setIsOpen(false)}
+                    >
+                      Tidak
+                    </button>
+                  </div>
+                </Dialog.Panel>
+              </Transition.Child>
+            </div>
+          </div>
+        </Dialog>
+      </Transition>
     </>
   );
 };

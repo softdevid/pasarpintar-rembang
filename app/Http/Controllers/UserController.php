@@ -18,6 +18,13 @@ class UserController extends Controller
 
   public function orders()
   {
+    return Inertia::render('User/UserOrders', [
+      "title" => "Pesanan User",
+    ]);
+  }
+
+  public function getOrders()
+  {
 
     $rinciOrder = RinciOrder::with(
       [
@@ -48,6 +55,7 @@ class UserController extends Controller
               return [
                 'id' => $rinci->id,
                 'idOrder' => $rinci->order->id,
+                'statusOrder' => $rinci->statusOrder,
                 'toko' => [
                   'namaToko' => $rinci->toko->namaToko,
                   'slug' => $rinci->toko->slug,
@@ -71,10 +79,18 @@ class UserController extends Controller
         });
       });
 
-    return Inertia::render('User/UserOrders', [
-      "title" => "Pesanan User",
-      "orders" => $rinciOrder,
-    ]);
+    return response()->json($rinciOrder);
+  }
+
+  public function konfirmasi(Request $request)
+  {
+    $konfirmasi = RinciOrder::whereIn('id', explode(',', $request->rinciId))->get();
+    foreach ($konfirmasi as $rinci) {
+      $rinci->statusOrder = "selesai";
+      $rinci->save();
+    }
+
+    return $this->getOrders();
   }
 
   public function orderDetail(Request $request)

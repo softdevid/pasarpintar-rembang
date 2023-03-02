@@ -31,6 +31,8 @@ Route::middleware('auth',)->group(function () {
   // route user
   Route::get('/user/profile', [UserController::class, 'profile'])->name('user.profile');
   Route::get('/user/orders', [UserController::class, 'orders'])->name('user.orders');
+  Route::get('/user/get-orders', [UserController::class, 'getOrders'])->name('user.orders.get');
+  Route::patch('/user/orders', [UserController::class, 'konfirmasi'])->name('user.orders.konfirmasi');
   Route::get('/user/orders/detail', [UserController::class, 'orderDetail'])->name('user.order.detail');
 
   // route keranjang
