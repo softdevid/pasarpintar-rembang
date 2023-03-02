@@ -33,6 +33,11 @@ const Index = (props) => {
 
   const handleDelete = (id) => {
     router.post("/toko/produk/delete", id);
+
+    axios.get(`/api/data-produk?page=${currentPage}`).then((response) => {
+      setProducts(response.data.data);
+      setTotalPages(response.data.last_page);
+    });
   }
 
   const [dataShow, setDataShow] = useState({});
@@ -142,7 +147,7 @@ const Index = (props) => {
                             <button onClick={() => handleShow(data)} className="bg-sky-400 text-white rounded-md p-2 mx-1">Detail</button>
                             {/* <button onClick={() => handleEdit({ id: data.id })} className="bg-yellow-400 text-white rounded-md p-2 mx-1">Edit</button> */}
                             <Link href={`/toko/produk/${data.id}/edit`} className="bg-yellow-400 text-white rounded-md p-2 mx-1">Edit</Link>
-                            <Link onClick={() => handleDelete({ id: data.id })} className="bg-red-500 text-white rounded-md p-2 mx-1">Hapus</Link>
+                            <button onClick={() => handleDelete({ id: data.id })} className="bg-red-500 text-white rounded-md p-2 mx-1">Hapus</button>
                           </td>
                         </tr>
 
@@ -159,11 +164,14 @@ const Index = (props) => {
                   )}
                 </tbody>
               </table>
-              <Pagination
-                currentPage={currentPage}
-                totalPages={totalPages}
-                onPageChange={handlePageChange}
-              />
+              {produk.length > 0 &&
+                <Pagination
+                  currentPage={currentPage}
+                  totalPages={totalPages}
+                  onPageChange={handlePageChange}
+                />
+              }
+
             </div>
           </div>
 

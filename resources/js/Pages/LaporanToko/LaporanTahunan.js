@@ -1,4 +1,4 @@
-import { Link } from "@inertiajs/react";
+import { Head, Link } from "@inertiajs/react";
 import React from "react";
 
 const LaporanTahunan = (props) => {
@@ -11,12 +11,13 @@ const LaporanTahunan = (props) => {
 
   return (
     <>
+      <Head title={props.title} />
       <div className="h-2 bg-sky-600 top-0 w-full"></div>
       <div className="container">
         <div className="my-3">
           <div>
-            <h1 className="text-2xl font-bold mb-3">Laporan Harian Toko ...</h1>
-            <p>Tanggal: {props.date}</p>
+            <h1 className="text-2xl font-bold mb-3">{props.title} toko {props.namaToko}</h1>
+            <p>Tahun: {props.date}</p>
             <p className="mb-3">Omset: {formatter.format(props.omset)}</p>
 
             <div className="flex">

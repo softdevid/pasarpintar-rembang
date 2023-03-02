@@ -26,9 +26,19 @@ class ProdukController extends Controller
    */
   public function index()
   {
-    // $produk = Produk::latest()->paginate(10)->get();
+    $toko = Toko::where('idUser', auth()->user()->id)->select('id')->first();
+    $produk = Produk::with(['toko' => function ($q) {
+      $q->select('id', 'slug as slugToko', 'namaToko');
+    }, 'hargas' => function ($q) {
+      $q->select('idProduk', 'hrgJual', 'hrgBeli', 'stokGudang', 'stokToko', 'namaHarga', 'diskon', 'tglAwalDiskon', 'tglAkhirDiskon')->orderBy('hrgJual', 'asc');
+    }])->select(
+      'produks.*',
+    )->orderBy('terjual', 'desc')->limit(100)
+      ->where('idToko', $toko->id)
+      ->paginate(5);
+
     return Inertia::render('TokoProduk/Index', [
-      // 'produk' => $produk,
+      'produk' => $produk,
       'title' => 'List Produk',
       // 'produk' => $produk,
     ]);
@@ -268,17 +278,19 @@ class ProdukController extends Controller
   public function destroy(Produk $produk, Request $request)
   {
     $produk = Produk::find($request->id);
-    $produk->delete();
-    return back()->with('message', 'Produk berhasil dihapus');
-    // $produk = Produk::find($id);
-    // Cloudinary::destroy($produk->imgName);
-    // $images = Gambar::where('idProduk', $id)->get();
-    // foreach ($images as $key => $image) {
-    //   Cloudinary::destroy($image->imgName);
-    // }
-    // $images->delete();
     // $produk->delete();
-    // return back()->with('message', 'Produk berhasil dihapus');
+    $hargas = Harga::where('idProduk', $request->id)->get();
+    foreach ($hargas as $h) {
+      $imgName = $h->imgName;
+      if ($imgName !== null) {
+        Cloudinary::destroy($imgName);
+      }
+    }
+
+    Cloudinary::destroy($produk->imgName);
+    $hargas = Harga::where('idProduk', $request->id)->delete();
+    $produk->delete();
+    return redirect()->to('/toko/produk')->with('message', 'Produk berhasil dihapus');
   }
 
   public function deleteImage(Request $request)

@@ -87,21 +87,19 @@ class KategoriController extends Controller
    * @param  \App\Models\Kategori  $kategori
    * @return \Illuminate\Http\Response
    */
-  public function update(Request $request, Kategori $kategori, $id)
+  public function update(Request $request, Kategori $kategori)
   {
-    $kategori = Kategori::find($id);
     $request->validate([
       'namaKategori' => 'required|max:255',
     ]);
+    $kategori = Kategori::where('id', $request->id)->first();
 
-    $data = [
+    $kategori->update([
       'namaKategori' => $request->namaKategori,
       'slug' => Str::slug($request->namaKategori, '-'),
-      'idToko' => auth()->user()->idToko,
-    ];
-
-    $kategori->update($data);
-    return back()->with('message', 'Kategori sudah berhasil diupdate');
+      'idToko' => $kategori->idToko
+    ]);
+    return redirect()->to('/toko/kategori')->with('message', 'Kategori sudah berhasil diupdate');
   }
 
   /**

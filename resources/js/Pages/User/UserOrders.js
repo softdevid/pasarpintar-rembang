@@ -15,7 +15,10 @@ const UserOrders = ({ title, orders }) => {
       semua: Object.entries(orders)
         .map(([status, toko]) => Object.entries(toko))
         .flat(),
-      diproses: Object.entries(orders.diproses),
+      // diproses: Object.entries(orders.diproses),
+      diproses: orders.hasOwnProperty("diproses")
+        ? Object.entries(orders.dikirim)
+        : [],
       dikirim: orders.hasOwnProperty("dikirim")
         ? Object.entries(orders.dikirim)
         : [],
@@ -44,8 +47,7 @@ const UserOrders = ({ title, orders }) => {
             <Tab
               key={status}
               className={({ selected }) =>
-                `flex flex-1 items-center justify-center overflow-hidden cursor-pointer py-4 bg-white text-base text-center border-b-2 focus:outline-none  ${
-                  selected ? "text-sky-500 border-sky-500" : "text-slate-800"
+                `flex flex-1 items-center justify-center overflow-hidden cursor-pointer py-4 bg-white text-base text-center border-b-2 focus:outline-none  ${selected ? "text-sky-500 border-sky-500" : "text-slate-800"
                 }`
               }
             >
@@ -156,7 +158,7 @@ const UserOrders = ({ title, orders }) => {
                                 (subtotal, prod) =>
                                   subtotal +
                                   prod.qty *
-                                    (prod.harga.hrgJual - prod.harga.hrgDiskon),
+                                  (prod.harga.hrgJual - prod.harga.hrgDiskon),
                                 0
                               ) * 1000
                             }

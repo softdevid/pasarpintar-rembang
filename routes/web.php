@@ -87,6 +87,8 @@ Route::patch('/admin/kategori', [KategoriGlobalController::class, 'update'])->na
 Route::post('/admin/kategori', [KategoriGlobalController::class, 'store'])->name('kategoriglobal.store');
 Route::post('/admin/kategori/delete', [KategoriGlobalController::class, 'destroy'])->name('kategoriglobal.destroy');
 
+
+
 //toko admin
 Route::get('/toko/dashboard', [AdminTokoController::class, 'index'])->name('toko.index');
 
@@ -104,7 +106,7 @@ Route::post('/toko/produk/delete', [ProdukController::class, 'destroy'])->name('
 
 Route::get('/toko/kategori', [KategoriController::class, 'index'])->name('kategori.index');
 Route::get('/toko/kategori/create', [KategoriController::class, 'create'])->name('kategori.create');
-Route::get('/toko/kategori/1/edit', [KategoriController::class, 'edit'])->name('kategoriToko.edit');
+Route::post('/toko/kategori/update', [KategoriController::class, 'update'])->name('kategoriToko.update');
 Route::post('/toko/kategori', [KategoriController::class, 'store'])->name('kategoriToko.store');
 Route::post('/toko/kategori/delete', [KategoriController::class, 'destroy'])->name('kategoriToko.delete');
 
@@ -113,6 +115,10 @@ Route::get('/toko/pesanan', [OrderController::class, 'pesananBaru'])->name('pesa
 Route::get('/toko/pesanan/dikirim', [OrderController::class, 'dikirim'])->name('dikirim');
 Route::get('/toko/pesanan/sampai', [OrderController::class, 'sampai'])->name('sampai');
 Route::get('/toko/pesanan/dibatalkan', [OrderController::class, 'sampai'])->name('dibatalkan');
+
+//ubah status
+Route::post('/ubah-status-dikirim', [OrderController::class, 'ubahDikrim'])->name('toko.ubahDikrim');
+Route::post('/ubah-status-dibatalkan', [OrderController::class, 'ubahDibatalkan'])->name('toko.ubahDibatalkan');
 
 
 // route kurir

@@ -13,7 +13,7 @@ class LaporanController extends Controller
 {
   public function Index()
   {
-    $toko = Toko::where('idUser', auth()->user()->id)->select('id')->first();
+    $toko = Toko::where('idUser', auth()->user()->id)->select('id', 'namaToko')->first();
 
     // $rinciOrder = RinciOrder::where('idToko', $toko->id)->latest()->paginate(10)->withQueryString();
     $rinciOrder =  DB::table('rinci_orders')
@@ -28,6 +28,7 @@ class LaporanController extends Controller
     return Inertia::render('LaporanToko/Index', [
       'title' => 'Laporan Keuangan',
       'rinciOrder' => $rinciOrder,
+      'namaToko' => $toko->namaToko,
     ]);
   }
 
@@ -37,7 +38,7 @@ class LaporanController extends Controller
     $request->validate(['date' => 'required'], ['date.required' => 'Tanggal harus dipilih']);
 
 
-    $toko = Toko::where('idUser', auth()->user()->id)->select('id')->first(); //ambil id toko
+    $toko = Toko::where('idUser', auth()->user()->id)->select('id', 'namaToko')->first(); //ambil id toko
     $date = date('Y-m-d', strtotime($request->date)); //mengubah format tanggalnya
 
     $laporan =  DB::table('rinci_orders')
@@ -59,13 +60,14 @@ class LaporanController extends Controller
       'laporan' => $laporan,
       'omset' => $omset,
       'date' => $date,
+      'namaToko' => $toko->namaToko,
     ]);
   }
 
   public function month(Request $request)
   {
     $request->validate(['month' => 'required'], ['month.required' => 'Bulan harus pilih']);
-    $toko = Toko::where('idUser', auth()->user()->id)->select('id')->first();
+    $toko = Toko::where('idUser', auth()->user()->id)->select('id', 'namaToko')->first();
 
     $date = $request->month;
     $month = date('m', strtotime($date));
@@ -86,10 +88,11 @@ class LaporanController extends Controller
       $omset += ($value->hrgJual + $value->hrgDiskon + $value->biayaAdmin) * $value->qty;
     }
     return Inertia::render('LaporanToko/LaporanBulanan', [
-      'title' => 'Laporan Harian',
+      'title' => 'Laporan Bulanan',
       'laporan' => $laporan,
       'date' => $date,
       'omset' => $omset,
+      'namaToko' => $toko->namaToko,
     ]);
   }
 
@@ -116,11 +119,11 @@ class LaporanController extends Controller
     }
 
     return Inertia::render('LaporanToko/LaporanTahunan', [
-      'title' => 'Laporan Harian',
+      'title' => 'Laporan Tahunan',
       'laporan' => $laporan,
       'date' => $date,
       'omset' => $omset,
-      'toko' => $toko,
+      'namaToko' => $toko->namaToko,
     ]);
   }
 }

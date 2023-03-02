@@ -6,6 +6,7 @@ use App\Models\Order;
 use App\Models\RinciOrder;
 use App\Models\Toko;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 
@@ -51,12 +52,12 @@ class OrderController extends Controller
       ->join('hargas', 'rinci_orders.idHarga', '=', 'hargas.id')
       ->where('rinci_orders.idToko', $toko->id)
       ->where('rinci_orders.statusOrder', 'diproses')
-      ->select('orders.*', 'rinci_orders.*', 'produks.namaProduk', 'hargas.*')
+      ->select('orders.*', 'rinci_orders.*', 'rinci_orders.id as idRinciOrder', 'produks.namaProduk', 'hargas.*')
       ->limit(100)
       ->paginate(10);
 
     // $rinciOrder = RinciOrder::where(['idToko' => $toko->id, 'statusOrder' => 'diproses'])->get();
-    return response()->json(['rinciOrder' => $rinciOrder]);
+    return response()->json($rinciOrder);
   }
 
   public function dataDikirim()
@@ -68,12 +69,12 @@ class OrderController extends Controller
       ->join('hargas', 'rinci_orders.idHarga', '=', 'hargas.id')
       ->where('rinci_orders.idToko', $toko->id)
       ->where('rinci_orders.statusOrder', 'dikirim')
-      ->select('orders.*', 'rinci_orders.*', 'produks.namaProduk', 'hargas.*')
+      ->select('orders.*', 'rinci_orders.*', 'rinci_orders.id as idRinciOrder', 'produks.namaProduk', 'hargas.*')
       ->limit(100)
       ->paginate(10);
 
     // $rinciOrder = RinciOrder::where(['idToko' => $toko->id, 'statusOrder' => 'dikirim'])->get();
-    return response()->json(['rinciOrder' => $rinciOrder]);
+    return response()->json($rinciOrder);
   }
 
   public function dataSampai()
@@ -98,38 +99,51 @@ class OrderController extends Controller
 
   public function dataDibatalkan()
   {
-    $toko = Toko::where('idUser', auth()->user()->id)->select('id')->first();
+    $toko = Toko::where('idUser', auth()->user()->id)->first();
+    // dd($toko);
 
     $rinciOrder = DB::table('rinci_orders')
       ->join('orders', 'rinci_orders.idOrder', '=', 'orders.id')
       ->join('produks', 'rinci_orders.idProduk', '=', 'produks.id')
       ->join('hargas', 'rinci_orders.idHarga', '=', 'hargas.id')
       ->where('rinci_orders.idToko', $toko->id)
-      ->where('rinci_orders.statusOrder', 'diterima')
-      ->select('orders.*', 'rinci_orders.*', 'produks.namaProduk', 'hargas.*')
+      ->where('rinci_orders.statusOrder', 'dibatalkan')
+      ->select('orders.*', 'rinci_orders.*', 'rinci_orders.id as idRinciOrder', 'produks.namaProduk', 'hargas.*')
       ->limit(100)
       ->paginate(10);
 
     // $rinciOrder = RinciOrder::where(['idToko' => $toko->id, 'statusOrder' => 'dibatalkan'])->get();
-    return response()->json(['rinciOrder' => $rinciOrder]);
+    return response()->json($rinciOrder);
   }
 
 
 
   // untuk customer
 
-  public function dikemasCustomer()
+  public function ubahDikrim(Request $request)
   {
-    //
+    // dd($request->all());
+    RinciOrder::where('id', $request->idRinciOrder)
+      ->update(['statusOrder' => $request->statusOrder]);
+
+    return redirect()->to('/toko/pesanan')->with('message', 'Statusa berubah menjadi dikirim');
   }
 
-  public function dikirimKurirCustomer()
+  public function ubahSampai(Request $request)
   {
-    //
+    RinciOrder::where('id', $request->idRinciOrder)
+      ->update(['statusOrder' => $request->statusOrder]);
+
+    return back()->with('message', 'Statusa berubah menjadi dikirim');
   }
 
-  public function sampaiCustomer()
+  public function ubahDibatalkan(Request $request)
   {
-    //
+    // dd($request->all());
+    $request->validate(['alasanPembatalan' => 'required'], ['alasanPembatalan.required' => 'Alasan pembatalan harus diisi']);
+
+    RinciOrder::where('id', $request->input('statusOrder.idRinciOrder'))
+      ->update(['statusOrder' => $request->input('statusOrder.statusOrder'), 'alasanPembatalan' => $request->alasanPembatalan]);
+    return redirect()->to('/toko/pesanan')->with('message', 'Order berhasil dibatalkan');
   }
 }

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Main from "@/Components/TokoTemplate/Main";
-import { router } from "@inertiajs/react";
+import { Head, router } from "@inertiajs/react";
 // import { Modal } from 'flowbite-modal';
 
 const Index = (props) => {
@@ -15,88 +15,69 @@ const Index = (props) => {
     );
   }
 
-  const [namaKategori, setNamaKategori] = useState("");
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalData, setModalData] = useState({});
 
-  function handleChange(e) {
-    setNamaKategori(namaKategori => ({
-      ...namaKategori,
-      [e.target.id]: e.target.value,
-    }))
-  }
+  const handleModalOpen = (data) => {
+    setModalData(data);
+    setIsModalOpen(true);
+    setIsOpen(true);
+  };
 
-  function handleAddKategori() {
-    const data = {
-      namaKategori
-    }
-    router.post("/toko/kategori", data);
-    setNamaKategori("");
-  }
-
-  function handleDeleteKategori({ id }) {
-    const data = { id }
-    routerpost('/toko/kategori/delete', data);
-  }
+  const handleModalClose = () => {
+    setModalData({});
+    setIsModalOpen(false);
+    setIsOpen(false);
+  };
 
   // const [modalIsOpen, setModalIsOpen] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
-  const [dataKategori, setDataKategori] = useState("");
-
-  const handleOpenAdd = (data) => {
-    setIsOpen(true);
-    setDataKategori({ data });
-  }
 
   return (
     <>
+      <Head title={props.title} />
       <div className="grid grid-cols-2 gap-4">
         <h1 className="font-bold text-3xl">Kategori</h1>
-        {/* <div className="mt-1 mb-7 mx-auto max-w-xl">
-          <div className="flex items-center">
-            <label htmlFor="search-kategori" className="sr-only">
-              Cari...
-            </label>
-            <div className="relative w-full">
-              <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                <svg
-                  aria-hidden="true"
-                  className="w-5 h-5 text-gray-500 dark:text-gray-400"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
-                    clipRule="evenodd"
-                  ></path>
-                </svg>
-              </div>
-              <input
-                type="text"
-                id="search-kategori"
-                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                placeholder="Cari..."
-                onChange={(e) => setQuery(e.target.value)}
-                required
-              />
-            </div>
-          </div>
-        </div> */}
         <div className="text-right">
-          <button onClick={() => setIsOpen(true)} className="bg-blue-600 text-white p-1 md:p-2 rounded-lg hover:bg-blue-700" type="button">
+          <button onClick={() =>
+            handleModalOpen({
+              judul: "Tambah",
+            })
+          } className="bg-blue-600 text-white p-1 md:p-2 rounded-lg hover:bg-blue-700" type="button">
             Tambah Kategori
           </button>
-          {/* <MyButton />
-          <MyModal isOpen={isModalOpen} /> */}
         </div>
       </div>
+      {isOpen ? (
+        <>
+          <div className="grid grid-cols-2 gap-4">
+            {/* <Data props={props} search={search} query={query} handleModalOpen={handleModalOpen} /> */}
+            <Add isOpen={isModalOpen}
+              closeModal={handleModalClose}
+              data={modalData} />
+          </div>
+        </>
+      ) : (
+        <>
+          <Data props={props} search={search} query={query} handleModalOpen={handleModalOpen} />
+        </>
+      )
+      }
 
+
+    </>
+  );
+};
+
+function Data({ props, query, search, handleModalOpen }) {
+  function handleDeleteKategori({ id }) {
+    const data = { id }
+    router.post('/toko/kategori/delete', data);
+  }
+  return (
+    <>
+      <Head title={props.title} />
       <div>
-        <label>Tambah Kategori</label>
-        <input onChange={handleAddKategori} />
-      </div>
-
-      <div className="grid grid-cols-2">
         <div className="mt-3">
           <table className="overflow-x-auto relative shadow-md sm:rounded-lg w-full text-sm text-left text-gray-500 dark:text-gray-400">
             <thead className="text-xs text-center text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
@@ -123,7 +104,13 @@ const Index = (props) => {
                       </th>
                       <td>{data.namaKategori}</td>
                       <td>
-                        {/* <a href={`/toko-kategori/${data.slug}/edit`} className="bg-yellow-400 text-white rounded-md p-2 mx-1">Edit</a> */}
+                        <button as="button" onClick={() =>
+                          handleModalOpen({
+                            judul: "Edit",
+                            id: data.id,
+                            namaKategori: data.namaKategori,
+                          })
+                        } data-modal-target="modalDelete" data-modal-toggle="modalDelete" className="bg-yellow-400 text-white rounded-md p-2 mx-1">Edit</button>
                         <button as="button" onClick={() => handleDeleteKategori({ id: data.id })} data-modal-target="modalDelete" data-modal-toggle="modalDelete" className="bg-red-500 text-white rounded-md p-2 mx-1">Hapus</button>
                       </td>
                     </tr>
@@ -132,49 +119,95 @@ const Index = (props) => {
                 })
               ) : query !== "" ? (
                 <tr>
-                  <td colSpan="7" className="text-center">{`Tidak ada data dengan pencarian '${query}'`}</td>
+                  <td colSpan="3" className="text-center">{`Tidak ada data dengan pencarian '${query}'`}</td>
                 </tr>
               ) : (
                 <tr>
-                  <td colSpan="7" className="text-center">{`Tidak ada data`}</td>
+                  <td colSpan="3" className="text-center">{`Tidak ada data`}</td>
                 </tr>
               )}
             </tbody>
           </table>
         </div>
-
-        {/* <Add data={data} /> */}
       </div>
-
     </>
-  );
-};
+  )
+}
 
-function Add(data) {
+function Add(props) {
+
+  const { data } = props;
+  const [namaKategori, setNamaKategori] = useState("");
+  const [namaKategoriEdit, setNamaKategoriEdit] = useState(data.namaKategori);
+  function handleAddKategori() {
+    const data = {
+      namaKategori
+    }
+    router.post("/toko/kategori", data);
+    setNamaKategori("");
+  }
+
+  function handleEditKategori(id) {
+    const data = {
+      namaKategori: namaKategori,
+      id: id,
+    }
+    router.post(`/toko/kategori/update`, data);
+    setNamaKategori("");
+    closeModal();
+  }
+
+
+  const closeModal = () => {
+    props.closeModal();
+  };
+
   return (
     <>
-      <div className="relative top-0 left-0 overflow-x-auto right-0 w-full h-full max-w-md md:h-auto z-50">
-        <div className="relative">
-          <button onClick={() => setIsOpen(false)} type="button" className="absolute top-3 right-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-800 dark:hover:text-white" data-modal-hide="authentication-modal">
-            <svg aria-hidden="true" className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd"></path></svg>
-            <span className="sr-only">Close modal</span>
-          </button>
-          <div className="px-6 py-6 lg:px-8">
-            <h3 className="mb-4 text-xl font-medium text-gray-900 dark:text-white">Tambah Kategori</h3>
-            <div className="space-y-6">
-              <div>
-                <label htmlFor="kategori" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Your kategori</label>
-                <input value={namaKategori} onChange={(e) => setNamaKategori(e.target.value)} type="kategori" name="kategori" id="kategori" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" placeholder="Nama Kategori Toko" required />
-                {props.errors.namaKategori && <p className="text-red-600">{props.errors.namaKategori}</p>}
-              </div>
-              <div>
-                <button onClick={() => handleAddKategori()} className="bg-blue-700 text-white p-2 rounded-lg">Tambah</button>
-                <button onClick={() => setIsOpen(false)} className="bg-gray-700 text-white p-2 rounded-lg ml-3">Batal</button>
+      {data.judul === "Edit" ? (
+        <>
+          <div className="relative top-0 left-0 overflow-x-auto right-0 w-full h-full max-w-md md:h-auto z-50">
+            <div className="relative">
+              <div className="px-6 py-6 lg:px-8">
+                <h3 className="mb-4 text-xl font-medium text-gray-900 dark:text-white">Edit Kategori</h3>
+                <div className="space-y-6">
+                  <div>
+                    <label htmlFor="kategori" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Your kategori</label>
+                    <input defaultValue={data.namaKategori} onChange={(e) => setNamaKategori(e.target.value)} type="text" name="kategori" id="kategori" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" placeholder="Nama Kategori Toko" required />
+                    {/* {props.errors.namaKategori && <p className="text-red-600">{props.errors.namaKategori}</p>} */}
+                  </div>
+                  <div>
+                    <button onClick={() => handleEditKategori({ id: data.id })} className="bg-blue-700 text-white p-2 rounded-lg">Simpan</button>
+                    <button onClick={() => closeModal()} className="bg-gray-700 text-white p-2 rounded-lg ml-3">Batal</button>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      </div>
+        </>
+      ) : (
+        <>
+          <div className="relative top-0 left-0 overflow-x-auto right-0 w-full h-full max-w-md md:h-auto z-50">
+            <div className="relative">
+              <div className="px-6 py-6 lg:px-8">
+                <h3 className="mb-4 text-xl font-medium text-gray-900 dark:text-white">Tambah Kategori</h3>
+                <div className="space-y-6">
+                  <div>
+                    <label htmlFor="kategori" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Your kategori</label>
+                    <input value={namaKategori} onChange={(e) => setNamaKategori(e.target.value)} type="kategori" name="kategori" id="kategori" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" placeholder="Nama Kategori Toko" required />
+                    {/* {props.errors.namaKategori && <p className="text-red-600">{props.errors.namaKategori}</p>} */}
+                  </div>
+                  <div>
+                    <button onClick={() => handleAddKategori()} className="bg-blue-700 text-white p-2 rounded-lg">Tambah</button>
+                    <button onClick={() => closeModal()} className="bg-gray-700 text-white p-2 rounded-lg ml-3">Batal</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </>
+      )}
+
     </>
   )
 }
