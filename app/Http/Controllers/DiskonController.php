@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Harga;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use App\Models\Produk;
@@ -14,19 +15,31 @@ class DiskonController extends Controller
   {
     $toko = Toko::where('idUser', auth()->user()->id)->select('id')->first();
 
-    // $no =  !0;
     $diskon = DB::table('hargas')
       ->join('produks', 'hargas.idProduk', '=', 'produks.id')
-      ->select('hargas.*', 'produks.namaProduk')
+      ->select('hargas.*', 'produks.namaProduk', 'produks.imgUrl as imgUtama')
       ->where('hargas.diskon', '>', 0)
       ->where('produks.idToko', $toko->id)
       ->paginate(10);
 
-    // dd($diskon);
 
     return Inertia::render('DiskonToko/Index', [
       'title' => 'Data Diskon',
       'diskon' => $diskon,
     ]);
+  }
+
+  public function update(Request $request)
+  {
+    // dd($request->all());
+    $data = $request->validate([
+      'diskon' => 'required',
+      'tglAwalDiskon' => 'required',
+      'tglAkhirDiskon' => 'required',
+    ]);
+
+    $hargas = Harga::where('id', $request->id)->first();
+    $hargas->update($data);
+    return back()->with('message', 'Diskon berhasil diubah');
   }
 }

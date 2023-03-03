@@ -228,6 +228,7 @@ class HomeController extends Controller
 
     $authUser = auth()->user()->id;
     $keranjang = Keranjang::where('idUser', $authUser)->latest()->first();
+    $no = Order::count() + 1;
 
     Order::create([
       "idUser" => $authUser,
@@ -235,7 +236,7 @@ class HomeController extends Controller
       "email" => $request->recipient['email'],
       "noHp" => $request->recipient['noHp'],
       "alamatPengiriman" => $request->recipient['alamat'],
-      "noFaktur" => date("Y-m-d H:i:s") . '=N' . Order::count() + 1,
+      "noFaktur" => date("Y-m-d H:i:s") . '=N' . $no,
       "tglOrder" => date("Y-m-d H:i:s"),
       "statusBayar" => "belum bayar",
       "metodeBayar" => $request->payment,

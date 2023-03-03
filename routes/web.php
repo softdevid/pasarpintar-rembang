@@ -27,7 +27,7 @@ Route::get('/produk-acak', [HomeController::class, 'produkAcak'])->name('produk.
 Route::get('/cari', [SearchController::class, 'search'])->name('pencarian');
 Route::get('/kategori/{kategoriGlobal:slug}', [HomeController::class, 'kategori'])->name('kategori');
 
-Route::middleware('auth',)->group(function () {
+Route::middleware('auth')->group(function () {
 
   // route user
   Route::get('/user/profile', [UserController::class, 'profile'])->name('user.profile');
@@ -124,6 +124,7 @@ Route::post('/ubah-status-dibatalkan', [OrderController::class, 'ubahDibatalkan'
 
 //route diskon
 Route::get('/toko/diskon', [DiskonController::class, 'index'])->name('diskon.index');
+Route::post('/toko/diskon/update', [DiskonController::class, 'update'])->name('diskon.update');
 
 // route kurir
 Route::get('/toko/kurir', [AdminTokoController::class, 'kurir'])->name('kurir');
