@@ -43,7 +43,7 @@ const Dibatalkan = (props) => {
       {!showAktif ? (
         <>
           <div>
-            <h1 className="font-bold text-3xl">Pesanan Baru</h1>
+            <h1 className="font-bold text-3xl">{props.title}</h1>
           </div>
           <div>
             <NavTabsPesananToko />

@@ -16,28 +16,28 @@ class OrderController extends Controller
   public function pesananBaru()
   {
     return Inertia::render('PesananToko/PesananBaru', [
-      'title' => 'Pesanan Baru',
+      'title' => 'Pesanan baru',
     ]);
   }
 
   public function dikirim()
   {
     return Inertia::render('PesananToko/Dikirim', [
-      'title' => 'Dikirim',
+      'title' => 'Pesanan dikirim',
     ]);
   }
 
   public function sampai()
   {
     return Inertia::render('PesananToko/Sampai', [
-      'title' => 'Sampai',
+      'title' => 'Pesanan diterima',
     ]);
   }
 
   public function dibatalkan()
   {
     return Inertia::render('PesananToko/Dibatalkan', [
-      'title' => 'Dibatalkan',
+      'title' => 'Pesanan dibatalkan',
     ]);
   }
 

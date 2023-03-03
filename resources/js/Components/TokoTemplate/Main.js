@@ -9,6 +9,7 @@ import {
   Cog6ToothIcon,
   ComputerDesktopIcon,
   ListBulletIcon,
+  PlusIcon,
   UserCircleIcon,
 } from "@heroicons/react/20/solid";
 
@@ -90,22 +91,10 @@ const Main = (props) => {
                       </span>
                     </li>
                   </Link>
-                  {/* <Link href="/toko/kurir">
-            <li
-              className={`flex  rounded-md p-2 cursor-pointer hover:bg-light-white text-gray-300 text-sm items-center gap-x-4`}
-            >
-              <UserCircleIcon className="h-6 w-6 text-white" />
-              <span
-                className={`${!open && "hidden"
-                  } origin-left text-white font-semibold duration-200`}
-              >
-              Kurir
-              </span>
-              </li>
-          </Link> */}
                 </>
 
               }
+
               <Link href="/toko/produk">
                 <li
                   className={`flex  rounded-md p-2 cursor-pointer hover:bg-light-white text-gray-300 text-sm items-center gap-x-4`}
@@ -116,6 +105,19 @@ const Main = (props) => {
                       } origin-left text-white font-semibold duration-200`}
                   >
                     Produk
+                  </span>
+                </li>
+              </Link>
+              <Link href="/toko/diskon">
+                <li
+                  className={`flex  rounded-md p-2 cursor-pointer hover:bg-light-white text-gray-300 text-sm items-center gap-x-4`}
+                >
+                  <PlusIcon className="h-6 w-6 text-white" />
+                  <span
+                    className={`${!open && "hidden"
+                      } origin-left text-white font-semibold duration-200`}
+                  >
+                    Diskon
                   </span>
                 </li>
               </Link>
@@ -214,14 +216,12 @@ const Main = (props) => {
                 <>
                   <li>
                     <Link href="/toko/dashboard" className="flex items-center p-2 text-base font-normal text-white hover:text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">
-                      {/* <svg aria-hidden="true" className="w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M2 10a8 8 0 018-8v8h8a8 8 0 11-16 0z"></path><path d="M12 2.252A8.014 8.014 0 0117.748 8H12V2.252z"></path></svg> */}
                       <ComputerDesktopIcon className="h-6 w-6" />
                       <span className="ml-3">Dashboard</span>
                     </Link>
                   </li>
                   <li>
                     <Link href="/toko/pesanan" className="flex items-center p-2 text-base font-normal text-white hover:text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">
-                      {/* <svg aria-hidden="true" className="w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M2 10a8 8 0 018-8v8h8a8 8 0 11-16 0z"></path><path d="M12 2.252A8.014 8.014 0 0117.748 8H12V2.252z"></path></svg> */}
                       <ClipboardDocumentListIcon className="h-6 w-6" />
                       <span className="ml-3">Pesanan</span>
                     </Link>
@@ -230,14 +230,18 @@ const Main = (props) => {
               )}
               <li>
                 <Link href="/toko/produk" className="flex items-center p-2 text-base font-normal text-white hover:text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">
-                  {/* <svg aria-hidden="true" className="w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M2 10a8 8 0 018-8v8h8a8 8 0 11-16 0z"></path><path d="M12 2.252A8.014 8.014 0 0117.748 8H12V2.252z"></path></svg> */}
                   <ArchiveBoxArrowDownIcon className="h-6 w-6" />
                   <span className="ml-3">Produk</span>
                 </Link>
               </li>
               <li>
+                <Link href="/toko/diskon" className="flex items-center p-2 text-base font-normal text-white hover:text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">
+                  <PlusIcon className="h-6 w-6" />
+                  <span className="ml-3">Diskon</span>
+                </Link>
+              </li>
+              <li>
                 <Link href="/toko/kategori" className="flex items-center p-2 text-base font-normal text-white hover:text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">
-                  {/* <svg aria-hidden="true" className="w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M2 10a8 8 0 018-8v8h8a8 8 0 11-16 0z"></path><path d="M12 2.252A8.014 8.014 0 0117.748 8H12V2.252z"></path></svg> */}
                   <ListBulletIcon className="h-6 w-6" />
                   <span className="ml-3">Kategori</span>
                 </Link>
@@ -245,7 +249,6 @@ const Main = (props) => {
               {data.statusToko === 'premium' && (
                 <li>
                   <Link href="/toko/laporan" className="flex items-center p-2 text-base font-normal text-white hover:text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">
-                    {/* <svg aria-hidden="true" className="w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M2 10a8 8 0 018-8v8h8a8 8 0 11-16 0z"></path><path d="M12 2.252A8.014 8.014 0 0117.748 8H12V2.252z"></path></svg> */}
                     <ChartBarSquareIcon className="h-6 w-6" />
                     <span className="ml-3">Laporan</span>
                   </Link>
@@ -253,7 +256,6 @@ const Main = (props) => {
               )}
               <li>
                 <button as="button" onClick={() => handleLogout()} className="flex items-center p-2 text-base font-normal text-white hover:text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">
-                  {/* <svg aria-hidden="true" className="w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M2 10a8 8 0 018-8v8h8a8 8 0 11-16 0z"></path><path d="M12 2.252A8.014 8.014 0 0117.748 8H12V2.252z"></path></svg> */}
                   <ArrowRightOnRectangleIcon className="h-6 w-6" />
                   <span className="ml-3">Keluar</span>
                 </button>

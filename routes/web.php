@@ -18,6 +18,7 @@ use App\Http\Controllers\OrderController;
 use App\Http\Controllers\SuperAdminSettingController;
 use App\Http\Controllers\TokoController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\DiskonController;
 use Inertia\Inertia;
 
 // home route
@@ -105,7 +106,6 @@ Route::patch('/toko/produk/update', [ProdukController::class, 'update'])->name('
 Route::post('/toko/produk/delete', [ProdukController::class, 'destroy'])->name('produk.destroy');
 
 //route toko kategori
-
 Route::get('/toko/kategori', [KategoriController::class, 'index'])->name('kategori.index');
 Route::get('/toko/kategori/create', [KategoriController::class, 'create'])->name('kategori.create');
 Route::post('/toko/kategori/update', [KategoriController::class, 'update'])->name('kategoriToko.update');
@@ -116,12 +116,14 @@ Route::post('/toko/kategori/delete', [KategoriController::class, 'destroy'])->na
 Route::get('/toko/pesanan', [OrderController::class, 'pesananBaru'])->name('pesananBaru');
 Route::get('/toko/pesanan/dikirim', [OrderController::class, 'dikirim'])->name('dikirim');
 Route::get('/toko/pesanan/sampai', [OrderController::class, 'sampai'])->name('sampai');
-Route::get('/toko/pesanan/dibatalkan', [OrderController::class, 'sampai'])->name('dibatalkan');
+Route::get('/toko/pesanan/dibatalkan', [OrderController::class, 'dibatalkan'])->name('dibatalkan');
 
 //ubah status
 Route::post('/ubah-status-dikirim', [OrderController::class, 'ubahDikrim'])->name('toko.ubahDikrim');
 Route::post('/ubah-status-dibatalkan', [OrderController::class, 'ubahDibatalkan'])->name('toko.ubahDibatalkan');
 
+//route diskon
+Route::get('/toko/diskon', [DiskonController::class, 'index'])->name('diskon.index');
 
 // route kurir
 Route::get('/toko/kurir', [AdminTokoController::class, 'kurir'])->name('kurir');

@@ -1,10 +1,11 @@
 import React from "react";
 import Main from "@/Components/TokoTemplate/Main";
-import { Link } from "@inertiajs/react";
+import { Head, Link } from "@inertiajs/react";
 
 const Dashboard = (props) => {
   return (
     <>
+      <Head title={props.title} />
       <div>
         <h1 className="font-bold text-3xl">Dashboard</h1>
       </div>
@@ -89,7 +90,7 @@ const Dashboard = (props) => {
               })}
               <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
                 <th scope="row" className="py-4 px-6 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                  <Link href={'/toko/produk'} className="text-blue-700 font-bold">Selengkapnya..</Link>
+                  <Link href={'/toko/kategori'} className="text-blue-700 font-bold">Selengkapnya..</Link>
                 </th>
               </tr>
             </tbody>
