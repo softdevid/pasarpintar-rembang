@@ -3,6 +3,7 @@ import Footer from "@/Components/Footer";
 import NavBar from "@/Components/NavBar";
 import { usePage } from "@inertiajs/react";
 import { AppContext } from "@/context/app-context";
+import MenuMobile from "../Components/HomePage/MenuMobile";
 
 export default function Main({ children }) {
   const { props, url } = usePage();
@@ -31,6 +32,9 @@ export default function Main({ children }) {
         <footer>
           <Footer />
         </footer>
+        <div className="block md:hidden">
+          <MenuMobile />
+        </div>
       </AppContext.Provider>
     </div>
   );
