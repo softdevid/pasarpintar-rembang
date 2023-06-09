@@ -27,7 +27,7 @@ export default function Main({ children }) {
     // Menggunakan setTimeout untuk menunjukkan splash screen selama 2 detik
     setTimeout(() => {
       setLoading(false);
-    }, 3000);
+    }, 2000);
   }, []);
 
   return (
