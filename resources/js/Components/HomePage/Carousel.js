@@ -1,6 +1,18 @@
-import React from "react";
+import React, { useEffect } from "react";
 
 const Carousel = () => {
+  useEffect(() => {
+    const carouselItems = document.querySelectorAll('[data-carousel-item]');
+
+    let currentIndex = 0;
+
+    setInterval(() => {
+      carouselItems[currentIndex].classList.add('hidden', '-translate-x-full');
+      currentIndex = (currentIndex + 1) % carouselItems.length;
+      carouselItems[currentIndex].classList.remove('hidden', '-translate-x-full');
+    }, 2000);
+  }, []);
+
   return (
     <div className="container">
       <div className="grid grid-cols-1 lg:grid-cols-6 lg:grid-rows-6 gap-1 max-w-screen-xl mx-auto">
