@@ -17,8 +17,11 @@ const Index = (props) => {
     );
   }
 
+  const [kategori, setKategori] = useState([])
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalData, setModalData] = useState({});
+
+  axios.get('/api/data-kategori').then((res) => setKategori(res.data))
 
   const handleModalOpen = (data) => {
     setModalData(data);
@@ -58,12 +61,12 @@ const Index = (props) => {
             {/* <Data props={props} search={search} query={query} handleModalOpen={handleModalOpen} /> */}
             <Add isOpen={isModalOpen}
               closeModal={handleModalClose}
-              data={modalData} />
+              data={modalData} kategori={kategori} setKategori={setKategori} />
           </div>
         </>
       ) : (
         <>
-          <Data props={props} search={search} query={query} handleModalOpen={handleModalOpen} />
+          <Data props={props} kategori={kategori} setKategori={setKategori} search={search} query={query} handleModalOpen={handleModalOpen} />
         </>
       )
       }
@@ -73,7 +76,7 @@ const Index = (props) => {
   );
 };
 
-function Data({ props, query, search, handleModalOpen }) {
+function Data({ props, kategori, setKategori, query, search, handleModalOpen }) {
   function handleDeleteKategori({ id }) {
     const data = { id }
     if (confirm("Yakin mau hapus kategori?")) {
@@ -103,8 +106,8 @@ function Data({ props, query, search, handleModalOpen }) {
               </tr>
             </thead>
             <tbody>
-              {search(props.kategori.data).length > 0 ? (
-                search(props.kategori.data).map((data, i) => {
+              {search(kategori).length > 0 ? (
+                search(kategori).map((data, i) => {
                   return (
 
                     <tr key={i} className="text-center bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
@@ -161,9 +164,8 @@ function Add(props) {
         toast.success(res.data.data, {
           position: toast.POSITION.TOP_CENTER
         })
-        setTimeout(() => {
-          router.get('/toko/kategori')
-        }, 2000);
+        closeModal()
+        axios.get('/api/data-kategori').then((res) => props.setKategori(res.data))
       })
       .catch((err) => setErrors(err.response.data.errors))
   }
@@ -180,9 +182,8 @@ function Add(props) {
         toast.success(res.data.data, {
           position: toast.POSITION.TOP_CENTER
         })
-        setTimeout(() => {
-          router.get('/toko/kategori')
-        }, 2000);
+        closeModal()
+        axios.get('/api/data-kategori').then((res) => props.setKategori(res.data))
       })
       .catch((err) => setErrors(err.response.data.errors))
   }

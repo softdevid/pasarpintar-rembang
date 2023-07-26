@@ -25,6 +25,13 @@ class KategoriController extends Controller
     ]);
   }
 
+  public function dataKategori()
+  {
+    $toko = Toko::where('idUser', auth()->user()->id)->select('id')->first();
+    $data = Kategori::where('idToko', $toko->id)->get();
+    return response()->json($data);
+  }
+
   /**
    * Show the form for creating a new resource.
    *

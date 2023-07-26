@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\GambarSementaraController;
+use App\Http\Controllers\KategoriController;
 use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProdukController;
@@ -28,6 +29,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::get('/api/data-toko', [TokoController::class, 'dataToko']);
 
 Route::get('/api/data-produk', [ProdukController::class, 'dataProduk']);
+Route::get('/api/data-kategori', [KategoriController::class, 'dataKategori']);
 
 Route::get('/api/data-pesanan-baru', [OrderController::class, 'dataPesananBaru']);
 Route::get('/api/data-pesanan-dikirim', [OrderController::class, 'dataDikirim']);
