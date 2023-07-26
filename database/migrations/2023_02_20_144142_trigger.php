@@ -24,7 +24,14 @@ class Trigger extends Migration
     DB::unprepared(
       'CREATE TRIGGER `updateStokGudangKeToko` AFTER UPDATE ON `rinci_orders`
          FOR EACH ROW BEGIN
-            UPDATE hargas set stokToko = stokToko + NEW.stokGudang where id = NEW.idHarga AND NEW.statusOrder = "dikirim";
+            UPDATE hargas set stokToko = stokToko + stokGudang where id = NEW.idHarga AND NEW.statusOrder = "dikirim";
+        END'
+    );
+
+    DB::unprepared(
+      'CREATE TRIGGER `updateStokGudangJadiKosong` AFTER UPDATE ON `rinci_orders`
+         FOR EACH ROW BEGIN
+            UPDATE hargas set stokGudang = 0 where id = NEW.idHarga AND NEW.statusOrder = "dikirim";
         END'
     );
 

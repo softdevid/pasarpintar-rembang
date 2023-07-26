@@ -57,6 +57,7 @@ class KeranjangController extends Controller
 
   public function add(Request $request)
   {
+
     $keranjang = Keranjang::where('idUser', auth()->id())->latest()->first();
     if ($keranjang == null) {
       $keranjang = Keranjang::create([

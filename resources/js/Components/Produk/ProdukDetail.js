@@ -2,7 +2,7 @@ import formatRibuan from "@/config/formatRibuan";
 import { FormatRupiah } from "@/config/formatRupiah";
 import { AppContext } from "@/context/app-context";
 import { BuildingStorefrontIcon } from "@heroicons/react/20/solid";
-import { Link } from "@inertiajs/react";
+import { Link, router } from "@inertiajs/react";
 import axios from "axios";
 import React, { useContext, useEffect, useState } from "react";
 import { toast, ToastContainer } from "react-toastify";
@@ -91,7 +91,8 @@ const ProdukDetail = ({ images, produk, toko, user }) => {
   };
 
   const tambahKeranjang = (idProduk, idToko, qty, harga) => {
-    if (harga.idHarga != 0) {
+    // console.log(harga)
+    if (harga.idHarga != 0 && harga.stok !== 0) {
       const data = {
         idProduk,
         qty,
@@ -99,14 +100,13 @@ const ProdukDetail = ({ images, produk, toko, user }) => {
         idToko,
         subtotal: qty * harga.hargaJual,
       };
-      console.log(data);
       axios
         .post("/cart-add", data)
         .then((res) => {
           notify(res.data.data);
           updateJumlahKeranjang();
         })
-        .catch((err) => console.log(err.response.data.message));
+        .catch((err) => console.log(err));
     }
   };
 
@@ -115,7 +115,7 @@ const ProdukDetail = ({ images, produk, toko, user }) => {
       context.setCartCount(res.data.cartCount);
     });
   };
-  console.log(harga);
+  const [stokError, setStokError] = useState({})
   return (
     <>
       <div className="relative w-full px-4 md:w-[35%]">
@@ -167,9 +167,8 @@ const ProdukDetail = ({ images, produk, toko, user }) => {
                       <FormatRupiah value={`${produk.hargas[0].hrgJual}`} />
                       {" ~ "}
                       <FormatRupiah
-                        value={`${
-                          produk.hargas[produk.hargas.length - 1].hrgJual
-                        }`}
+                        value={`${produk.hargas[produk.hargas.length - 1].hrgJual
+                          }`}
                       />
                     </>
                   ) : (
@@ -199,11 +198,10 @@ const ProdukDetail = ({ images, produk, toko, user }) => {
                     <button
                       key={index}
                       type="button"
-                      className={`${
-                        active === index
-                          ? "text-white bg-blue-800"
-                          : "text-blue-700"
-                      } border border-blue-700 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2`}
+                      className={`${active === index
+                        ? "text-white bg-blue-800"
+                        : "text-blue-700"
+                        } border border-blue-700 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2`}
                       onClick={async () => {
                         (await active) === index
                           ? setActive(false)
@@ -255,6 +253,7 @@ const ProdukDetail = ({ images, produk, toko, user }) => {
                   </div>
                 </div>
                 <div className="flex items-center">
+                  {stokError.qty && <span className="text-red-500">{stokError.qty}</span>}
                   <div className="w-1/2 lg:w-1/4">
                     <button
                       onClick={() =>
