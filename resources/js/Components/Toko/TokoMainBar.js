@@ -18,13 +18,13 @@ const TokoMainBar = ({ toko }) => {
           <span className="text-xl font-bold mb-2 inline-flex">{toko.namaToko}
             {toko.statusToko === "premium" && <CheckCircleIcon className="w-5 h-5 mt-1 text-blue-500" title="Verified Premium Store" />}
           </span>
-          <Link
+          <a
             // as="button"
             href={`https://wa.me/${ubahNomorTelepon(toko.noHp)}`}
             className="relative inline-flex items-center justify-center p-0.5 overflow-hidden text-sm font-medium text-gray-900 rounded-lg"
           >
             <img src="/icon/WhatsAppButtonGreenSmall.svg" className="" />
-          </Link>
+          </a>
         </div>
       </div>
       <div className="flex items-center md:ml-14">
